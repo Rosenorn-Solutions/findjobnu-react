@@ -5,6 +5,8 @@ import type { JobIndexPostResponse } from "../findjobnu-api/models";
 import { createApiClient } from "../helpers/ApiFactory";
 import SearchForm, { type CategoryOption } from "../components/SearchForm";
 import JobList from "../components/JobList";
+import RecommendedJobs from "../components/RecommendedJobs";
+import { useUser } from "../context/UserContext.shared";
 import { toDateFromInput } from "../helpers/date";
 import Seo from "../components/Seo";
 
@@ -18,12 +20,24 @@ const normalizeLocation = (value?: string | null) => {
 };
 
 const JobSearch: React.FC = () => {
+  const { user } = useUser();
+  const userId = user?.userId ?? "";
   const [jobs, setJobs] = useState<JobIndexPostResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
+  const [activePanel, setActivePanel] = useState<"search" | "recommended">("search");
+  const [formKey, setFormKey] = useState(0);
+  const [recommendedSearchParams, setRecommendedSearchParams] = useState<{
+    searchTerm?: string;
+    location?: string;
+    locationSlug?: string;
+    categoryId?: number;
+    postedAfter?: string;
+    postedBefore?: string;
+  } | null>(null);
   const [lastSearchParams, setLastSearchParams] = useState<{
     searchTerm?: string;
     location?: string;
@@ -32,7 +46,31 @@ const JobSearch: React.FC = () => {
     postedAfter?: string;
     postedBefore?: string;
   } | null>(null);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const setPanelQueryParam = (panel: "search" | "recommended") => {
+    const next = new URLSearchParams(searchParams);
+    next.set("panel", panel);
+    setSearchParams(next, { replace: true });
+  };
+
+  const switchToSearch = () => {
+    setPanelQueryParam("search");
+    setActivePanel("search");
+    setRecommendedSearchParams(null);
+    setLastSearchParams(null);
+    setCurrentPage(1);
+    setFormKey((k) => k + 1);
+  };
+
+  const switchToRecommended = () => {
+    setPanelQueryParam("recommended");
+    setActivePanel("recommended");
+    setLastSearchParams(null);
+    setRecommendedSearchParams(null);
+    setCurrentPage(1);
+    setFormKey((k) => k + 1);
+  };
 
   const parseCategoryFromQuery = () => {
     const raw = searchParams.get("category") ?? searchParams.get("categoryId");
@@ -40,6 +78,23 @@ const JobSearch: React.FC = () => {
     const asNumber = Number(raw);
     return Number.isFinite(asNumber) ? asNumber : undefined;
   };
+
+  const parsePanelFromQuery = () => {
+    const panel = searchParams.get("panel");
+    return panel === "recommended" ? "recommended" : "search";
+  };
+
+  useEffect(() => {
+    const parsedPanel = parsePanelFromQuery();
+    const allowedPanel = parsedPanel === "recommended" && !userId ? "search" : parsedPanel;
+    setActivePanel((prev) => (prev === allowedPanel ? prev : allowedPanel));
+    if (parsedPanel !== allowedPanel) {
+      const next = new URLSearchParams(searchParams);
+      next.set("panel", allowedPanel);
+      setSearchParams(next, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, userId]);
 
   const fetchAllJobs = async (page = 1) => {
     setLoading(true);
@@ -182,28 +237,66 @@ const JobSearch: React.FC = () => {
       />
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="order-2 lg:order-1 flex-1 min-w-0">
-          <JobList
-            jobs={jobs}
-            loading={loading}
-            currentPage={currentPage}
-            pageSize={pageSize}
-            totalCount={totalCount}
-            onPageChange={handlePageChange}
-          />
+          {activePanel === "search" ? (
+            <JobList
+              jobs={jobs}
+              loading={loading}
+              currentPage={currentPage}
+              pageSize={pageSize}
+              totalCount={totalCount}
+              onPageChange={handlePageChange}
+            />
+          ) : (
+            <RecommendedJobs
+              userId={userId}
+              renderSearchForm={false}
+              searchParams={recommendedSearchParams}
+              categoriesOverride={categories}
+              flushTop
+            />
+          )}
         </div>
 
-        <div className="order-1 lg:order-2 shrink-0">
-              <div className="card bg-base-100 shadow-xl lg:sticky lg:top-24 w-full lg:w-fit">
-            <div className="p-4">
-              <SearchForm
-                onSearch={(params) => {
-                  setCurrentPage(1);
-                  setLastSearchParams(params);
-                  handleSearch(params, 1);
-                }}
-                categories={categories}
-                queryCategory={parseCategoryFromQuery()?.toString() ?? undefined}
-              />
+        <div className="order-1 lg:order-2 shrink-0 w-full lg:w-72 max-w-xs self-start flex flex-col gap-4">
+          <div className="bg-base-100/95 border border-base-200 rounded-box shadow-sm p-3 flex items-center justify-between gap-3">
+            <p className="text-sm text-base-content/70">Se anbefalede jobs</p>
+            <div className="btn-group">
+              <button
+                type="button"
+                className={`btn btn-sm ${activePanel === "search" ? "btn-primary" : "btn-ghost"}`}
+                onClick={switchToSearch}
+              >
+                Jobsøgning
+              </button>
+              <button
+                type="button"
+                className={`btn btn-sm ${activePanel === "recommended" ? "btn-primary" : "btn-ghost"}`}
+                onClick={switchToRecommended}
+                disabled={!userId}
+              >
+                Anbefalede
+              </button>
+            </div>
+          </div>
+
+          <div className="lg:sticky lg:top-24 w-full lg:w-72 max-w-xs">
+            <div className="card bg-base-100 shadow-xl w-full lg:w-72 max-w-xs">
+              <div className="p-4">
+                <SearchForm
+                  key={`search-form-${formKey}-${activePanel}`}
+                  onSearch={(params) => {
+                    if (activePanel === "search") {
+                      setCurrentPage(1);
+                      setLastSearchParams(params);
+                      handleSearch(params, 1);
+                    } else {
+                      setRecommendedSearchParams(params);
+                    }
+                  }}
+                  categories={categories}
+                  queryCategory={parseCategoryFromQuery()?.toString() ?? undefined}
+                />
+              </div>
             </div>
           </div>
         </div>

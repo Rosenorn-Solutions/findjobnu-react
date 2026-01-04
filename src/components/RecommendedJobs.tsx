@@ -10,17 +10,28 @@ import { toDateFromInput } from "../helpers/date";
 
 interface Props {
   userId: string;
+  renderSearchForm?: boolean;
+  searchParams?: {
+    searchTerm?: string;
+    location?: string;
+    locationSlug?: string;
+    categoryId?: number;
+    postedAfter?: string;
+    postedBefore?: string;
+  } | null;
+  categoriesOverride?: CategoryOption[];
+  flushTop?: boolean;
 }
 
 const PAGE_SIZE = 10;
 
-const RecommendedJobs: React.FC<Props> = ({ userId }) => {
+const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, searchParams, categoriesOverride, flushTop = false }) => {
   const [jobs, setJobs] = useState<JobIndexPostResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [categories, setCategories] = useState<CategoryOption[]>(categoriesOverride ?? []);
   const [lastSearchParams, setLastSearchParams] = useState<{
     searchTerm?: string;
     location?: string;
@@ -28,12 +39,13 @@ const RecommendedJobs: React.FC<Props> = ({ userId }) => {
     categoryId?: number;
     postedAfter?: string;
     postedBefore?: string;
-  } | null>(null);
+  } | null>(searchParams ?? null);
 
   const { user } = useUser();
   const token = user?.accessToken;
 
   useEffect(() => {
+    if (categoriesOverride) return;
     const jobApi = createApiClient(JobIndexPostsApi, token);
 
     const fetchCategories = async () => {
@@ -71,7 +83,14 @@ const RecommendedJobs: React.FC<Props> = ({ userId }) => {
     };
 
     fetchCategories();
-  }, [token]);
+  }, [token, categoriesOverride]);
+
+  useEffect(() => {
+    if (searchParams) {
+      setLastSearchParams(searchParams);
+      setCurrentPage(1);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const jobApi = createApiClient(JobIndexPostsApi, token);
@@ -119,7 +138,7 @@ const RecommendedJobs: React.FC<Props> = ({ userId }) => {
   };
 
   return (
-    <div className="mt-8">
+    <div className={flushTop ? "" : "mt-8"}>
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="order-2 lg:order-1 flex-1 min-w-0">
           <JobList
@@ -133,13 +152,15 @@ const RecommendedJobs: React.FC<Props> = ({ userId }) => {
           {error && <div className="text-center py-8 text-red-500">{error}</div>}
         </div>
 
-        <div className="order-1 lg:order-2 shrink-0 w-full lg:w-fit">
-          <div className="card bg-base-100 shadow-xl lg:sticky lg:top-24 w-full">
-            <div className="p-4">
-              <SearchForm onSearch={handleSearch} categories={categories} />
+        {renderSearchForm && (
+          <div className="order-1 lg:order-2 shrink-0 w-full lg:w-fit">
+            <div className="card bg-base-100 shadow-xl lg:sticky lg:top-24 w-full">
+              <div className="p-4">
+                <SearchForm onSearch={handleSearch} categories={categories} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

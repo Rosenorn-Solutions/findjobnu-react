@@ -12,10 +12,16 @@ interface Props {
   accessToken: string;
 }
 
+const frequencyValues = {
+  daily: (JobAgentFrequency as any).Daily ?? (JobAgentFrequency as any).NUMBER_1 ?? 1,
+  weekly: (JobAgentFrequency as any).Weekly ?? (JobAgentFrequency as any).NUMBER_2 ?? 2,
+  monthly: (JobAgentFrequency as any).Monthly ?? (JobAgentFrequency as any).NUMBER_3 ?? 3,
+};
+
 const frequencyOptions = [
-  { value: JobAgentFrequency.NUMBER_1, label: "Dagligt" },
-  { value: JobAgentFrequency.NUMBER_2, label: "Ugentligt" },
-  { value: JobAgentFrequency.NUMBER_3, label: "Månedligt" },
+  { value: frequencyValues.daily as JobAgentFrequency, label: "Dagligt" },
+  { value: frequencyValues.weekly as JobAgentFrequency, label: "Ugentligt" },
+  { value: frequencyValues.monthly as JobAgentFrequency, label: "Månedligt" },
 ];
 
 type CategoryOption = {
@@ -31,7 +37,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
   const [profileId, setProfileId] = useState<number | null>(null);
   const [jobAgent, setJobAgent] = useState<JobAgentDto | null>(null);
   const [enabled, setEnabled] = useState<boolean>(true);
-  const [frequency, setFrequency] = useState<JobAgentFrequency>(JobAgentFrequency.NUMBER_2);
+  const [frequency, setFrequency] = useState<JobAgentFrequency>(frequencyValues.weekly as JobAgentFrequency);
   const [lastSentAt, setLastSentAt] = useState<Date | null>(null);
   const [nextSendAt, setNextSendAt] = useState<Date | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -148,7 +154,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       setMode("manage");
       setJobAgent(existing);
       setEnabled(existing?.enabled ?? true);
-      setFrequency((existing?.frequency as JobAgentFrequency | undefined) ?? JobAgentFrequency.NUMBER_2);
+      setFrequency((existing?.frequency as JobAgentFrequency | undefined) ?? (frequencyValues.weekly as JobAgentFrequency));
       setLastSentAt(existing?.lastSentAt ? new Date(existing.lastSentAt) : null);
       setNextSendAt(existing?.nextSendAt ? new Date(existing.nextSendAt) : null);
       setLocationsInput((existing?.preferredLocations ?? []).join(", "));
@@ -183,7 +189,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
               setMode("setup");
               setJobAgent(null);
               setEnabled(true);
-              setFrequency(JobAgentFrequency.NUMBER_2);
+              setFrequency(frequencyValues.weekly as JobAgentFrequency);
               setLastSentAt(null);
               setNextSendAt(null);
               setLocationsInput("");
@@ -286,7 +292,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
           profileId,
           jobAgentUpdateRequest: {
             enabled: true,
-            frequency: JobAgentFrequency.NUMBER_2,
+            frequency: frequencyValues.weekly as JobAgentFrequency,
             preferredLocations: [],
             preferredCategoryIds: [],
             includeKeywords: [],
@@ -310,7 +316,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
 
       setJobAgent(refreshed);
       setEnabled(refreshed.enabled ?? true);
-      setFrequency((refreshed.frequency as JobAgentFrequency | undefined) ?? JobAgentFrequency.NUMBER_2);
+      setFrequency((refreshed.frequency as JobAgentFrequency | undefined) ?? (frequencyValues.weekly as JobAgentFrequency));
       setLastSentAt(refreshed.lastSentAt ?? null);
       setNextSendAt(refreshed.nextSendAt ?? null);
       setLocationsInput((refreshed.preferredLocations ?? []).join(", "));

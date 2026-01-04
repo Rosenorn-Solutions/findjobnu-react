@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
 	BookmarkIcon,
+	BellAlertIcon,
 	ChartBarIcon,
 	ChatBubbleLeftRightIcon,
 	DocumentTextIcon,
@@ -86,9 +87,15 @@ const Home: React.FC = () => {
 			icon: <IdentificationIcon className="w-5 h-5" aria-hidden="true" />
 		},
 		{
-			title: "Gemte job og agenter",
-			description: "Hold styr på gemte opslag og jobagenter, så du får besked om nye muligheder.",
-			to: "/myjobs",
+			title: "Jobagenter",
+			description: "Opsæt og justér dine jobagenter, så nye opslag lander direkte i din indbakke.",
+			to: "/profile?panel=jobAgent",
+			icon: <BellAlertIcon className="w-5 h-5" aria-hidden="true" />
+		},
+		{
+			title: "Gemte job",
+			description: "Se og administrér de opslag, du har gemt til senere opfølgning.",
+			to: "/profile?panel=savedJobs",
 			icon: <BookmarkIcon className="w-5 h-5" aria-hidden="true" />
 		},
 		{

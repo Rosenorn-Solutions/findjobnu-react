@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { JobAgentFrequency } from './JobAgentFrequency';
+import {
+    JobAgentFrequencyFromJSON,
+    JobAgentFrequencyFromJSONTyped,
+    JobAgentFrequencyToJSON,
+    JobAgentFrequencyToJSONTyped,
+} from './JobAgentFrequency';
+
 /**
  * 
  * @export
@@ -39,10 +47,10 @@ export interface JobAgentDto {
     enabled?: boolean;
     /**
      * 
-     * @type {string}
+     * @type {JobAgentFrequency}
      * @memberof JobAgentDto
      */
-    frequency?: string | null;
+    frequency?: JobAgentFrequency;
     /**
      * 
      * @type {Date}
@@ -87,6 +95,8 @@ export interface JobAgentDto {
     includeKeywords?: Array<string> | null;
 }
 
+
+
 /**
  * Check if a given object implements the JobAgentDto interface.
  */
@@ -107,7 +117,7 @@ export function JobAgentDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'id': json['id'] == null ? undefined : json['id'],
         'profileId': json['profileId'] == null ? undefined : json['profileId'],
         'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'frequency': json['frequency'] == null ? undefined : json['frequency'],
+        'frequency': json['frequency'] == null ? undefined : JobAgentFrequencyFromJSON(json['frequency']),
         'lastSentAt': json['lastSentAt'] == null ? undefined : (new Date(json['lastSentAt'])),
         'nextSendAt': json['nextSendAt'] == null ? undefined : (new Date(json['nextSendAt'])),
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
@@ -132,7 +142,7 @@ export function JobAgentDtoToJSONTyped(value?: JobAgentDto | null, ignoreDiscrim
         'id': value['id'],
         'profileId': value['profileId'],
         'enabled': value['enabled'],
-        'frequency': value['frequency'],
+        'frequency': JobAgentFrequencyToJSON(value['frequency']),
         'lastSentAt': value['lastSentAt'] == null ? undefined : ((value['lastSentAt'] as any).toISOString()),
         'nextSendAt': value['nextSendAt'] == null ? undefined : ((value['nextSendAt'] as any).toISOString()),
         'createdAt': value['createdAt'] == null ? undefined : ((value['createdAt']).toISOString()),
