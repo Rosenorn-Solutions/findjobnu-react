@@ -58,7 +58,7 @@ const AdWrapper: React.FC<AdWrapperProps> = ({
       ads.push({});
       (globalThis as typeof globalThis & { adsbygoogle?: unknown[] }).adsbygoogle = ads;
       setRenderError(null);
-    } catch (e) {
+    } catch {
       setRenderError("Annonceelementet kunne ikke initialiseres.");
     }
   }, [canRequestAd, scriptReady, slotId, layout, format]);
