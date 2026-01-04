@@ -8,6 +8,7 @@ import { useUser } from "../context/UserContext.shared";
 import { createApiClient, getApiBaseUrl } from "../helpers/ApiFactory";
 import { sanitizeExternalUrl } from "../helpers/url";
 import JobListSkeleton from "./JobListSkeleton";
+import AdWrapper from "./AdWrapper";
 
 interface Props {
   jobs: JobIndexPostResponse[];
@@ -17,6 +18,9 @@ interface Props {
   totalCount: number;
   onPageChange: (page: number) => void;
 }
+
+const JOBLIST_AD_SLOT_ID = (import.meta.env.VITE_GOOGLE_ADS_JOBLIST_SLOT_ID as string | undefined)
+  ?? (import.meta.env.VITE_GADS_JOBLIST_SLOT_ID as string | undefined);
 
 const JobList: React.FC<Props> = ({
   jobs,
@@ -377,6 +381,14 @@ const JobList: React.FC<Props> = ({
   if (!jobs.length) return <div className="text-center py-8">Ingen job fundet.</div>;
   const totalPages = Math.ceil(totalCount / pageSize);
 
+  const items: Array<{ kind: "job"; job: JobIndexPostResponse; idx: number } | { kind: "ad"; key: string }> = [];
+  jobs.forEach((job, idx) => {
+    items.push({ kind: "job", job, idx });
+    if ((idx === 2 || idx === 7) && totalCount > idx + 1) {
+      items.push({ kind: "ad", key: `joblist-ad-${currentPage}-${idx}` });
+    }
+  });
+
   return (
     <>
       <AnimatePresence mode="wait" initial={false}>
@@ -388,7 +400,17 @@ const JobList: React.FC<Props> = ({
           exit={{ opacity: 0, x: -32 }}
           transition={{ duration: 0.24, ease: "easeOut" }}
         >
-          {jobs.map((job, idx) => renderJobCard(job, idx))}
+          {items.map(item => {
+            if (item.kind === "job") return renderJobCard(item.job, item.idx);
+            return (
+              <AdWrapper
+                key={item.key}
+                slotId={JOBLIST_AD_SLOT_ID}
+                title="Sponsoreret jobopslag"
+                className="border-dashed"
+              />
+            );
+          })}
         </motion.div>
       </AnimatePresence>
       <Paging currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />

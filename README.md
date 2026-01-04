@@ -61,6 +61,15 @@ npm run start
 
 The app will be available at [http://localhost:4173](http://localhost:4173).
 
+## Google Ads setup
+
+- Use your chosen CMP (e.g., Google Funding Choices) for consent and ensure it integrates Google Consent Mode.
+- Set environment variables before building:
+  - `VITE_GOOGLE_ADS_CLIENT_ID` – AdSense/Google Ads client id (ca-pub-…).
+  - `VITE_GOOGLE_ADS_JOBLIST_SLOT_ID` – slot id for inline job cards.
+  - (Optional fallbacks) `VITE_GADS_CLIENT_ID` and `VITE_GADS_JOBLIST_SLOT_ID`.
+- If IDs are missing, a placeholder ad card is shown instead of live ads.
+
 ## Project Structure
 
 ```
