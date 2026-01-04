@@ -259,23 +259,27 @@ const JobSearch: React.FC = () => {
 
         <div className="order-1 lg:order-2 shrink-0 w-full lg:w-72 max-w-xs self-start flex flex-col gap-4">
           <div className="bg-base-100/95 border border-base-200 rounded-box shadow-sm p-3 flex items-center justify-between gap-3">
-            <p className="text-sm text-base-content/70">Se anbefalede jobs</p>
-            <div className="btn-group">
-              <button
-                type="button"
-                className={`btn btn-sm ${activePanel === "search" ? "btn-primary" : "btn-ghost"}`}
-                onClick={switchToSearch}
-              >
-                Jobsøgning
-              </button>
-              <button
-                type="button"
-                className={`btn btn-sm ${activePanel === "recommended" ? "btn-primary" : "btn-ghost"}`}
-                onClick={switchToRecommended}
-                disabled={!userId}
-              >
-                Anbefalede
-              </button>
+            <div className="flex flex-col text-sm text-base-content/80">
+              <span className="font-semibold">Anbefalede jobs</span>
+              <span className="text-xs text-base-content/60">Slå til for at se anbefalinger</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-2 text-xs text-base-content/70">
+                <span>Jobsøgning</span>
+                <span>•</span>
+                <span>Anbefalet</span>
+              </div>
+              <label className="label cursor-pointer gap-2" htmlFor="jobsearch-panel-toggle">
+                <input
+                  id="jobsearch-panel-toggle"
+                  type="checkbox"
+                  className="toggle toggle-primary toggle-sm"
+                  checked={activePanel === "recommended"}
+                  onChange={(e) => (e.target.checked ? switchToRecommended() : switchToSearch())}
+                  disabled={!userId}
+                  aria-label="Skift mellem jobsøgning og anbefalede jobs"
+                />
+              </label>
             </div>
           </div>
 

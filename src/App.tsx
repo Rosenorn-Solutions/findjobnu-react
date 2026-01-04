@@ -20,6 +20,7 @@ import Contact from "./views/Contact";
 import PrivacyPolicy from "./views/PrivacyPolicy";
 import CookieInformation from "./views/CookieInformation";
 import Sitemap from "./views/Sitemap";
+import NotFound from "./views/NotFound";
 
 const App: React.FC = () => {
   return (
@@ -106,6 +107,7 @@ const AppWithAuthCheck: React.FC = () => {
             <Route path="/privatlivspolitik" element={<PageWrapper direction={direction} pathKey={location.pathname}><PrivacyPolicy /></PageWrapper>} />
             <Route path="/cookie-information" element={<PageWrapper direction={direction} pathKey={location.pathname}><CookieInformation /></PageWrapper>} />
             <Route path="/sitemap" element={<PageWrapper direction={direction} pathKey={location.pathname}><Sitemap /></PageWrapper>} />
+            <Route path="*" element={<PageWrapper direction={direction} pathKey={location.pathname}><NotFound /></PageWrapper>} />
           </Routes>
         </AnimatePresence>
       </main>

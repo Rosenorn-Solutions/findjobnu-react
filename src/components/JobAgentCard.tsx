@@ -12,16 +12,27 @@ interface Props {
   accessToken: string;
 }
 
-const frequencyValues = {
-  daily: (JobAgentFrequency as any).Daily ?? (JobAgentFrequency as any).NUMBER_1 ?? 1,
-  weekly: (JobAgentFrequency as any).Weekly ?? (JobAgentFrequency as any).NUMBER_2 ?? 2,
-  monthly: (JobAgentFrequency as any).Monthly ?? (JobAgentFrequency as any).NUMBER_3 ?? 3,
+const frequencyValues: Record<"daily" | "weekly" | "monthly", JobAgentFrequency> = {
+  daily: (JobAgentFrequency.NUMBER_1 ?? 1) as JobAgentFrequency,
+  weekly: (JobAgentFrequency.NUMBER_2 ?? 2) as JobAgentFrequency,
+  monthly: (JobAgentFrequency.NUMBER_3 ?? 3) as JobAgentFrequency,
+};
+
+const normalizeFrequency = (value: unknown, fallback: JobAgentFrequency = frequencyValues.weekly): JobAgentFrequency => {
+  if (
+    value === JobAgentFrequency.NUMBER_1 ||
+    value === JobAgentFrequency.NUMBER_2 ||
+    value === JobAgentFrequency.NUMBER_3
+  ) {
+    return value;
+  }
+  return fallback;
 };
 
 const frequencyOptions = [
-  { value: frequencyValues.daily as JobAgentFrequency, label: "Dagligt" },
-  { value: frequencyValues.weekly as JobAgentFrequency, label: "Ugentligt" },
-  { value: frequencyValues.monthly as JobAgentFrequency, label: "Månedligt" },
+  { value: frequencyValues.daily, label: "Dagligt" },
+  { value: frequencyValues.weekly, label: "Ugentligt" },
+  { value: frequencyValues.monthly, label: "Månedligt" },
 ];
 
 type CategoryOption = {
@@ -32,12 +43,16 @@ type CategoryOption = {
 };
 
 const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
+  const frequencySelectId = "jobagent-frequency";
+  const locationsInputId = "jobagent-locations";
+  const categoriesInputId = "jobagent-categories";
+  const keywordsInputId = "jobagent-keywords";
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profileId, setProfileId] = useState<number | null>(null);
   const [jobAgent, setJobAgent] = useState<JobAgentDto | null>(null);
   const [enabled, setEnabled] = useState<boolean>(true);
-  const [frequency, setFrequency] = useState<JobAgentFrequency>(frequencyValues.weekly as JobAgentFrequency);
+  const [frequency, setFrequency] = useState<JobAgentFrequency>(frequencyValues.weekly);
   const [lastSentAt, setLastSentAt] = useState<Date | null>(null);
   const [nextSendAt, setNextSendAt] = useState<Date | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -57,6 +72,11 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
     const base = "badge badge-md whitespace-nowrap px-3 py-2 text-xs font-semibold leading-tight";
     if (mode === "setup") return `${base} badge-outline`;
     return enabled ? `${base} badge-success` : `${base} badge-ghost`;
+  }, [enabled, mode]);
+
+  const statusLabel = useMemo(() => {
+    if (mode === "setup") return "Ikke oprettet";
+    return enabled ? "Aktiv" : "Inaktiv";
   }, [enabled, mode]);
 
   const categoryDelimiter = ",";
@@ -154,7 +174,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       setMode("manage");
       setJobAgent(existing);
       setEnabled(existing?.enabled ?? true);
-      setFrequency((existing?.frequency as JobAgentFrequency | undefined) ?? (frequencyValues.weekly as JobAgentFrequency));
+      setFrequency(normalizeFrequency(existing?.frequency));
       setLastSentAt(existing?.lastSentAt ? new Date(existing.lastSentAt) : null);
       setNextSendAt(existing?.nextSendAt ? new Date(existing.nextSendAt) : null);
       setLocationsInput((existing?.preferredLocations ?? []).join(", "));
@@ -189,7 +209,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
               setMode("setup");
               setJobAgent(null);
               setEnabled(true);
-              setFrequency(frequencyValues.weekly as JobAgentFrequency);
+              setFrequency(frequencyValues.weekly);
               setLastSentAt(null);
               setNextSendAt(null);
               setLocationsInput("");
@@ -261,7 +281,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
 
       setJobAgent(refreshed);
       setEnabled(refreshed.enabled ?? enabled);
-      setFrequency((refreshed.frequency as JobAgentFrequency | undefined) ?? frequency);
+      setFrequency(normalizeFrequency(refreshed.frequency, frequency));
       setLastSentAt(refreshed.lastSentAt ? new Date(refreshed.lastSentAt) : null);
       setNextSendAt(refreshed.nextSendAt ? new Date(refreshed.nextSendAt) : null);
       setLocationsInput((refreshed.preferredLocations ?? []).join(", "));
@@ -292,7 +312,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
           profileId,
           jobAgentUpdateRequest: {
             enabled: true,
-            frequency: frequencyValues.weekly as JobAgentFrequency,
+            frequency: frequencyValues.weekly,
             preferredLocations: [],
             preferredCategoryIds: [],
             includeKeywords: [],
@@ -316,7 +336,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
 
       setJobAgent(refreshed);
       setEnabled(refreshed.enabled ?? true);
-      setFrequency((refreshed.frequency as JobAgentFrequency | undefined) ?? (frequencyValues.weekly as JobAgentFrequency));
+      setFrequency(normalizeFrequency(refreshed.frequency));
       setLastSentAt(refreshed.lastSentAt ?? null);
       setNextSendAt(refreshed.nextSendAt ?? null);
       setLocationsInput((refreshed.preferredLocations ?? []).join(", "));
@@ -417,7 +437,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
               : "Få automatiske jobforslag på mail."}
           </p>
         </div>
-        <span className={statusBadge}>{mode === "setup" ? "Ikke oprettet" : enabled ? "Aktiv" : "Inaktiv"}</span>
+        <span className={statusBadge}>{statusLabel}</span>
       </div>
 
       {error && <div className="alert alert-error shadow-sm mb-3 text-sm">{error}</div>}
@@ -451,25 +471,25 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
           </div>
 
           <div className="form-control mt-3">
-            <label className="label flex-col items-start gap-2">
+            <label className="label flex-col items-start gap-2" htmlFor={frequencySelectId}>
               <span className="label-text">Hyppighed</span>
-            
-            <select
-              className="select select-bordered"
-              value={frequency}
-              onChange={(e) => setFrequency(Number(e.target.value) as JobAgentFrequency)}
-              disabled={loading || saving}
-            >
-              {frequencyOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+              <select
+                id={frequencySelectId}
+                className="select select-bordered"
+                value={frequency}
+                onChange={(e) => setFrequency(normalizeFrequency(Number(e.target.value)))}
+                disabled={loading || saving}
+              >
+                {frequencyOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
             </label>
           </div>
 
           <div className="mt-4 grid grid-cols-1 gap-4">
             <div className="form-control">
-              <label className="label flex-col items-start gap-2">
+              <label className="label flex-col items-start gap-2" htmlFor={locationsInputId}>
                 <span className="label-text">Foretrukne lokationer (kommasepareret)</span>
               </label>
               <LocationTypeahead
@@ -478,6 +498,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
                 placeholder="fx København, Aarhus"
                 className="input input-bordered"
                 inputProps={{
+                  id: locationsInputId,
                   disabled: loading || saving,
                   "aria-label": "Foretrukne lokationer",
                 }}
@@ -486,21 +507,20 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
             </div>
 
             <div className="form-control">
-              <label className="label flex-col items-start gap-2">
+              <label className="label flex-col items-start gap-2" htmlFor={categoriesInputId}>
                 <span className="label-text">Kategorier (kommasepareret)</span>
               </label>
-              <div
-                className="relative"
-                onBlur={() => setTimeout(() => setShowCategorySuggestions(false), 100)}
-              >
+              <div className="relative">
                 <input
                   type="text"
                   className="input input-bordered w-full"
                   placeholder="Start skriv for at vælge – understøtter komma"
+                  id={categoriesInputId}
                   value={categoriesInput}
                   onChange={(e) => handleCategoriesChange(e.target.value)}
                   onFocus={handleCategoriesFocus}
                   onKeyDown={handleCategoriesKeyDown}
+                  onBlur={() => setTimeout(() => setShowCategorySuggestions(false), 100)}
                   disabled={loading || saving}
                   aria-label="Kategorier"
                 />
@@ -528,13 +548,14 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
             </div>
 
             <div className="form-control">
-              <label className="label flex-col items-start gap-2">
+              <label className="label flex-col items-start gap-2" htmlFor={keywordsInputId}>
                 <span className="label-text">Søgeord der skal med (kommasepareret)</span>
               </label>
               <input
                 type="text"
                 className="input input-bordered"
                 placeholder="fx React, .NET, marketing"
+                id={keywordsInputId}
                 value={keywordsInput}
                 onChange={(e) => setKeywordsInput(e.target.value)}
                 disabled={loading || saving}
