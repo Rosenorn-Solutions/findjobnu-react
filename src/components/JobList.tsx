@@ -9,6 +9,15 @@ import { createApiClient, getApiBaseUrl } from "../helpers/ApiFactory";
 import { sanitizeExternalUrl } from "../helpers/url";
 import JobListSkeleton from "./JobListSkeleton";
 import AdWrapper from "./AdWrapper";
+import {
+  MapPinIcon,
+  BuildingOffice2Icon,
+  CalendarDaysIcon,
+  TagIcon,
+  ArrowTopRightOnSquareIcon,
+  BookmarkIcon,
+  BookmarkSlashIcon,
+} from "@heroicons/react/24/outline";
 
 interface Props {
   jobs: JobIndexPostResponse[];
@@ -290,18 +299,37 @@ const JobList: React.FC<Props> = ({
           <div className="flex-1">
             <h2 className="text-lg font-semibold text-gray-900 leading-snug">{job.title ?? "(Ingen titel)"}</h2>
             {(job.company || job.location) ? (
-              <p className="mt-1 text-sm text-gray-700">
-                {job.company && <span className="font-medium">{job.company}</span>}
-                {job.company && job.location && <span> · </span>}
-                {job.location && <span>{job.location}</span>}
+              <p className="mt-1 text-sm text-gray-700 flex flex-wrap items-center gap-3">
+                {job.company && (
+                  <span className="inline-flex items-center gap-1 font-medium">
+                    <BuildingOffice2Icon className="w-4 h-4" aria-hidden="true" />
+                    {job.company}
+                  </span>
+                )}
+                {job.location && (
+                  <span className="inline-flex items-center gap-1 text-gray-700">
+                    <MapPinIcon className="w-4 h-4" aria-hidden="true" />
+                    {job.location}
+                  </span>
+                )}
               </p>
             ) : (
               <p className="mt-1 text-sm italic text-gray-500">Ingen virksomhedsoplysninger.</p>
             )}
           </div>
-          <div className="text-right min-w-[120px]">
-            {job.postedDate && <p className="text-xs text-gray-500">Publiceret {new Date(job.postedDate).toLocaleDateString("da-DK")}</p>}
-            {job.category && <p className="text-xs text-gray-600 mt-1">{job.category}</p>}
+          <div className="text-right min-w-[140px] flex flex-col items-end gap-1">
+            {job.postedDate && (
+              <p className="text-xs text-gray-500 inline-flex items-center gap-1">
+                <CalendarDaysIcon className="w-4 h-4" aria-hidden="true" />
+                Publiceret {new Date(job.postedDate).toLocaleDateString("da-DK")}
+              </p>
+            )}
+            {job.category && (
+              <p className="text-xs text-gray-600 inline-flex items-center gap-1">
+                <TagIcon className="w-4 h-4" aria-hidden="true" />
+                {job.category}
+              </p>
+            )}
           </div>
         </div>
 
@@ -334,7 +362,10 @@ const JobList: React.FC<Props> = ({
         <div className="flex flex-wrap gap-3">
           {safeJobUrl && (
             <a href={safeJobUrl} target="_blank" rel="noopener noreferrer" className="text-sm px-3 py-1 rounded border border-blue-600 text-blue-600 hover:bg-blue-50">
-              Gå til opslag
+              <span className="inline-flex items-center gap-1">
+                <ArrowTopRightOnSquareIcon className="w-4 h-4" aria-hidden="true" />
+                Gå til opslag
+              </span>
             </a>
           )}
           {canSave && !isSaved && safeJobId != null && (
@@ -344,7 +375,10 @@ const JobList: React.FC<Props> = ({
               onClick={() => handleSaveJob(safeJobId)}
               className="text-sm px-3 py-1 rounded border border-green-600 text-green-700 hover:bg-green-50 disabled:opacity-50"
             >
-              {isSaving ? "Gemmer…" : "Gem job"}
+              <span className="inline-flex items-center gap-1">
+                <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
+                {isSaving ? "Gemmer…" : "Gem job"}
+              </span>
             </button>
           )}
           {canSave && isSaved && safeJobId != null && (
@@ -354,7 +388,10 @@ const JobList: React.FC<Props> = ({
               onClick={() => handleRemoveSavedJob(safeJobId)}
               className="text-sm px-3 py-1 rounded border border-red-600 text-red-700 hover:bg-red-50 disabled:opacity-50"
             >
-              {isSaving ? "Fjerner…" : "Fjern gemt"}
+              <span className="inline-flex items-center gap-1">
+                <BookmarkSlashIcon className="w-4 h-4" aria-hidden="true" />
+                {isSaving ? "Fjerner…" : "Fjern gemt"}
+              </span>
             </button>
           )}
           {!canSave && (
@@ -364,7 +401,10 @@ const JobList: React.FC<Props> = ({
               className="text-sm px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed"
               title="Log ind for at gemme job"
             >
-              Gem job
+              <span className="inline-flex items-center gap-1">
+                <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
+                Gem job
+              </span>
             </button>
           )}
           {descriptionSource && descriptionSource.trim() !== "" && !isOpen && (

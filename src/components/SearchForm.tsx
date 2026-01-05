@@ -1,4 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
+import {
+  MagnifyingGlassIcon,
+  MapPinIcon,
+  TagIcon,
+  CalendarDaysIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
 import type { CityResponse as City } from "../findjobnu-api/models";
 import LocationTypeahead from "./LocationTypeahead";
 import Pikaday from "pikaday";
@@ -182,6 +189,21 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
     setShowCategorySuggestions(false);
   };
 
+  const handleReset = () => {
+    setSearchTerm("");
+    setLocation("");
+    setSelectedCity(null);
+    setCategoryInput("");
+    setSelectedCategoryId(null);
+    setCategorySuggestions([]);
+    setShowCategorySuggestions(false);
+    setActiveCategoryIndex(-1);
+    setPostedAfter("");
+    setPostedBefore("");
+    setSubmitted(false);
+    onSearch({});
+  };
+
   const searchValid = !searchTerm || searchTerm.trim().length >= 2;
   const locationValid = !location || location.trim().length >= 2;
   const postedAfterValid = !postedAfter || isValidDanishDateString(postedAfter);
@@ -257,7 +279,10 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
         <div className={`relative ${inputWidthClass}`}>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="searchTerm">
-              <span className="label-text">Søgeord</span>
+              <span className="label-text inline-flex items-center gap-2">
+                <MagnifyingGlassIcon className="w-4 h-4" aria-hidden="true" />
+                Søgeord
+              </span>
             </label>
             <input
               id="searchTerm"
@@ -274,7 +299,10 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
         </div>
         <div className={`relative ${inputWidthClass}`}>
           <label className="label p-0" htmlFor="locationInput">
-              <span className="label-text">Lokation</span>
+            <span className="label-text inline-flex items-center gap-2">
+              <MapPinIcon className="w-4 h-4" aria-hidden="true" />
+              Lokation
+            </span>
           </label>
           <LocationTypeahead
             value={location}
@@ -298,7 +326,10 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
           <legend className="sr-only">Kategori</legend>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="categoryInput">
-              <span className="label-text">Kategori</span>
+              <span className="label-text inline-flex items-center gap-2">
+                <TagIcon className="w-4 h-4" aria-hidden="true" />
+                Kategori
+              </span>
             </label>
             <input
               id="categoryInput"
@@ -334,7 +365,10 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
         <div className={`flex flex-col gap-2 ${inputWidthClass}`}>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="postedAfter">
-              <span className="label-text">Opslag efter</span>
+              <span className="label-text inline-flex items-center gap-2">
+                <CalendarDaysIcon className="w-4 h-4" aria-hidden="true" />
+                Opslag efter
+              </span>
             </label>
             <input
               id="postedAfter"
@@ -352,7 +386,10 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
           </div>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="postedBefore">
-              <span className="label-text">Opslag før</span>
+              <span className="label-text inline-flex items-center gap-2">
+                <CalendarDaysIcon className="w-4 h-4" aria-hidden="true" />
+                Opslag før
+              </span>
             </label>
             <input
               id="postedBefore"
@@ -369,10 +406,16 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
             />
           </div>
         </div>
-        <button className={`btn btn-primary shadow ${inputWidthClass}`} type="submit">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
-          Søg
-        </button>
+        <div className={`flex gap-2 ${inputWidthClass}`}>
+          <button className="btn btn-secondary-ghost shadow" type="button" onClick={handleReset}>
+            <ArrowPathIcon className="w-4 h-4" aria-hidden="true" />
+            Nulstil
+          </button>
+          <button className="btn btn-primary shadow flex-1" type="submit">
+            <MagnifyingGlassIcon className="w-5 h-5" aria-hidden="true" />
+            Søg
+          </button>
+        </div>
       </fieldset>
     </form>
   );

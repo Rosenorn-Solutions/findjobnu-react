@@ -21,14 +21,14 @@
     "@tailwindcss/vite": "^4.1.10",
     "@testing-library/dom": "^10.4.1",
     "compression": "^1.7.5",
-    "daisyui": "^5.0.43",
+    "daisyui": "^5.5.14",
     "express": "^4.19.2",
     "framer-motion": "^12.23.26",
     "pikaday": "^1.8.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.3",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

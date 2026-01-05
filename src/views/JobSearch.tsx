@@ -6,6 +6,7 @@ import { createApiClient } from "../helpers/ApiFactory";
 import SearchForm, { type CategoryOption } from "../components/SearchForm";
 import JobList from "../components/JobList";
 import RecommendedJobs from "../components/RecommendedJobs";
+import { SparklesIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useUser } from "../context/UserContext.shared";
 import { toDateFromInput } from "../helpers/date";
 import Seo from "../components/Seo";
@@ -47,6 +48,7 @@ const JobSearch: React.FC = () => {
     postedBefore?: string;
   } | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const toggleTooltip = userId ? undefined : "Log ind for at se anbefalede jobs";
 
   const setPanelQueryParam = (panel: "search" | "recommended") => {
     const next = new URLSearchParams(searchParams);
@@ -265,21 +267,29 @@ const JobSearch: React.FC = () => {
             </div>
             <div className="flex flex-col items-center gap-1">
               <div className="flex items-center gap-2 text-xs text-base-content/70">
-                <span>Jobsøgning</span>
+                <span className="inline-flex items-center gap-1">
+                  <MagnifyingGlassIcon className="w-4 h-4" aria-hidden="true" />
+                  Jobsøgning
+                </span>
                 <span>•</span>
-                <span>Anbefalet</span>
+                <span className="inline-flex items-center gap-1">
+                  <SparklesIcon className="w-4 h-4" aria-hidden="true" />
+                  Anbefalet
+                </span>
               </div>
-              <label className="label cursor-pointer gap-2" htmlFor="jobsearch-panel-toggle">
-                <input
-                  id="jobsearch-panel-toggle"
-                  type="checkbox"
-                  className="toggle toggle-primary toggle-sm"
-                  checked={activePanel === "recommended"}
-                  onChange={(e) => (e.target.checked ? switchToRecommended() : switchToSearch())}
-                  disabled={!userId}
-                  aria-label="Skift mellem jobsøgning og anbefalede jobs"
-                />
-              </label>
+              <div className={toggleTooltip ? "tooltip tooltip-left" : undefined} data-tip={toggleTooltip}>
+                <label className="label cursor-pointer gap-2" htmlFor="jobsearch-panel-toggle">
+                  <input
+                    id="jobsearch-panel-toggle"
+                    type="checkbox"
+                    className="toggle toggle-primary toggle-sm"
+                    checked={activePanel === "recommended"}
+                    onChange={(e) => (e.target.checked ? switchToRecommended() : switchToSearch())}
+                    disabled={!userId}
+                    aria-label="Skift mellem jobsøgning og anbefalede jobs"
+                  />
+                </label>
+              </div>
             </div>
           </div>
 
