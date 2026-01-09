@@ -6,9 +6,9 @@ const sections = [
     title: "FindJob.nu",
     links: [
       { label: "Forside", href: "/" },
-      { label: "Arbejdssøgende", href: "/arbejdssogende" },
+      { label: "Værktøjer", href: "/vaerktoejer" },
       { label: "Joboversigt", href: "/jobsearch" },
-      { label: "Mine job", href: "/myjobs" },
+      { label: "Mine job", href: "/profile?panel=savedJobs" },
     ],
   },
   {

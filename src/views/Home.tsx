@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
+	ArrowRightIcon,
 	BookmarkIcon,
 	BellAlertIcon,
 	ChartBarIcon,
 	ChatBubbleLeftRightIcon,
+	CheckCircleIcon,
 	DocumentTextIcon,
 	IdentificationIcon,
 	MagnifyingGlassIcon,
 	PresentationChartLineIcon,
-	UserCircleIcon
+	SparklesIcon,
+	WrenchIcon
 } from "@heroicons/react/24/outline";
 import Seo from "../components/Seo";
 import { JobIndexPostsApi } from "../findjobnu-api";
@@ -60,55 +63,117 @@ const Home: React.FC = () => {
 		to?: string;
 		tag?: string;
 		icon: React.ReactNode;
+		features: string[];
 	}> = [
 		{
 			title: "Jobsøgning",
 			description: "Søg blandt alle danske jobopslag, filtrér på kategori og geografi, og gem dine fund.",
 			to: "/jobsearch",
 			tag: "Ny visning",
-			icon: <MagnifyingGlassIcon className="w-5 h-5" aria-hidden="true" />
+			icon: <MagnifyingGlassIcon className="w-8 h-8" aria-hidden="true" />,
+			features: [
+				"Søg blandt alle danske job",
+				"Filtrér efter kategori og placering",
+				"Gem interessante opslag",
+				"Opdateret dagligt"
+			]
 		},
 		{
-			title: "Arbejdssøgende univers",
+			title: "Anbefalede jobs",
+			description: "Få personlige jobanbefalinger baseret på din profil, kompetencer og erfaring. Jo mere du udfylder, desto bedre bliver matchene.",
+			to: "/jobsearch?panel=recommended",
+			tag: "Personligt",
+			icon: <SparklesIcon className="w-8 h-8" aria-hidden="true" />,
+			features: [
+				"Matcher på dine kompetencer",
+				"Baseret på din profil",
+				"Opdateres automatisk",
+				"Helt gratis at bruge"
+			]
+		},
+		{
+			title: "Værktøjer",
 			description: "Få en samlet indgang til guides, værktøjer og inspiration til din næste ansøgning.",
-			to: "/arbejdssogende",
-			icon: <UserCircleIcon className="w-5 h-5" aria-hidden="true" />
+			to: "/vaerktoejer",
+			icon: <WrenchIcon className="w-8 h-8" aria-hidden="true" />,
+			features: [
+				"CV-analyse og tjek",
+				"Jobsøgningsguides",
+				"Ansøgningstips",
+				"Helt gratis værktøjer"
+			]
 		},
 		{
 			title: "Det gode CV",
 			description: "Læs hvordan du bygger et CV, der bliver set. Følg konkrete eksempler og tjeklister.",
 			to: "/cv",
-			icon: <DocumentTextIcon className="w-5 h-5" aria-hidden="true" />
+			icon: <DocumentTextIcon className="w-8 h-8" aria-hidden="true" />,
+			features: [
+				"Guides og eksempler",
+				"ATS-optimering",
+				"Tjeklister",
+				"Gratis CV-analyse"
+			]
 		},
 		{
 			title: "Profil og kompetencer",
 			description: "Opdatér din profil, tilføj erfaring og færdigheder, og lad os matche dig bedre.",
 			to: "/profile",
-			icon: <IdentificationIcon className="w-5 h-5" aria-hidden="true" />
+			icon: <IdentificationIcon className="w-8 h-8" aria-hidden="true" />,
+			features: [
+				"LinkedIn import",
+				"Kompetencemapping",
+				"Bedre jobanbefalinger",
+				"Synkronisering"
+			]
 		},
 		{
 			title: "Jobagenter",
 			description: "Opsæt og justér dine jobagenter, så nye opslag lander direkte i din indbakke.",
 			to: "/profile?panel=jobAgent",
-			icon: <BellAlertIcon className="w-5 h-5" aria-hidden="true" />
+			icon: <BellAlertIcon className="w-8 h-8" aria-hidden="true" />,
+			features: [
+				"Automatiske notifikationer",
+				"Tilpasbare kriterier",
+				"Daglig eller ugentlig",
+				"Afmeld når du vil"
+			]
 		},
 		{
 			title: "Gemte job",
 			description: "Se og administrér de opslag, du har gemt til senere opfølgning.",
 			to: "/profile?panel=savedJobs",
-			icon: <BookmarkIcon className="w-5 h-5" aria-hidden="true" />
+			icon: <BookmarkIcon className="w-8 h-8" aria-hidden="true" />,
+			features: [
+				"Ubegrænset lagring",
+				"Organisér efter status",
+				"Deadlines og noter",
+				"Synkroniseret på tværs"
+			]
 		},
 		{
 			title: "Support og spørgsmål",
 			description: "Har du feedback eller brug for hjælp? Kontakt os direkte for at få svar.",
 			to: "/contact",
-			icon: <ChatBubbleLeftRightIcon className="w-5 h-5" aria-hidden="true" />
+			icon: <ChatBubbleLeftRightIcon className="w-8 h-8" aria-hidden="true" />,
+			features: [
+				"Hurtig respons",
+				"Dansk support",
+				"Feedback velkommen",
+				"Teknisk hjælp"
+			]
 		},
 		{
 			title: "Jobindsigt",
 			description: "Se et øjebliksbillede af det danske jobmarked med aktive opslag og nye trends.",
 			tag: "Statistik",
-			icon: <PresentationChartLineIcon className="w-5 h-5" aria-hidden="true" />
+			icon: <PresentationChartLineIcon className="w-8 h-8" aria-hidden="true" />,
+			features: [
+				"Aktive jobopslag",
+				"Nye jobs ugentligt",
+				"Mest udbudte kategorier",
+				"Markedstendenser"
+			]
 		}
 	];
 
@@ -166,7 +231,7 @@ const Home: React.FC = () => {
 			/>
 
 			<section className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] items-stretch">
-				<div className="card bg-gradient-to-br from-primary/15 via-base-100 to-secondary/10 shadow-lg border border-primary/20">
+			<div className="card bg-gradient-to-br from-primary/15 via-base-100 to-secondary/10 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
 					<div className="card-body p-8 flex flex-col gap-6">
 						<div className="space-y-3">
 							<p className="text-sm uppercase tracking-[0.2em] text-primary/80 font-semibold">Velkommen til FindJob.nu</p>
@@ -175,7 +240,7 @@ const Home: React.FC = () => {
 						</div>
 						<div className="flex flex-wrap gap-3">
 							<Link to="/jobsearch" className="btn btn-primary btn-lg">Start jobsøgningen</Link>
-							<Link to="/arbejdssogende" className="btn btn-outline btn-secondary btn-lg">Se værktøjer til jobsøgende</Link>
+							<Link to="/vaerktoejer" className="btn btn-outline btn-secondary btn-lg">Se værktøjer til jobsøgende</Link>
 						</div>
 						<div className="grid gap-3 md:grid-cols-3">
 							<Link to="/cv" className="bg-base-100/80 rounded-box p-4 shadow-sm border border-base-200 hover:no-underline focus-visible:outline-none">
@@ -192,7 +257,7 @@ const Home: React.FC = () => {
 								</div>
 								<p className="text-xl font-semibold">Tilpas din profil og få bedre match</p>
 							</Link>
-							<Link to="/myjobs" className="bg-base-100/80 rounded-box p-4 shadow-sm border border-base-200 hover:no-underline focus-visible:outline-none">
+							<Link to="/profile?panel=savedJobs" className="bg-base-100/80 rounded-box p-4 shadow-sm border border-base-200 hover:no-underline focus-visible:outline-none">
 								<div className="flex items-center gap-2 text-sm text-base-content/70">
 									<BookmarkIcon className="w-5 h-5 text-accent" aria-hidden="true" />
 									<span>Gemte job</span>
@@ -203,7 +268,7 @@ const Home: React.FC = () => {
 					</div>
 				</div>
 
-				<div className="card bg-base-100 shadow-lg border border-base-200">
+			<div className="card bg-base-100 shadow-lg border border-base-200 transition-all hover:shadow-xl hover:-translate-y-1">
 					<div className="card-body p-6 flex flex-col gap-4">
 						<div className="flex items-start justify-between gap-4">
 							<div>
@@ -220,7 +285,7 @@ const Home: React.FC = () => {
 								{ label: "Nye job i sidste uge", value: formatNumber(stats?.newJobsLastWeek), icon: <PresentationChartLineIcon className="w-5 h-5 text-secondary" aria-hidden="true" /> },
 								{ label: "Nye job i sidste måned", value: formatNumber(stats?.newJobsLastMonth), icon: <ChartBarIcon className="w-5 h-5 text-accent" aria-hidden="true" /> }
 							].map((item) => (
-								<div key={item.label} className="rounded-box border border-base-200 bg-base-100 p-4 shadow-sm">
+						<div key={item.label} className="rounded-box border border-base-200 bg-base-100 p-4 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
 									<div className="flex items-center gap-2 text-sm text-base-content/60">
 										{item.icon}
 										<span>{item.label}</span>
@@ -284,32 +349,53 @@ const Home: React.FC = () => {
 						<p className="text-base text-base-content/70">Hop direkte til den funktion, der hjælper dig nu – fra jobsøgning og CV til jobagenter.</p>
 					</div>
 				</div>
-					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 					{featureCards.map((card) => {
 						const content = (
-							<div className="h-full flex flex-col gap-3 p-5 rounded-box border border-base-200 bg-base-100 shadow-sm hover:shadow-md transition-shadow">
-									<div className="flex items-center gap-2">
-										<div className="flex items-center justify-center w-10 h-10 rounded-full bg-base-200 text-base-content/80">
-											{card.icon}
-										</div>
-										<h3 className="text-xl font-semibold text-base-content">{card.title}</h3>
-										{card.tag && <span className="badge badge-outline badge-primary">{card.tag}</span>}
+							<div className="card-body">
+								<div className="flex items-start justify-between">
+									<div className="p-3 rounded-lg bg-base-200 text-base-content/80">
+										{card.icon}
+									</div>
+									{card.tag && (
+										<span className="badge badge-outline badge-primary">
+											{card.tag}
+										</span>
+									)}
 								</div>
-								<p className="text-base text-base-content/70 flex-1">{card.description}</p>
-								{card.to ? (
-									<span className="link link-primary font-semibold">Gå til {card.title.toLowerCase()}</span>
-								) : (
-									<span className="text-sm text-base-content/60">Ingen navigation, kun overblik.</span>
+								<h3 className="card-title mt-4">{card.title}</h3>
+								<p className="text-base-content/70">{card.description}</p>
+								<ul className="mt-4 space-y-2">
+									{card.features.map((feature) => (
+										<li key={feature} className="flex items-center gap-2 text-sm text-base-content/80">
+											<CheckCircleIcon className="w-4 h-4 text-success flex-shrink-0" aria-hidden="true" />
+											{feature}
+										</li>
+									))}
+								</ul>
+								{card.to && (
+									<div className="card-actions mt-4">
+										<span className="link link-primary font-medium flex items-center gap-1">
+											Gå til {card.title.toLowerCase()}
+											<ArrowRightIcon className="w-4 h-4" aria-hidden="true" />
+										</span>
+									</div>
 								)}
 							</div>
 						);
 
 						return card.to ? (
-							<Link key={card.title} to={card.to} className="group focus-visible:outline-none">
+							<Link
+								key={card.title}
+								to={card.to}
+								className="card shadow-lg border transition-all hover:shadow-xl hover:-translate-y-1 bg-base-100"
+							>
 								{content}
 							</Link>
 						) : (
-							<div key={card.title}>{content}</div>
+							<div key={card.title} className="card shadow-lg border transition-all hover:shadow-xl hover:-translate-y-1 bg-base-100">
+								{content}
+							</div>
 						);
 					})}
 				</div>

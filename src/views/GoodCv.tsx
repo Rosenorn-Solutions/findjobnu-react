@@ -216,24 +216,26 @@ const GoodCv: React.FC = () => {
                     }
                 ]}
             />
-            <div className="hero bg-base-100 rounded-box shadow-xl mb-10">
-                <div className="hero-content text-center">
-                    <div className="max-w-2xl">
-                        <h1 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-2">
-                            <span>Det gode CV</span>
-                            <DocumentCheckIcon className="w-8 h-8 text-primary" aria-hidden="true" />
+            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+                <div className="hero-content text-center py-12">
+                    <div className="max-w-3xl">
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                            <DocumentCheckIcon className="w-10 h-10 text-primary" aria-hidden="true" />
+                        </div>
+                        <h1 className="text-3xl md:text-4xl font-bold">
+                            Det gode CV
                         </h1>
-                        <p className="text-base-content/70 mt-2">
+                        <p className="text-base-content/70 mt-3 text-lg">
                             Kort, målrettet og let at skimme. Brug tipsene her for at blive kaldt hurtigere til samtale – og for at klare dig bedre i ATS'er (Applicant Tracking System).
                         </p>
-                        <div className="mt-4 flex justify-center gap-2">
-                            <span className="badge badge-primary badge-outline">ATS-venligt</span>
+                        <div className="mt-6 flex justify-center gap-2 flex-wrap">
+                            <span className="badge badge-primary">ATS-venligt</span>
                             <span className="badge badge-secondary badge-outline">Let at læse</span>
                             <span className="badge badge-accent badge-outline">Resultatfokus</span>
                         </div>
 
                         <div className="mt-6 text-left">
-                            <div className="rounded-box border p-4">
+                            <div className="rounded-box p-4">
                                 <h2 className="text-lg font-semibold flex items-center gap-1">
                                     <span>Tjek læsbarheden af dit CV (PDF)</span>
                                     <button
@@ -376,7 +378,7 @@ const GoodCv: React.FC = () => {
                 </div>
             </div>
 
-            <div className="card bg-base-100 shadow-xl">
+            <div className="card bg-base-100 shadow-xl border transition-all hover:shadow-2xl hover:-translate-y-1">
                 <div className="card-body p-6 md:p-8 gap-10">
                     {sections.map((s, i) => (
                         <React.Fragment key={s.title}>

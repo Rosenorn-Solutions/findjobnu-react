@@ -7,13 +7,11 @@ import Login from "./views/Login";
 import Register from "./views/Register";
 import Footer from "./components/Footer";
 import Profile from "./views/Profile";
-import JobSeeker from "./views/JobSeeker";
 import LinkedInAuthHandler from "./views/LinkedInAuthHandler";
 import { checkAndClearExpiredToken } from "./helpers/AuthHelper";
 import { useUser } from "./context/UserContext.shared";
 import { UserProvider } from "./context/UserContext";
 import JobSearch from "./views/JobSearch";
-import MyJobs from "./views/MyJobs";
 import GoodCv from "./views/GoodCv";
 import About from "./views/About";
 import Contact from "./views/Contact";
@@ -96,15 +94,12 @@ const AppWithAuthCheck: React.FC = () => {
             <Route path="/" element={<PageWrapper direction={direction} pathKey={location.pathname}><Home /></PageWrapper>} />
             <Route path="/login" element={<PageWrapper direction={direction} pathKey={location.pathname}><Login /></PageWrapper>} />
             <Route path="/register" element={<PageWrapper direction={direction} pathKey={location.pathname}><Register /></PageWrapper>} />
-            <Route path="/jobseeker" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobSeeker /></PageWrapper>} />
-            <Route path="/arbejdssogende" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobSeeker /></PageWrapper>} />
             <Route path="/profile" element={<PageWrapper direction={direction} pathKey={location.pathname}><Profile /></PageWrapper>} />
             <Route path="/settings" element={<Navigate to="/profile?panel=settings" replace />} />
             <Route path="/profile/linkedin-auth" element={<PageWrapper direction={direction} pathKey={location.pathname}><LinkedInAuthHandler /></PageWrapper>} />
             <Route path="/about" element={<PageWrapper direction={direction} pathKey={location.pathname}><About /></PageWrapper>} />
             <Route path="/contact" element={<PageWrapper direction={direction} pathKey={location.pathname}><Contact /></PageWrapper>} />
             <Route path="/jobsearch" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobSearch /></PageWrapper>} />
-            <Route path="/myjobs" element={<PageWrapper direction={direction} pathKey={location.pathname}><MyJobs /></PageWrapper>} />
             <Route path="/cv" element={<PageWrapper direction={direction} pathKey={location.pathname}><GoodCv /></PageWrapper>} />
             <Route path="/vaerktoejer" element={<PageWrapper direction={direction} pathKey={location.pathname}><Tools /></PageWrapper>} />
             <Route path="/job" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobsByLocation /></PageWrapper>} />

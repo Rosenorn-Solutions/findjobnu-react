@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
         <div className="hidden md:flex items-center gap-6 ml-auto">
             <ul className="flex items-center gap-4 font-medium text-base">
               <li><Link className="link link-hover" to="/jobsearch">Jobsøgning</Link></li>
-              <li><Link className="link link-hover" to="/arbejdssogende">Arbejdssøgende</Link></li>
+              <li><Link className="link link-hover" to="/vaerktoejer">Værktøjer</Link></li>
               <li>
                 <span
                   className="tooltip tooltip-bottom text-base-content/50 cursor-not-allowed"
@@ -98,7 +98,7 @@ const Navbar: React.FC = () => {
           <div className="px-4 py-4 flex flex-col gap-4">
             <ul className="flex flex-col gap-2 font-medium text-base">
               <li><Link className="link" to="/jobsearch" onClick={() => setMobileOpen(false)}>Jobsøgning</Link></li>
-              <li><Link className="link" to="/arbejdssogende" onClick={() => setMobileOpen(false)}>Arbejdssøgende</Link></li>
+              <li><Link className="link" to="/vaerktoejer" onClick={() => setMobileOpen(false)}>Værktøjer</Link></li>
               <li>
                 <span
                   className="tooltip tooltip-right text-base-content/50 cursor-not-allowed"

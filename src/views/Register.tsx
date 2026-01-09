@@ -115,7 +115,7 @@ const Register: React.FC = () => {
   }, [success]);
 
   return (
-    <div className="card max-w-md mx-auto mt-12 p-8 bg-base-100 shadow rounded">
+    <div className="card max-w-md mx-auto mt-12 p-8 bg-base-100 shadow border transition-all hover:shadow-xl hover:-translate-y-1 rounded">
       <Seo
         title="Opret bruger | FindJob.nu"
         description="Opret en konto på FindJob.nu for at gemme jobs, aktivere jobagenter og få personlige anbefalinger."

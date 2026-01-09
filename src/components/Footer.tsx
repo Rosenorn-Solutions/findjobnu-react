@@ -18,7 +18,7 @@ const Footer: React.FC = () => (
           <div className="flex flex-col gap-2">
             <p className="text-base font-semibold text-base-content">Tjenester</p>
             <Link to="/jobsearch" className="link link-hover">Jobsøgning</Link>
-            <Link to="/arbejdssogende" className="link link-hover">Arbejdssøgende</Link>
+            <Link to="/vaerktoejer" className="link link-hover">Værktøjer</Link>
             <Link to="/cv" className="link link-hover">Det gode CV</Link>
             <span className="text-base-content/50 cursor-not-allowed" aria-disabled="true">Arbejdsgiver</span>
           </div>

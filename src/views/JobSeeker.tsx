@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { BriefcaseIcon, CheckCircleIcon, DocumentTextIcon, IdentificationIcon, UserIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import { BriefcaseIcon, DocumentTextIcon, IdentificationIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useUser } from "../context/UserContext.shared";
 import Seo from "../components/Seo";
+import ProfileSetupStatus from "../components/ProfileSetupStatus";
 import { ProfileApi } from "../findjobnu-api";
 import { AuthenticationApi } from "../findjobnu-auth";
 import { createApiClient, createAuthClient } from "../helpers/ApiFactory";
@@ -68,20 +69,6 @@ const JobSeeker: React.FC = () => {
 
     fetchSetupStatus();
   }, [userId, token]);
-
-  const StatusRow: React.FC<{ label: string; done: boolean; hint?: string }> = ({ label, done, hint }) => (
-    <div className="flex items-start gap-3">
-      {done ? (
-        <CheckCircleIcon className="w-5 h-5 text-success mt-0.5" aria-hidden="true" />
-      ) : (
-        <XCircleIcon className="w-5 h-5 text-base-300 mt-0.5" aria-hidden="true" />
-      )}
-      <div>
-        <p className="font-medium">{label}</p>
-        {hint && <p className="text-sm text-base-content/70">{hint}</p>}
-      </div>
-    </div>
-  );
 
   return (
     <div className="container max-w-7xl mx-auto px-4 py-8">
@@ -264,62 +251,7 @@ const JobSeeker: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-base-100 border border-base-200 rounded-2xl p-4 sm:p-5 shadow-inner">
-              {userId ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm text-base-content/70">Status for anbefalinger</p>
-                      <p className="text-lg font-semibold">{setupState.loading ? "Opdaterer..." : "Klar til bedre matches"}</p>
-                    </div>
-                    <span className={`badge ${setupState.hasSkills && setupState.hasTopKeywords ? "badge-success" : ""}`}>
-                      {setupState.hasSkills && setupState.hasTopKeywords ? "Prioriteret" : "Udfyld færdigheder"}
-                    </span>
-                  </div>
-
-                  <div className="space-y-3">
-                    <StatusRow
-                      label="Profil + erfaring/uddannelse/færdigheder"
-                      done={setupState.profileFound && (setupState.hasExperience || setupState.hasEducation || setupState.hasSkills)}
-                      hint="Jo mere du udfylder, desto skarpere matcher vi."
-                    />
-                    <StatusRow
-                      label="Færdigheder og top kompetencer"
-                      done={setupState.hasSkills && setupState.hasTopKeywords}
-                      hint="Dette vægter højest i vores anbefalinger."
-                    />
-                    <StatusRow
-                      label="Jobagent aktiveret"
-                      done={setupState.hasJobAgent}
-                      hint="Holder øje for dig og sender nye match."
-                    />
-                    <StatusRow
-                      label="Forbindelser (LinkedIn)"
-                      done={setupState.hasConnections}
-                      hint="Importér erfaringer og hold profilen opdateret."
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <a className="btn btn-sm btn-primary" href="/profile">Opdatér profil</a>
-                    <a className="btn btn-sm btn-outline" href="/profile?panel=jobAgent">Åbn jobagent</a>
-                    <a className="btn btn-sm btn-outline" href="/profile">Tilføj kompetencer</a>
-                    <a className="btn btn-sm btn-outline" href="/profile?panel=connections">Forbind LinkedIn</a>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4 text-center">
-                  <p className="text-lg font-semibold">Log ind for at se din status</p>
-                  <p className="text-base-content/70">
-                    Opret en konto, udfyld din profil, og kom tilbage for at se hvordan du står for anbefalingerne.
-                  </p>
-                  <div className="flex justify-center gap-3">
-                    <a className="btn btn-primary" href="/register">Opret bruger</a>
-                    <a className="btn btn-outline" href="/login">Log ind</a>
-                  </div>
-                </div>
-              )}
-            </div>
+            <ProfileSetupStatus userId={userId} setupState={setupState} />
           </div>
         </div>
       </div>

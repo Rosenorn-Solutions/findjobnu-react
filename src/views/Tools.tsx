@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
     DocumentTextIcon,
@@ -11,6 +11,12 @@ import {
     CheckCircleIcon
 } from "@heroicons/react/24/outline";
 import Seo from "../components/Seo";
+import ProfileSetupStatus from "../components/ProfileSetupStatus";
+import { useUser } from "../context/UserContext.shared";
+import { ProfileApi } from "../findjobnu-api";
+import { AuthenticationApi } from "../findjobnu-auth";
+import { createApiClient, createAuthClient } from "../helpers/ApiFactory";
+import { mapProfileDtoToProfile } from "../helpers/mappers";
 
 type Tool = {
     title: string;
@@ -90,11 +96,72 @@ const tools: Tool[] = [
             "Tilgængelig på alle enheder"
         ],
         icon: <BookmarkIcon className="w-8 h-8" aria-hidden="true" />,
-        href: "/myjobs"
+        href: "/profile?panel=savedJobs"
     }
 ];
 
 const Tools: React.FC = () => {
+    const { user } = useUser();
+    const userId = user?.userId ?? "";
+    const token = user?.accessToken ?? "";
+
+    const [setupState, setSetupState] = useState({
+        loading: false,
+        profileFound: false,
+        hasExperience: false,
+        hasEducation: false,
+        hasSkills: false,
+        hasTopKeywords: false,
+        hasJobAgent: false,
+        hasConnections: false,
+    });
+
+    useEffect(() => {
+        const fetchSetupStatus = async () => {
+            if (!userId || !token) {
+                setSetupState((prev) => ({ ...prev, loading: false, profileFound: false, hasExperience: false, hasEducation: false, hasSkills: false, hasTopKeywords: false, hasJobAgent: false, hasConnections: false }));
+                return;
+            }
+            setSetupState((prev) => ({ ...prev, loading: true }));
+            try {
+                const profileApi = createApiClient(ProfileApi, token);
+                const profileDto = await profileApi.getProfileByUserId({ userId });
+                const mapped = mapProfileDtoToProfile(profileDto);
+                const hasProfile = Boolean(mapped?.id);
+                const hasExperience = (mapped.experiences?.length ?? 0) > 0;
+                const hasEducation = (mapped.educations?.length ?? 0) > 0;
+                const hasSkills = (mapped.skills?.length ?? 0) > 0;
+                const hasTopKeywords = (mapped.keywords?.length ?? 0) > 0;
+                const hasJobAgent = mapped.hasJobAgent === true;
+
+                let hasConnections = false;
+                try {
+                    const authApi = createAuthClient(AuthenticationApi, token);
+                    const info = await authApi.getUserInformation();
+                    hasConnections = info.userInformation?.hasVerifiedLinkedIn === true;
+                } catch (connectionError) {
+                    console.warn("Could not load connection status", connectionError);
+                }
+
+                setSetupState({
+                    loading: false,
+                    profileFound: hasProfile,
+                    hasExperience,
+                    hasEducation,
+                    hasSkills,
+                    hasTopKeywords,
+                    hasJobAgent,
+                    hasConnections,
+                });
+            } catch (error) {
+                console.warn("Could not load profile status", error);
+                setSetupState((prev) => ({ ...prev, loading: false, profileFound: false }));
+            }
+        };
+
+        fetchSetupStatus();
+    }, [userId, token]);
+
     return (
         <div className="container max-w-7xl mx-auto px-4 py-8">
             <Seo
@@ -173,9 +240,9 @@ const Tools: React.FC = () => {
                 ]}
             />
 
-            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl mb-10">
+            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
                 <div className="hero-content text-center py-12">
-                    <div className="max-w-3xl">
+                    <div className="max-w-6xl w-full">
                         <div className="flex items-center justify-center gap-2 mb-4">
                             <WrenchScrewdriverIcon className="w-10 h-10 text-primary" aria-hidden="true" />
                         </div>
@@ -189,6 +256,10 @@ const Tools: React.FC = () => {
                             <span className="badge badge-primary">100% Gratis</span>
                             <span className="badge badge-secondary badge-outline">Ingen skjulte omkostninger</span>
                             <span className="badge badge-accent badge-outline">Ingen reklamer</span>
+                        </div>
+
+                        <div className="mt-10">
+                            <ProfileSetupStatus userId={userId} setupState={setupState} />
                         </div>
                     </div>
                 </div>
@@ -235,7 +306,7 @@ const Tools: React.FC = () => {
                 ))}
             </div>
 
-            <div className="mt-12 card bg-base-100 shadow-xl border">
+            <div className="mt-12 card bg-base-100 shadow-xl border transition-all hover:shadow-2xl hover:-translate-y-1">
                 <div className="card-body">
                     <div className="grid gap-8 lg:grid-cols-2 items-center">
                         <div>
@@ -283,7 +354,7 @@ const Tools: React.FC = () => {
             <div className="mt-12">
                 <h2 className="text-2xl font-bold mb-6">Ofte stillede spørgsmål</h2>
                 <div className="grid gap-4 md:grid-cols-2">
-                    <div className="collapse collapse-arrow bg-base-100 border rounded-box">
+                    <div className="collapse collapse-arrow bg-base-100 border rounded-box transition-all hover:shadow-xl hover:-translate-y-1">
                         <input type="radio" name="faq-accordion" aria-label="Er værktøjerne virkelig gratis?" defaultChecked />
                         <div className="collapse-title font-medium">
                             Er værktøjerne virkelig gratis?
@@ -292,7 +363,7 @@ const Tools: React.FC = () => {
                             <p>Ja, alle værktøjer er 100% gratis. Der er ingen betalingsmur, ingen premium-version, og ingen skjulte omkostninger.</p>
                         </div>
                     </div>
-                    <div className="collapse collapse-arrow bg-base-100 border rounded-box">
+                    <div className="collapse collapse-arrow bg-base-100 border rounded-box transition-all hover:shadow-xl hover:-translate-y-1">
                         <input type="radio" name="faq-accordion" aria-label="Hvad sker der med mit CV når jeg uploader det?" />
                         <div className="collapse-title font-medium">
                             Hvad sker der med mit CV når jeg uploader det?
@@ -301,7 +372,7 @@ const Tools: React.FC = () => {
                             <p>Dit CV analyseres i realtid og slettes automatisk bagefter. Vi gemmer hverken dokumentet eller dine personlige oplysninger.</p>
                         </div>
                     </div>
-                    <div className="collapse collapse-arrow bg-base-100 border rounded-box">
+                    <div className="collapse collapse-arrow bg-base-100 border rounded-box transition-all hover:shadow-xl hover:-translate-y-1">
                         <input type="radio" name="faq-accordion" aria-label="Hvordan virker jobanbefalingerne?" />
                         <div className="collapse-title font-medium">
                             Hvordan virker jobanbefalingerne?
@@ -310,7 +381,7 @@ const Tools: React.FC = () => {
                             <p>Vi matcher dine færdigheder og erfaringer med jobopslag. Jo mere du udfylder din profil, desto bedre bliver anbefalingerne.</p>
                         </div>
                     </div>
-                    <div className="collapse collapse-arrow bg-base-100 border rounded-box">
+                    <div className="collapse collapse-arrow bg-base-100 border rounded-box transition-all hover:shadow-xl hover:-translate-y-1">
                         <input type="radio" name="faq-accordion" aria-label="Kan jeg afmelde jobagenten?" />
                         <div className="collapse-title font-medium">
                             Kan jeg afmelde jobagenten?

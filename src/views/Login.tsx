@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useUser } from "../context/UserContext.shared";
 import { createAuthClient, createApiClient } from "../helpers/ApiFactory";
 import { AuthenticationApi, type LoginRequest } from "../findjobnu-auth";
@@ -9,6 +10,7 @@ import Seo from "../components/Seo";
 const api = createAuthClient(AuthenticationApi);
 
 const Login: React.FC = () => {
+  const [searchParams] = useSearchParams();
   const [form, setForm] = useState<LoginRequest>({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,9 +45,16 @@ const Login: React.FC = () => {
     }
   };
 
-  const linkedInLoginUrl = useMemo(() => (
-    import.meta.env.VITE_LINKEDIN_LOGIN_URL ?? "https://auth.findjob.nu/api/auth/linkedin/login"
-  ), []);
+  const linkedInLoginUrl = useMemo(() => {
+    const baseUrl = import.meta.env.VITE_LINKEDIN_LOGIN_URL ?? "https://auth.findjob.nu/api/auth/linkedin/login";
+    const redirect = searchParams.get("redirect");
+    if (redirect) {
+      const url = new URL(baseUrl);
+      url.searchParams.set("redirect", redirect);
+      return url.toString();
+    }
+    return baseUrl;
+  }, [searchParams]);
 
   const handleLinkedInLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -87,7 +96,9 @@ const Login: React.FC = () => {
       } catch (e) {
         console.error("Error fetching saved jobs:", e);
       }
-      globalThis.location.href = "/";
+      
+      const redirectTo = searchParams.get("redirect") || "/";
+      globalThis.location.href = redirectTo;
     } catch (err: unknown) {
       setError("Login fejlede. Tjek dine oplysninger.");
       console.log("Login error:", err);
@@ -97,7 +108,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="card max-w-md mx-auto mt-12 p-8 bg-base-100 shadow rounded">
+    <div className="card max-w-md mx-auto mt-12 p-8 bg-base-100 shadow border transition-all hover:shadow-xl hover:-translate-y-1 rounded">
       <Seo
         title="Log ind | FindJob.nu"
         description="Log ind på FindJob.nu for at se dine jobanbefalinger, gemte jobs og profil."

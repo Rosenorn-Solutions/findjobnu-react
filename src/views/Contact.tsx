@@ -15,10 +15,10 @@ import { createNewsletterClient } from "../helpers/ApiFactory";
 
 const contactMethods = [
     {
-        title: "Support til kandidater",
-        description: "Skriv til os, hvis du har spørgsmål til din profil, ansøgninger eller CV-analyse.",
+        title: "Support",
+        description: "Skriv til os, hvis du har spørgsmål til din profil, ansøgninger, CV-analyse, eller oplever problemer.",
         detail: "support@findjob.nu",
-        badge: "Svar inden 24 timer",
+        badge: "Vi bestræber os på at svare inden for to arbejdsdage",
         Icon: ChatBubbleLeftRightIcon,
     },
     {
@@ -108,44 +108,46 @@ const Contact: React.FC = () => {
                     }
                 }}
             />
-            <div className="hero bg-base-100 shadow-xl rounded-box mb-10">
-                <div className="hero-content text-center">
-                    <div className="max-w-2xl">
-                        <h1 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-2">
-                            <span>Kontakt Findjobnu</span>
-                            <EnvelopeIcon className="w-8 h-8 text-primary" aria-hidden="true" />
+            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+                <div className="hero-content text-center py-12">
+                    <div className="max-w-6xl w-full">
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                            <EnvelopeIcon className="w-10 h-10 text-primary" aria-hidden="true" />
+                        </div>
+                        <h1 className="text-3xl md:text-4xl font-bold">
+                            Kontakt Findjobnu
                         </h1>
-                        <p className="text-base-content/70 mt-2">
+                        <p className="text-base-content/70 mt-3 text-lg">
                             Vi er klar til at hjælpe dig – uanset om du søger job, rekrutterer eller bare er nysgerrig. Vælg den kanal der passer dig bedst, så vender vi hurtigt tilbage.
                         </p>
-                        <div className="mt-4 flex justify-center gap-2">
-                            <span className="badge badge-primary badge-outline">Support</span>
+                        <div className="mt-6 flex justify-center gap-2 flex-wrap">
+                            <span className="badge badge-primary">Support</span>
                             <span className="badge badge-secondary badge-outline">Partnerskab</span>
                             <span className="badge badge-accent badge-outline">Feedback</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
+                            {contactMethods.map((method) => (
+                                <div key={method.title} className="">
+                                    <div className="card-body">
+                                        <h2 className="card-title text-2xl flex items-center justify-between gap-3">
+                                            <span>{method.title}</span>
+                                            <method.Icon className="w-7 h-7 text-primary" aria-hidden="true" />
+                                        </h2>
+                                        <p className="text-base-content/70">{method.description}</p>
+                                        <div className="font-semibold text-lg">{method.detail}</div>
+                                        <div className="mt-3">
+                                            <span className="badge badge-outline whitespace-normal h-auto py-2">{method.badge}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-                {contactMethods.map((method) => (
-                    <div key={method.title} className="card bg-base-100 shadow-lg">
-                        <div className="card-body">
-                            <h2 className="card-title text-2xl flex items-center justify-between gap-3">
-                                <span>{method.title}</span>
-                                <method.Icon className="w-7 h-7 text-primary" aria-hidden="true" />
-                            </h2>
-                            <p className="text-base-content/70">{method.description}</p>
-                            <div className="font-semibold text-lg">{method.detail}</div>
-                            <div className="mt-3">
-                                <span className="badge badge-outline">{method.badge}</span>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            <div className="card bg-base-100 shadow-xl mb-10">
+            <div className="card bg-base-100 shadow-xl border transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
                 <div className="card-body p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <figure className="p-6 flex items-center justify-center">
                         <img
@@ -199,10 +201,10 @@ const Contact: React.FC = () => {
                 </div>
             </div>
 
-            <div className="card bg-base-100 shadow-xl">
+            <div className="card bg-base-100 shadow-xl border transition-all hover:shadow-2xl hover:-translate-y-1">
                 <div className="card-body p-6 md:p-8 space-y-8">
                     <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                        <div className="rounded-box border p-6">
+                        <div className="rounded-box shadow-lg border p-6">
                             <h3 className="text-xl font-semibold flex items-center justify-between gap-2">
                                 <span>Hold dig opdateret</span>
                                 <BellAlertIcon className="w-6 h-6 text-primary" aria-hidden="true" />

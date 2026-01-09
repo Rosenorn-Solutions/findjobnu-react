@@ -269,7 +269,7 @@ const JobSearch: React.FC = () => {
         </div>
 
         <div className="order-1 lg:order-2 shrink-0 w-full lg:w-72 max-w-xs self-start flex flex-col gap-4">
-          <div className="bg-base-100/95 border border-base-200 rounded-box shadow-sm p-3 flex items-center justify-between gap-3">
+          <div className="card bg-base-100 border border-base-content shadow-xl rounded-box transition-all hover:shadow-2xl hover:-translate-y-1 p-3 flex items-center justify-between gap-3">
             <div className="flex flex-col text-sm text-base-content/80">
               <span className="font-semibold">Anbefalede jobs</span>
               <span className="text-xs text-base-content/60">Slå til for at se anbefalinger</span>
@@ -303,7 +303,7 @@ const JobSearch: React.FC = () => {
           </div>
 
           <div className="lg:sticky lg:top-24 w-full lg:w-72 max-w-xs">
-            <div className="card bg-base-100 shadow-xl w-full lg:w-72 max-w-xs">
+            <div className="card border bg-base-100 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 w-full lg:w-72 max-w-xs">
               <div className="p-4">
                 <SearchForm
                   key={`search-form-${formKey}-${activePanel}`}

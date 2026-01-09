@@ -113,7 +113,7 @@ const Profile: React.FC = () => {
         noIndex
       />
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 pb-8 items-start">
-        <aside className="card bg-base-100 shadow-sm self-start">
+        <aside className="card bg-base-100 shadow-sm border transition-all hover:shadow-xl hover:-translate-y-1 self-start">
           <div className="card-body p-4">
             <h2 className="card-title text-lg mb-2">Min profil</h2>
             <div className="flex flex-col gap-2" aria-label="Profil navigation">
@@ -136,7 +136,7 @@ const Profile: React.FC = () => {
           </div>
         </aside>
 
-        <section className="card bg-base-100 shadow-sm">
+        <section className="card bg-base-100 shadow-sm border transition-all hover:shadow-xl hover:-translate-y-1">
           <div
             className="card-body p-0 sm:p-4 lg:p-6 transition-opacity duration-200"
             key={activePanel}

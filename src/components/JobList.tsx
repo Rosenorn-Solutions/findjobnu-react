@@ -294,7 +294,7 @@ const JobList: React.FC<Props> = ({
     const safeJobUrl = sanitizeExternalUrl(job.jobUrl ?? undefined);
 
     return (
-      <div key={safeJobId ?? idx} className="card bg-base-100 shadow-xl space-y-3 p-4" data-testid="job-card">
+      <div key={safeJobId ?? idx} className="card bg-base-100 shadow-xl space-y-3 p-4 transition-all border hover:shadow-2xl hover:-translate-y-1" data-testid="job-card">
         <div className="flex justify-between items-start border-b my-2 p-1">
           <div className="flex-1">
             <h2 className="text-lg font-semibold text-gray-900 leading-snug">{job.title ?? "(Ingen titel)"}</h2>
