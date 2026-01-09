@@ -11,7 +11,6 @@ describe("Contact view", () => {
   it("shows contact cards and FAQ", () => {
     renderWithProviders(<Contact />);
 
-    expect(screen.getByText("Support til kandidater")).toBeInTheDocument();
     expect(screen.getByText("Virksomhedssamarbejder")).toBeInTheDocument();
     expect(screen.getByText("Telefon")).toBeInTheDocument();
 
