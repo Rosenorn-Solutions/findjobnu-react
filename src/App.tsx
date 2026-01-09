@@ -21,6 +21,8 @@ import PrivacyPolicy from "./views/PrivacyPolicy";
 import CookieInformation from "./views/CookieInformation";
 import Sitemap from "./views/Sitemap";
 import NotFound from "./views/NotFound";
+import JobsByLocation from "./views/JobsByLocation";
+import Tools from "./views/Tools";
 
 const App: React.FC = () => {
   return (
@@ -104,6 +106,9 @@ const AppWithAuthCheck: React.FC = () => {
             <Route path="/jobsearch" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobSearch /></PageWrapper>} />
             <Route path="/myjobs" element={<PageWrapper direction={direction} pathKey={location.pathname}><MyJobs /></PageWrapper>} />
             <Route path="/cv" element={<PageWrapper direction={direction} pathKey={location.pathname}><GoodCv /></PageWrapper>} />
+            <Route path="/vaerktoejer" element={<PageWrapper direction={direction} pathKey={location.pathname}><Tools /></PageWrapper>} />
+            <Route path="/job" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobsByLocation /></PageWrapper>} />
+            <Route path="/job/:city" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobsByLocation /></PageWrapper>} />
             <Route path="/privatlivspolitik" element={<PageWrapper direction={direction} pathKey={location.pathname}><PrivacyPolicy /></PageWrapper>} />
             <Route path="/cookie-information" element={<PageWrapper direction={direction} pathKey={location.pathname}><CookieInformation /></PageWrapper>} />
             <Route path="/sitemap" element={<PageWrapper direction={direction} pathKey={location.pathname}><Sitemap /></PageWrapper>} />

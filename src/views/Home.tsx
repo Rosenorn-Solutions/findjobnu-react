@@ -117,20 +117,52 @@ const Home: React.FC = () => {
 	return (
 		<div className="max-w-7xl w-full mx-auto px-4 pb-12">
 			<Seo
-				title="FindJob.nu – Din indgang til jobsøgning i Danmark"
-				description="Få overblik over jobsøgning, CV-råd, profiler og statistik på FindJob.nu. Start med jobsøgningen, eller dyk ned i guides og værktøjer."
+				title="FindJob.nu – Gratis jobsøgning, CV-tjek og jobanbefalinger i Danmark"
+				description="Find dit næste job med gratis CV-analyse, personlige jobanbefalinger og jobagenter. Søg blandt tusindvis af danske stillinger."
 				path="/"
-				jsonLd={{
-					"@context": "https://schema.org",
-					"@type": "WebSite",
-					name: "FindJob.nu",
-					url: "https://findjob.nu/",
-					potentialAction: {
-						"@type": "SearchAction",
-						target: "https://findjob.nu/jobsearch?searchTerm={search_term_string}",
-						"query-input": "required name=search_term_string"
+				jsonLd={[
+					{
+						"@context": "https://schema.org",
+						"@type": "WebSite",
+						name: "FindJob.nu",
+						url: "https://findjob.nu/",
+						description: "Gratis jobsøgning, CV-analyse og jobanbefalinger i Danmark",
+						potentialAction: {
+							"@type": "SearchAction",
+							target: {
+								"@type": "EntryPoint",
+								urlTemplate: "https://findjob.nu/jobsearch?searchTerm={search_term_string}"
+							},
+							"query-input": "required name=search_term_string"
+						}
+					},
+					{
+						"@context": "https://schema.org",
+						"@type": "Organization",
+						name: "FindJob.nu",
+						url: "https://findjob.nu",
+						logo: "https://findjob.nu/logo.png",
+						sameAs: [],
+						contactPoint: {
+							"@type": "ContactPoint",
+							contactType: "customer service",
+							url: "https://findjob.nu/contact"
+						}
+					},
+					{
+						"@context": "https://schema.org",
+						"@type": "SoftwareApplication",
+						name: "FindJob.nu",
+						applicationCategory: "BusinessApplication",
+						operatingSystem: "Web",
+						offers: {
+							"@type": "Offer",
+							price: "0",
+							priceCurrency: "DKK"
+						},
+						description: "Gratis jobsøgning med CV-analyse, personlige jobanbefalinger og jobagenter"
 					}
-				}}
+				]}
 			/>
 
 			<section className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] items-stretch">

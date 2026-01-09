@@ -206,8 +206,8 @@ const JobSearch: React.FC = () => {
   return (
     <div className="container max-w-7xl mx-auto px-4">
       <Seo
-        title="Jobsøgning – Find relevante jobopslag | FindJob.nu"
-        description="Filtrér efter nøgleord, kategori og geografi. Opret jobagenter og se de nyeste danske jobopslag samlet ét sted."
+        title="Jobsøgning – Søg i 1000+ danske jobopslag | FindJob.nu"
+        description="Find dit næste job blandt tusindvis af aktuelle stillinger. Filtrér på branche, lokation og jobtitel. Gratis at bruge."
         path="/jobsearch"
         jsonLd={[
           {
@@ -215,7 +215,16 @@ const JobSearch: React.FC = () => {
             "@type": "WebPage",
             name: "Jobsøgning",
             url: "https://findjob.nu/jobsearch",
-            description: "Filtrér efter nøgleord, kategori og geografi på FindJob.nu",
+            description: "Søg blandt danske jobopslag, filtrér på kategori og geografi.",
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "SearchAction",
+            target: {
+              "@type": "EntryPoint",
+              urlTemplate: "https://findjob.nu/jobsearch?searchTerm={search_term}"
+            },
+            "query-input": "required name=search_term"
           },
           {
             "@context": "https://schema.org",

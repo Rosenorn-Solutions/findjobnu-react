@@ -107,16 +107,94 @@ const GoodCv: React.FC = () => {
     return (
         <div className="container max-w-7xl mx-auto px-4 py-8">
             <Seo
-                title="Det gode CV – ATS-venlig guide og PDF-tjek | FindJob.nu"
-                description="Få tips til et skarpt CV og test din PDF for læsbarhed, nøgleord og struktur, så du klarer dig bedre i ATS."
+                title="Gratis CV-tjek og ATS-guide 2026 – Få din PDF analyseret | FindJob.nu"
+                description="Upload dit CV og få gratis læsbarheds-score, ATS-tjek og konkrete tips. Lær hvordan du skriver et CV der bliver set af rekrutterere."
                 path="/cv"
                 jsonLd={[
                     {
                         "@context": "https://schema.org",
-                        "@type": "WebPage",
-                        name: "Det gode CV",
-                        url: "https://findjob.nu/cv",
-                        description: "Guide til ATS-venligt CV og PDF-analyse på FindJob.nu",
+                        "@type": "Article",
+                        headline: "Det gode CV – Sådan skriver du et ATS-venligt CV",
+                        description: "Komplet guide til at skrive et CV der scorer højt i Applicant Tracking Systems og bliver læst af rekrutterere.",
+                        author: {
+                            "@type": "Organization",
+                            name: "FindJob.nu"
+                        },
+                        publisher: {
+                            "@type": "Organization",
+                            name: "FindJob.nu",
+                            url: "https://findjob.nu"
+                        },
+                        mainEntityOfPage: "https://findjob.nu/cv",
+                        datePublished: "2024-01-01",
+                        dateModified: "2026-01-09"
+                    },
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "HowTo",
+                        name: "Sådan skriver du et ATS-venligt CV",
+                        description: "Trin-for-trin guide til at skrive et CV der klarer sig godt i ATS-systemer og fanger rekruttereres opmærksomhed.",
+                        totalTime: "PT30M",
+                        tool: [
+                            { "@type": "HowToTool", name: "PDF-editor eller Word" },
+                            { "@type": "HowToTool", name: "FindJob.nu CV-analyse" }
+                        ],
+                        step: [
+                            {
+                                "@type": "HowToStep",
+                                name: "Gør det klart, kort og målrettet",
+                                text: "Brug en enkel, letlæselig struktur med tydelige sektioner. Fremhæv resultater frem for opgaver.",
+                                position: 1
+                            },
+                            {
+                                "@type": "HowToStep",
+                                name: "Optimer den øverste tredjedel",
+                                text: "Læg dit stærkeste budskab øverst: en skarp profilsætning og dine vigtigste kompetencer.",
+                                position: 2
+                            },
+                            {
+                                "@type": "HowToStep",
+                                name: "Finpuds læsbarhed og troværdighed",
+                                text: "Brug konsistent formatering, undgå stavefejl, og gem som PDF med læsevenlige skrifter.",
+                                position: 3
+                            },
+                            {
+                                "@type": "HowToStep",
+                                name: "Test dit CV med vores gratis analyse",
+                                text: "Upload din PDF og få en læsbarhedsscore samt konkrete forbedringsforslag.",
+                                position: 4
+                            }
+                        ]
+                    },
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "FAQPage",
+                        mainEntity: [
+                            {
+                                "@type": "Question",
+                                name: "Hvad er et ATS-venligt CV?",
+                                acceptedAnswer: {
+                                    "@type": "Answer",
+                                    text: "Et ATS-venligt CV er formateret så Applicant Tracking Systems kan læse og parse indholdet korrekt. Det betyder klar struktur, standard sektioner, og relevante nøgleord."
+                                }
+                            },
+                            {
+                                "@type": "Question",
+                                name: "Hvordan tester jeg om mit CV er ATS-venligt?",
+                                acceptedAnswer: {
+                                    "@type": "Answer",
+                                    text: "Upload dit CV som PDF på FindJob.nu og få en gratis læsbarheds-analyse med score og konkrete forbedringsforslag."
+                                }
+                            },
+                            {
+                                "@type": "Question",
+                                name: "Hvor langt skal et CV være?",
+                                acceptedAnswer: {
+                                    "@type": "Answer",
+                                    text: "Et CV bør typisk være 1-2 sider. Fokuser på de mest relevante erfaringer og kompetencer for den stilling du søger."
+                                }
+                            }
+                        ]
                     },
                     {
                         "@context": "https://schema.org",
@@ -131,7 +209,7 @@ const GoodCv: React.FC = () => {
                             {
                                 "@type": "ListItem",
                                 position: 2,
-                                name: "Det gode CV",
+                                name: "Gratis CV-tjek",
                                 item: "https://findjob.nu/cv"
                             }
                         ]

@@ -86,17 +86,90 @@ const JobSeeker: React.FC = () => {
   return (
     <div className="container max-w-7xl mx-auto px-4 py-8">
       <Seo
-        title="Arbejdssøgende – Værktøjer til CV, profil og jobagent | FindJob.nu"
-        description="Få bedre matches, optimer dit CV til ATS, og aktiver jobagenter der finder relevante stillinger for dig."
+        title="Gratis jobsøgningsværktøjer 2026 – CV-tjek, profil og jobagent | FindJob.nu"
+        description="Få gratis CV-analyse, personlige jobanbefalinger og automatiske jobagenter. Alt hvad du skal bruge for at finde dit næste job."
         path="/arbejdssogende"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Forside", item: "https://findjob.nu/" },
-            { "@type": "ListItem", position: 2, name: "Arbejdssøgende", item: "https://findjob.nu/arbejdssogende" }
-          ]
-        }}
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: "Værktøjer til arbejdssøgende",
+            description: "Gratis jobsøgningsværktøjer: CV-analyse, profil-matching og jobagenter",
+            url: "https://findjob.nu/arbejdssogende",
+            mainEntity: {
+              "@type": "ItemList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Gratis CV-analyse",
+                  description: "Upload dit CV og få en læsbarhedsscore og ATS-tjek",
+                  url: "https://findjob.nu/cv"
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "Profil og anbefalinger",
+                  description: "Opret din profil og få personlige jobanbefalinger",
+                  url: "https://findjob.nu/profile"
+                },
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: "Jobagent",
+                  description: "Få besked når nye relevante job bliver opslået",
+                  url: "https://findjob.nu/profile?panel=jobAgent"
+                }
+              ]
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Hvordan får jeg personlige jobanbefalinger?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Opret en gratis profil på FindJob.nu og tilføj dine færdigheder og top kompetencer. Jo mere du udfylder, desto bedre matcher vi dig med relevante job."
+                }
+              },
+              {
+                "@type": "Question",
+                name: "Hvad er en jobagent?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "En jobagent holder automatisk øje med nye jobopslag der matcher dine præferencer og sender dig besked, så du kan reagere hurtigt på relevante stillinger."
+                }
+              },
+              {
+                "@type": "Question",
+                name: "Koster det noget at bruge FindJob.nu?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Nej, alle vores værktøjer er gratis at bruge. Du kan lave CV-tjek, oprette profil, få jobanbefalinger og aktivere jobagenter uden at betale."
+                }
+              },
+              {
+                "@type": "Question",
+                name: "Hvordan finder man job uden erfaring?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Fokuser på dine færdigheder, uddannelse og projekter i dit CV. Brug vores CV-guide til at fremhæve dine styrker, og søg på junior-stillinger eller trainee-programmer."
+                }
+              }
+            ]
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Forside", item: "https://findjob.nu/" },
+              { "@type": "ListItem", position: 2, name: "Værktøjer til arbejdssøgende", item: "https://findjob.nu/arbejdssogende" }
+            ]
+          }
+        ]}
       />
       <div className="hero bg-base-100 rounded-box shadow-xl mb-10">
         <div className="hero-content text-center">
