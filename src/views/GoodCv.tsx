@@ -32,11 +32,14 @@ const sections: Section[] = [
     {
         title: "Gør det klart, kort og målrettet",
         text:
-            "Brug en enkel, letlæselig struktur med tydelige sektioner (Profil, Erfaring, Uddannelse, Kompetencer). Fremhæv resultater og effekt frem for opgaver, og målret nøgleord til det specifikke job.",
+            "Brug en enkel, letlæselig struktur med tydelige sektioner (Profil, Erfaring, Uddannelse, Kompetencer). Fremhæv resultater og effekt frem for opgaver, og målret nøgleord til det specifikke job. Et godt CV er ikke en jobbeskrivelse – det er et salgsværktøj, der demonstrerer din værdi gennem konkrete resultater. Tænk på hver sektion som en mulighed for at vise, hvordan du har gjort en forskel i tidligere stillinger. ATS-systemer (Applicant Tracking Systems) scanner efter nøgleord fra jobopslaget, så vær sikker på at inkludere relevante termer naturligt i din tekst. Samtidig skal CV'et være så læsevenligt for mennesker, at en rekrutterer kan forstå din værdi på under 30 sekunder.",
         bullets: [
-            "Brug handleverber og kvantificér effekten (fx ‘Øgede konvertering med 18%’)",
-            "Undgå tekstvægge – brug punktopstilling (4–6 pr. rolle)",
-            "Tilpas til hver ansøgning for bedre ATS-match",
+            "Brug handleverber og kvantificér effekten (fx 'Øgede konvertering med 18%', 'Reducerede omkostninger med 250.000 kr årligt', 'Ledede team på 8 udviklere')",
+            "Undgå tekstvægge – brug punktopstilling (4–6 pr. rolle) og hold hver linje til max 1-2 linjer",
+            "Tilpas til hver ansøgning for bedre ATS-match – spejl nøgleord fra jobopslaget, men vær autentisk",
+            "Start hver bullet med et stærkt handelsverbum: 'Implementerede', 'Optimerede', 'Udviklede', 'Ledede', 'Analyserede'",
+            "Prioritér de seneste 10 års erfaring – ældre roller kan nævnes kort eller udelades",
+            "Brug tal og procenter hvor muligt – konkrete resultater skiller sig ud",
         ],
         image: illuFileSearch,
         imageAlt: "Screening af CV'er illustration",
@@ -46,11 +49,15 @@ const sections: Section[] = [
     {
         title: "Lad den øverste tredjedel gøre arbejdet",
         text:
-            "Rekrutterere skimmer. Læg dit stærkeste budskab øverst: en skarp profilsætning, dine 3–5 vigtigste kompetencer og seneste stilling. Hold kontaktinfo kort og professionel (mail, telefon, LinkedIn).",
+            "Rekrutterere skimmer. Læg dit stærkeste budskab øverst: en skarp profilsætning, dine 3–5 vigtigste kompetencer og seneste stilling. Hold kontaktinfo kort og professionel (mail, telefon, LinkedIn). Undersøgelser viser, at rekrutterere i gennemsnit bruger 6-7 sekunder på første gennemlæsning af et CV. Derfor er de øverste 5-8 cm af din første side kritisk – det er her du skal fange opmærksomheden. Din profilsætning skal være målrettet den specifikke stilling og branche, ikke en generisk beskrivelse. Tænk på det som dit 'elevator pitch' på skrift. Kompetencesektionen skal liste hårde færdigheder først (tekniske skills, programmer, certifikationer), da disse ofte er ATS-søgekriterier. Kontaktinfo skal være opdateret og professionel – undgå uprofessionelle emailadresser eller forældede telefonnumre.",
         bullets: [
-            "Skriv en 2–3 linjers profil, der matcher jobbet",
-            "Indsæt relevante nøgleord naturligt",
-            "Link til portfolio/GitHub når relevant",
+            "Skriv en 2–3 linjers profil, der matcher jobbet præcist og fremhæver din unikke værdi",
+            "Indsæt relevante nøgleord naturligt i profilsætningen – både tekniske skills og soft skills fra jobopslaget",
+            "Link til portfolio/GitHub når relevant – især vigtigt for kreative og tekniske roller",
+            "Placer dine stærkeste kompetencer øverst i synligt format – overvej en 'Nøglekompetencer'-sektion",
+            "Brug LinkedIn URL (custom URL er mest professionelt) frem for fulde sociale medier profiler",
+            "Undgå unødvendige detaljer som alder, civilstand, eller billede (medmindre branchekrav)",
+            "Gør din seneste stillingsbeskrivelse ekstra stærk – det er ofte det første, rekrutterere læser grundigt",
         ],
         image: illuCertification,
         imageAlt: "Profil og nøgleord illustration",
@@ -60,11 +67,16 @@ const sections: Section[] = [
     {
         title: "Finpuds læsbarhed og troværdighed",
         text:
-            "Konsistens skaber tillid. Brug samme tid, datoformat og opstilling. Undgå buzzwords, klichéer og stavefejl. Gem som PDF med læsevenlige skrifter og god kontrast.",
+            "Konsistens skaber tillid. Brug samme tid, datoformat og opstilling gennem hele CV'et. Undgå buzzwords, klichéer og stavefejl. Gem som PDF med læsevenlige skrifter og god kontrast. Et professionelt CV handler ikke kun om indhold, men også om præsentation. Små inkonsistenser i formatering får rekrutterere til at tvivle på din omhu og professionalisme. Stavefejl er dealbreakers – de signalerer manglende grundighed. Brug moderne, professionelle skrifter som Calibri, Arial, eller Helvetica i stedet for forældede valg som Times New Roman eller Comic Sans. God kontrast mellem tekst og baggrund er essentiel både for læsbarhed og ATS-kompatibilitet. PDF-format sikrer, at dit layout ser identisk ud på alle enheder og ikke bliver ødelagt af forskellige Word-versioner eller operativsystemer.",
         bullets: [
-            "Hold dig til én skrifttype og konsekvent spacing",
-            "Foretræk omvendt kronologisk rækkefølge",
-            "Korrekturlæs – små fejl kan koste samtalen",
+            "Hold dig til én skrifttype og konsekvent spacing – samme fontstørrelse for alle headers på samme niveau",
+            "Foretræk omvendt kronologisk rækkefølge – seneste først, både for jobs og uddannelse",
+            "Korrekturlæs – små fejl kan koste samtalen. Brug både spellcheck og få en anden til at læse det",
+            "Brug konsekvent datoformat gennem hele dokumentet (fx 'Jan 2023 - Dec 2024' eller '01/2023 - 12/2024')",
+            "Sørg for ensartet brug af store/små bogstaver i overskrifter og stillingstitler",
+            "Undgå klichéer som 'teamplayer', 'passioneret', 'detaljeorienteret' – vis det i stedet gennem eksempler",
+            "Hold marginer mellem 1,5-2,5 cm for optimal læsbarhed og professionelt udseende",
+            "Test PDF'en på forskellige enheder for at sikre, at al tekst er læselig og formatering holder",
         ],
         image: illuPersonalInformation,
         imageAlt: "Kvalitet og konsistens illustration",
@@ -234,9 +246,9 @@ const GoodCv: React.FC = () => {
                             <span className="badge badge-accent badge-outline">Resultatfokus</span>
                         </div>
 
-                        <div className="mt-6 text-left">
+                        <div className="mt-6 text-center">
                             <div className="rounded-box p-4">
-                                <h2 className="text-lg font-semibold flex items-center gap-1">
+                                <h2 className="text-lg font-semibold flex items-center justify-center gap-1">
                                     <span>Tjek læsbarheden af dit CV (PDF)</span>
                                     <button
                                         type="button"
@@ -250,24 +262,26 @@ const GoodCv: React.FC = () => {
                                         />
                                     </button>
                                 </h2>
-                                <div className="mt-3 flex flex-col md:flex-row md:items-center gap-3">
+                                <div className="mt-3 flex flex-col md:flex-row md:items-center md:justify-center gap-3">
                                     <div className="form-control w-full md:w-auto">
-                                        <span className="text-sm font-medium mb-1 block">Upload CV som PDF</span>
-                                        <input
-                                            id="goodCvFileInput"
-                                            type="file"
-                                            accept="application/pdf"
-                                            className="file-input file-input-bordered w-full md:w-auto"
-                                            onChange={onFileChange}
-                                            aria-label="Upload CV som PDF"
-                                        />
-                                        <button
-                                        className="btn btn-primary ml-5"
-                                        onClick={onAnalyze}
-                                        disabled={!file || analyzing}
-                                    >
-                                        {analyzing ? "Analyserer…" : "Analyser CV"}
-                                    </button>
+                                        <span className="text-sm font-medium mb-1 block text-center">Upload CV som PDF</span>
+                                        <div className="flex flex-col md:flex-row gap-3 items-center justify-center">
+                                            <input
+                                                id="goodCvFileInput"
+                                                type="file"
+                                                accept="application/pdf"
+                                                className="file-input file-input-bordered w-full md:w-auto"
+                                                onChange={onFileChange}
+                                                aria-label="Upload CV som PDF"
+                                            />
+                                            <button
+                                                className="btn btn-primary"
+                                                onClick={onAnalyze}
+                                                disabled={!file || analyzing}
+                                            >
+                                                {analyzing ? "Analyserer…" : "Analyser CV"}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
