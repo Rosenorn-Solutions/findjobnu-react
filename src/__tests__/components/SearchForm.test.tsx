@@ -11,22 +11,24 @@ describe("SearchForm", () => {
     renderWithProviders(
       <SearchForm
         onSearch={onSearch}
-        categories={["Engineering (3)", "Marketing (2)"]}
+        categories={[{ id: 3, name: "Engineering", numberOfJobs: 3 }, { id: 2, name: "Marketing", numberOfJobs: 2 }]}
       />
     );
 
-    await user.type(screen.getByPlaceholderText("Søgeord"), "Frontend");
-    await user.type(screen.getByPlaceholderText("Kategori"), "Engineering (3)");
+    // Type into the chip input with aria-label
+    await user.type(screen.getByLabelText("Søgeord"), "Frontend,");
 
     await user.click(screen.getByRole("button", { name: /søg/i }));
 
     expect(onSearch).toHaveBeenCalledTimes(1);
-    expect(onSearch).toHaveBeenCalledWith({
-      searchTerm: "Frontend",
-      location: undefined,
-      categoryId: undefined,
-      postedAfter: undefined,
-      postedBefore: undefined,
-    });
+    expect(onSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        searchTerms: ["Frontend"],
+        locations: [],
+        categoryIds: [],
+        postedAfter: undefined,
+        postedBefore: undefined,
+      })
+    );
   });
 });

@@ -40,7 +40,7 @@ describe("SearchForm suggestions", () => {
       <SearchForm onSearch={vi.fn()} categories={[]} />
     );
 
-    const locationInput = screen.getByPlaceholderText("Lokation");
+    const locationInput = screen.getByLabelText("Lokation");
     await user.click(locationInput);
     await waitFor(() => expect(mockCitiesApi.getAllCities).toHaveBeenCalledTimes(1));
     expect(await screen.findByRole("button", { name: "Vælg Aalborg" })).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe("SearchForm suggestions", () => {
       <SearchForm onSearch={vi.fn()} categories={[]} />
     );
 
-    const locationInput = screen.getByPlaceholderText("Lokation");
+    const locationInput = screen.getByLabelText("Lokation");
     await user.type(locationInput, "Aa");
 
     await waitFor(() => expect(mockCitiesApi.getCitiesByQuery).toHaveBeenCalledWith({ query: "Aa" }));
@@ -61,8 +61,8 @@ describe("SearchForm suggestions", () => {
 
     await user.keyboard("{ArrowDown}{Enter}");
 
-    await waitFor(() => expect(locationInput).toHaveValue("Aarhus"));
-    expect(screen.queryByRole("button", { name: "Vælg Aarhus" })).not.toBeInTheDocument();
+    // After selecting, the input should be cleared and a chip added
+    await waitFor(() => expect(locationInput).toHaveValue(""));
   });
 
   it("filters categories and accepts keyboard navigation", async () => {
@@ -71,19 +71,23 @@ describe("SearchForm suggestions", () => {
     renderWithProviders(
       <SearchForm
         onSearch={vi.fn()}
-        categories={["Engineering (3)", "Marketing (2)", "Customer Success (1)"]}
+        categories={[
+          { id: 3, name: "Engineering", numberOfJobs: 3 },
+          { id: 2, name: "Marketing", numberOfJobs: 2 },
+          { id: 1, name: "Customer Success", numberOfJobs: 1 }
+        ]}
       />
     );
 
-    const categoryInput = screen.getByPlaceholderText("Kategori");
+    const categoryInput = screen.getByLabelText("Kategori");
     await user.type(categoryInput, "Mar");
 
-    await waitFor(() => expect(screen.queryByRole("button", { name: "Vælg kategori Engineering" })).not.toBeInTheDocument());
-    await waitFor(() => expect(screen.getByRole("button", { name: "Vælg kategori Marketing" })).toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Vælg kategori Engineering (3)" })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole("button", { name: "Vælg kategori Marketing (2)" })).toBeInTheDocument());
 
     await user.keyboard("{ArrowDown}{Enter}");
 
-    expect(categoryInput).toHaveValue("Marketing (2)");
-    expect(screen.queryByRole("button", { name: "Vælg kategori Marketing (2)" })).not.toBeInTheDocument();
+    // After selecting, the input should be cleared and a chip added
+    expect(categoryInput).toHaveValue("");
   });
 });

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 export interface ChipItem {
@@ -88,6 +88,7 @@ const ChipInput: React.FC<Props> = ({
       setShowSuggestions(true);
       setActiveIndex(-1);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [chips, onChipsChange]
   );
 
@@ -181,7 +182,7 @@ const ChipInput: React.FC<Props> = ({
   };
 
   const highlightText = (text: string, query: string) => {
-    if (!highlightMatch || !query) return text;
+    if (!highlightMatch || !query || !text) return text || "";
     const lower = text.toLowerCase();
     const q = query.toLowerCase();
     const idx = lower.indexOf(q);
@@ -252,6 +253,7 @@ const ChipInput: React.FC<Props> = ({
             <li key={item.id}>
               <button
                 type="button"
+                aria-label={`Vælg kategori ${item.label}`}
                 className={`w-full text-left px-3 py-2 text-sm ${
                   idx === activeIndex
                     ? "bg-primary text-primary-content"

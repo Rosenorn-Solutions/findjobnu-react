@@ -28,8 +28,9 @@ type SearchParams = {
 export type CategoryOption = {
   id?: number;
   name: string;
-  label: string;
+  label?: string;
   count?: number;
+  numberOfJobs?: number;
 };
 
 type CategoryInput = CategoryOption | string;
@@ -49,7 +50,6 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
   
   // Category typeahead state
   const [categoryInputValue, setCategoryInputValue] = useState("");
-  const [categorySuggestions, setCategorySuggestions] = useState<CategoryOption[]>([]);
   
   // Date pickers
   const [postedAfter, setPostedAfter] = useState("");
@@ -72,7 +72,11 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
         const name = normalizeCategoryValue(c);
         return { id: undefined, name, label: c, count };
       }
-      return c;
+      // Ensure label is set for object categories
+      return {
+        ...c,
+        label: c.label ?? `${c.name}${c.numberOfJobs ?? c.count ? ` (${c.numberOfJobs ?? c.count})` : ""}`,
+      };
     });
   }, [categories]);
 
@@ -80,11 +84,16 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
   const categorySuggestionItems = React.useMemo<ChipItem[]>(() => {
     const query = categoryInputValue.toLowerCase();
     return normalizedCategories
-      .filter(c => !query || c.name.toLowerCase().includes(query) || c.label.toLowerCase().includes(query))
+      .filter(c => {
+        if (!query) return true;
+        const name = c.name?.toLowerCase() ?? "";
+        const label = c.label?.toLowerCase() ?? "";
+        return name.includes(query) || label.includes(query);
+      })
       .slice(0, MAX_SUGGESTIONS)
       .map(c => ({
         id: c.id ?? `cat-${c.name}`,
-        label: c.label,
+        label: c.label ?? c.name,
         value: c.name,
       }));
   }, [normalizedCategories, categoryInputValue]);
@@ -101,7 +110,7 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
     if (match) {
       setCategoryChips([{
         id: match.id ?? `cat-${match.name}`,
-        label: match.label,
+        label: match.label ?? match.name,
         value: match.name,
       }]);
     }
@@ -186,8 +195,8 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
     onSearch({
       // New array-based fields
       searchTerms: searchTermsArray.length > 0 ? searchTermsArray : undefined,
-      locations: locationsArray.length > 0 ? locationsArray : undefined,
-      categoryIds: categoryIdsArray.length > 0 ? categoryIdsArray : undefined,
+      locations: locationsArray.length > 0 ? locationsArray : [],
+      categoryIds: categoryIdsArray.length > 0 ? categoryIdsArray : [],
       // Legacy single-value fields for backward compatibility
       searchTerm: searchTermsArray[0],
       location: locationsArray[0],

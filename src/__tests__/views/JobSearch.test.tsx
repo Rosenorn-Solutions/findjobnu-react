@@ -68,7 +68,7 @@ describe("JobSearch view", () => {
 
     expect(apiMock.getJobPostsBySearch).toHaveBeenCalledWith(
       expect.objectContaining({
-        categoryId: 5,
+        categoryIds: [5],
         page: 1,
         pageSize: 10,
       })
@@ -80,15 +80,16 @@ describe("JobSearch view", () => {
 
     renderView();
 
-    const locationInput = await screen.findByPlaceholderText("Lokation");
-    await user.type(locationInput, "  Aarhus   ");
+    const locationInput = await screen.findByLabelText("Lokation");
+    // Type location with comma to create a chip
+    await user.type(locationInput, "Aarhus,");
     await user.click(screen.getByRole("button", { name: /søg/i }));
 
     await waitFor(() => expect(apiMock.getJobPostsBySearch).toHaveBeenCalled());
 
     expect(apiMock.getJobPostsBySearch).toHaveBeenCalledWith(
       expect.objectContaining({
-        location: "Aarhus",
+        locations: ["Aarhus"],
         page: 1,
         pageSize: 10,
       })

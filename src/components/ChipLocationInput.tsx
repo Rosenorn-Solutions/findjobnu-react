@@ -257,6 +257,7 @@ const ChipLocationInput: React.FC<Props> = ({
             <li key={city.id ?? city.name}>
               <button
                 type="button"
+                aria-label={`Vælg ${city.name}`}
                 className={`w-full text-left px-3 py-2 text-sm ${
                   idx === activeIndex
                     ? "bg-primary text-primary-content"

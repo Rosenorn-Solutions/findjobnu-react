@@ -57,7 +57,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [value, duration]);
+  }, [value, duration, displayValue]);
 
   return <span className={className}>{displayValue.toLocaleString("da-DK")}</span>;
 };
