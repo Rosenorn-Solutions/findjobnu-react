@@ -158,7 +158,7 @@ const JobsByLocation: React.FC = () => {
             setLoading(true);
             try {
                 const data = await api.getJobPostsBySearch({
-                    location: cityInfo.name,
+                    locations: [cityInfo.name],
                     page: currentPage,
                     pageSize
                 });

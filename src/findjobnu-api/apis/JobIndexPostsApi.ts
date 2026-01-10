@@ -41,9 +41,9 @@ export interface GetJobPostsByIdRequest {
 }
 
 export interface GetJobPostsBySearchRequest {
-    searchTerm?: string;
-    location?: string;
-    categoryId?: number;
+    searchTerms?: Array<string>;
+    locations?: Array<string>;
+    categoryIds?: Array<number>;
     postedAfter?: Date;
     postedBefore?: Date;
     page?: number;
@@ -51,9 +51,9 @@ export interface GetJobPostsBySearchRequest {
 }
 
 export interface GetRecommendedJobsForUserRequest {
-    searchTerm?: string;
-    location?: string;
-    categoryId?: number;
+    searchTerms?: Array<string>;
+    locations?: Array<string>;
+    categoryIds?: Array<number>;
     postedAfter?: Date;
     postedBefore?: Date;
     page?: number;
@@ -182,16 +182,16 @@ export class JobIndexPostsApi extends runtime.BaseAPI {
     async getJobPostsBySearchRaw(requestParameters: GetJobPostsBySearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<JobIndexPostResponsePagedResponse>> {
         const queryParameters: any = {};
 
-        if (requestParameters['searchTerm'] != null) {
-            queryParameters['SearchTerm'] = requestParameters['searchTerm'];
+        if (requestParameters['searchTerms'] != null) {
+            queryParameters['SearchTerms'] = requestParameters['searchTerms'];
         }
 
-        if (requestParameters['location'] != null) {
-            queryParameters['Location'] = requestParameters['location'];
+        if (requestParameters['locations'] != null) {
+            queryParameters['Locations'] = requestParameters['locations'];
         }
 
-        if (requestParameters['categoryId'] != null) {
-            queryParameters['CategoryId'] = requestParameters['categoryId'];
+        if (requestParameters['categoryIds'] != null) {
+            queryParameters['CategoryIds'] = requestParameters['categoryIds'];
         }
 
         if (requestParameters['postedAfter'] != null) {
@@ -272,16 +272,16 @@ export class JobIndexPostsApi extends runtime.BaseAPI {
     async getRecommendedJobsForUserRaw(requestParameters: GetRecommendedJobsForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<JobIndexPostResponsePagedResponse>> {
         const queryParameters: any = {};
 
-        if (requestParameters['searchTerm'] != null) {
-            queryParameters['SearchTerm'] = requestParameters['searchTerm'];
+        if (requestParameters['searchTerms'] != null) {
+            queryParameters['SearchTerms'] = requestParameters['searchTerms'];
         }
 
-        if (requestParameters['location'] != null) {
-            queryParameters['Location'] = requestParameters['location'];
+        if (requestParameters['locations'] != null) {
+            queryParameters['Locations'] = requestParameters['locations'];
         }
 
-        if (requestParameters['categoryId'] != null) {
-            queryParameters['CategoryId'] = requestParameters['categoryId'];
+        if (requestParameters['categoryIds'] != null) {
+            queryParameters['CategoryIds'] = requestParameters['categoryIds'];
         }
 
         if (requestParameters['postedAfter'] != null) {

@@ -179,8 +179,10 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       setNextSendAt(existing?.nextSendAt ? new Date(existing.nextSendAt) : null);
       setLocationsInput((existing?.preferredLocations ?? []).join(", "));
       const ids = existing?.preferredCategoryIds ?? [];
+      const categoryNames = existing?.preferredCategoryNames ?? [];
       setSelectedCategoryIds(ids);
-      setCategoriesInput(ids.length ? ids.join(", ") : "");
+      // Use category names from API if available, otherwise fall back to IDs
+      setCategoriesInput(categoryNames.length > 0 ? categoryNames.join(", ") : (ids.length ? ids.join(", ") : ""));
       setKeywordsInput((existing?.includeKeywords ?? []).join(", "));
       setUnsubscribeLink(link ?? null);
     };
@@ -286,8 +288,10 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       setNextSendAt(refreshed.nextSendAt ? new Date(refreshed.nextSendAt) : null);
       setLocationsInput((refreshed.preferredLocations ?? []).join(", "));
       const refreshedIds = refreshed.preferredCategoryIds ?? selectedCategoryIds;
+      const refreshedNames = refreshed.preferredCategoryNames ?? [];
       setSelectedCategoryIds(refreshedIds);
-      setCategoriesInput(formatCategoriesInput(refreshedIds));
+      // Use category names from API if available, otherwise fall back to formatCategoriesInput
+      setCategoriesInput(refreshedNames.length > 0 ? refreshedNames.join(", ") : formatCategoriesInput(refreshedIds));
       setKeywordsInput((refreshed.includeKeywords ?? []).join(", "));
       setUnsubscribeLink(link ?? null);
       setMode("manage");
@@ -341,8 +345,10 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       setNextSendAt(refreshed.nextSendAt ?? null);
       setLocationsInput((refreshed.preferredLocations ?? []).join(", "));
       const refreshedIds = refreshed.preferredCategoryIds ?? [];
+      const refreshedNames = refreshed.preferredCategoryNames ?? [];
       setSelectedCategoryIds(refreshedIds);
-      setCategoriesInput(formatCategoriesInput(refreshedIds));
+      // Use category names from API if available, otherwise fall back to formatCategoriesInput
+      setCategoriesInput(refreshedNames.length > 0 ? refreshedNames.join(", ") : formatCategoriesInput(refreshedIds));
       setKeywordsInput((refreshed.includeKeywords ?? []).join(", "));
       setUnsubscribeLink(link ?? null);
       setMode("manage");

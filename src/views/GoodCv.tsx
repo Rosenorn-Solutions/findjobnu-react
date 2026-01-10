@@ -293,7 +293,7 @@ const GoodCv: React.FC = () => {
 
                                 {result && (
                                     <div className="mt-4 grid gap-3">
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex items-center text-center gap-3">
                                             <span className="font-medium">Læsbarhedsscore:</span>
                                             <div className="flex items-center gap-2">
                                                 <progress

@@ -12,6 +12,9 @@ interface Props {
   userId: string;
   renderSearchForm?: boolean;
   searchParams?: {
+    searchTerms?: string[];
+    locations?: string[];
+    categoryIds?: number[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;
@@ -33,6 +36,9 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
   const [totalCount, setTotalCount] = useState(0);
   const [categories, setCategories] = useState<CategoryOption[]>(categoriesOverride ?? []);
   const [lastSearchParams, setLastSearchParams] = useState<{
+    searchTerms?: string[];
+    locations?: string[];
+    categoryIds?: number[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;
@@ -98,16 +104,18 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
       setLoading(true);
       setError(null);
       try {
-        const searchTerm = lastSearchParams?.searchTerm?.trim() || undefined;
-        const location = lastSearchParams?.location?.trim();
-        const locationNormalized = location ? location : undefined;
         const postedAfter = lastSearchParams?.postedAfter ? toDateFromInput(lastSearchParams.postedAfter) ?? undefined : undefined;
         const postedBefore = lastSearchParams?.postedBefore ? toDateFromInput(lastSearchParams.postedBefore) ?? undefined : undefined;
 
+        // Use new array-based parameters, falling back to single values for compatibility
+        const searchTerms = lastSearchParams?.searchTerms ?? (lastSearchParams?.searchTerm ? [lastSearchParams.searchTerm.trim()].filter(Boolean) : undefined);
+        const locations = lastSearchParams?.locations ?? (lastSearchParams?.location ? [lastSearchParams.location.trim()].filter(Boolean) : undefined);
+        const categoryIds = lastSearchParams?.categoryIds ?? (lastSearchParams?.categoryId ? [lastSearchParams.categoryId] : undefined);
+
         const response = await jobApi.getRecommendedJobsForUser({
-          searchTerm,
-          location: locationNormalized,
-          categoryId: lastSearchParams?.categoryId,
+          searchTerms,
+          locations,
+          categoryIds,
           postedAfter,
           postedBefore,
           page: currentPage,
@@ -126,6 +134,9 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
   }, [userId, currentPage, token, lastSearchParams]);
 
   const handleSearch = (params: {
+    searchTerms?: string[];
+    locations?: string[];
+    categoryIds?: number[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;

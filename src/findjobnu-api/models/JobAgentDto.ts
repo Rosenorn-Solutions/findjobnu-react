@@ -92,6 +92,12 @@ export interface JobAgentDto {
      * @type {Array<string>}
      * @memberof JobAgentDto
      */
+    preferredCategoryNames?: Array<string> | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof JobAgentDto
+     */
     includeKeywords?: Array<string> | null;
 }
 
@@ -124,6 +130,7 @@ export function JobAgentDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
         'preferredLocations': json['preferredLocations'] == null ? undefined : json['preferredLocations'],
         'preferredCategoryIds': json['preferredCategoryIds'] == null ? undefined : json['preferredCategoryIds'],
+        'preferredCategoryNames': json['preferredCategoryNames'] == null ? undefined : json['preferredCategoryNames'],
         'includeKeywords': json['includeKeywords'] == null ? undefined : json['includeKeywords'],
     };
 }
@@ -149,6 +156,7 @@ export function JobAgentDtoToJSONTyped(value?: JobAgentDto | null, ignoreDiscrim
         'updatedAt': value['updatedAt'] == null ? undefined : ((value['updatedAt'] as any).toISOString()),
         'preferredLocations': value['preferredLocations'],
         'preferredCategoryIds': value['preferredCategoryIds'],
+        'preferredCategoryNames': value['preferredCategoryNames'],
         'includeKeywords': value['includeKeywords'],
     };
 }

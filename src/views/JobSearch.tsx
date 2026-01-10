@@ -10,6 +10,7 @@ import { SparklesIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useUser } from "../context/UserContext.shared";
 import { toDateFromInput } from "../helpers/date";
 import Seo from "../components/Seo";
+import AnimatedCounter from "../components/AnimatedCounter";
 
 // Reuse the API client instantiation
 const api = createApiClient(JobIndexPostsApi);
@@ -32,6 +33,9 @@ const JobSearch: React.FC = () => {
   const [activePanel, setActivePanel] = useState<"search" | "recommended">("search");
   const [formKey, setFormKey] = useState(0);
   const [recommendedSearchParams, setRecommendedSearchParams] = useState<{
+    searchTerms?: string[];
+    locations?: string[];
+    categoryIds?: number[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;
@@ -40,6 +44,9 @@ const JobSearch: React.FC = () => {
     postedBefore?: string;
   } | null>(null);
   const [lastSearchParams, setLastSearchParams] = useState<{
+    searchTerms?: string[];
+    locations?: string[];
+    categoryIds?: number[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;
@@ -149,20 +156,34 @@ const JobSearch: React.FC = () => {
   };
 
   const handleSearch = async (
-    params: { searchTerm?: string; location?: string; locationSlug?: string; categoryId?: number; postedAfter?: string; postedBefore?: string },
+    params: { 
+      searchTerms?: string[];
+      locations?: string[];
+      categoryIds?: number[];
+      searchTerm?: string; 
+      location?: string; 
+      locationSlug?: string; 
+      categoryId?: number; 
+      postedAfter?: string; 
+      postedBefore?: string 
+    },
     page = 1
   ) => {
     setLoading(true);
     try {
-      const locationFromInput = params.location?.trim();
-      const locationNormalized = normalizeLocation(locationFromInput);
       const postedAfter = params.postedAfter ? toDateFromInput(params.postedAfter) ?? undefined : undefined;
       const postedBefore = params.postedBefore ? toDateFromInput(params.postedBefore) ?? undefined : undefined;
+      
+      // Use new array-based parameters, falling back to single values for compatibility
+      const searchTerms = params.searchTerms ?? (params.searchTerm ? [params.searchTerm] : undefined);
+      const locations = params.locations ?? (params.location ? [normalizeLocation(params.location)].filter(Boolean) as string[] : undefined);
+      const categoryIds = params.categoryIds ?? (params.categoryId ? [params.categoryId] : undefined);
+
       const data = await api.getJobPostsBySearch({
-        ...params,
-        categoryId: params.categoryId ?? undefined,
+        searchTerms,
+        locations,
+        categoryIds,
         page,
-        location: locationNormalized,
         pageSize,
         postedAfter,
         postedBefore,
@@ -278,7 +299,7 @@ const JobSearch: React.FC = () => {
               <div className="flex items-center gap-2 text-xs text-base-content/70">
                 <span className="inline-flex items-center gap-1">
                   <MagnifyingGlassIcon className="w-4 h-4" aria-hidden="true" />
-                  Jobsøgning
+                  Søgning
                 </span>
                 <span>•</span>
                 <span className="inline-flex items-center gap-1">
@@ -321,6 +342,14 @@ const JobSearch: React.FC = () => {
                 />
               </div>
             </div>
+            {!loading && totalCount > 0 && (
+              <div className="mt-3 text-center text-base-content/70">
+                <span className="text-lg font-semibold">
+                  <AnimatedCounter value={totalCount} />
+                </span>
+                <span className="ml-1">job{totalCount !== 1 ? 's' : ''} fundet</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

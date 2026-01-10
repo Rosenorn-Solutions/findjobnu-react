@@ -20,6 +20,7 @@ const Footer: React.FC = () => (
             <Link to="/jobsearch" className="link link-hover">Jobsøgning</Link>
             <Link to="/vaerktoejer" className="link link-hover">Værktøjer</Link>
             <Link to="/cv" className="link link-hover">Det gode CV</Link>
+            <Link to="/job" className="link link-hover">Job efter by</Link>
             <span className="text-base-content/50 cursor-not-allowed" aria-disabled="true">Arbejdsgiver</span>
           </div>
 

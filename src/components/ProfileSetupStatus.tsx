@@ -20,11 +20,11 @@ interface ProfileSetupStatusProps {
 const StatusRow: React.FC<{ label: string; done: boolean; hint?: string }> = ({ label, done, hint }) => (
   <div className="flex items-start gap-3">
     {done ? (
-      <CheckCircleIcon className="w-5 h-5 text-success mt-0.5" aria-hidden="true" />
+      <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 flex-shrink-0" aria-hidden="true" />
     ) : (
-      <XCircleIcon className="w-5 h-5 text-base-300 mt-0.5" aria-hidden="true" />
+      <XCircleIcon className="w-5 h-5 text-base-300 mt-0.5 flex-shrink-0" aria-hidden="true" />
     )}
-    <div>
+    <div className="flex-1 text-left">
       <p className="font-medium">{label}</p>
       {hint && <p className="text-sm text-base-content/70">{hint}</p>}
     </div>
