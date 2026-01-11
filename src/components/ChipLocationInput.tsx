@@ -19,6 +19,10 @@ interface Props {
   disabled?: boolean;
   inputId?: string;
   ariaLabel?: string;
+  /** Called when input value changes */
+  onInputChange?: (value: string) => void;
+  /** Current input value (controlled) */
+  inputValue?: string;
 }
 
 const MAX_SUGGESTIONS = 8;
@@ -31,8 +35,10 @@ const ChipLocationInput: React.FC<Props> = ({
   disabled = false,
   inputId,
   ariaLabel,
+  onInputChange,
+  inputValue: controlledInputValue,
 }) => {
-  const [inputValue, setInputValue] = useState("");
+  const [internalInputValue, setInternalInputValue] = useState("");
   const [suggestions, setSuggestions] = useState<City[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -40,6 +46,12 @@ const ChipLocationInput: React.FC<Props> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const citiesApi = createApiClient(CityApi);
+
+  const inputValue = controlledInputValue ?? internalInputValue;
+  const setInputValue = useCallback((value: string) => {
+    setInternalInputValue(value);
+    onInputChange?.(value);
+  }, [onInputChange]);
 
   const fetchSuggestions = async (query: string) => {
     try {
@@ -84,7 +96,7 @@ const ChipLocationInput: React.FC<Props> = ({
         setSuggestions([]);
       }
     },
-    [chips, onChipsChange, citiesApi]
+    [chips, onChipsChange, citiesApi, setInputValue]
   );
 
   const addFreeTextChip = useCallback(
@@ -104,7 +116,7 @@ const ChipLocationInput: React.FC<Props> = ({
       setShowSuggestions(false);
       setActiveIndex(-1);
     },
-    [chips, onChipsChange]
+    [chips, onChipsChange, setInputValue]
   );
 
   const removeChip = useCallback(

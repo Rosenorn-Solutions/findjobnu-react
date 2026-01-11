@@ -24,11 +24,12 @@ interface Props {
   } | null;
   categoriesOverride?: CategoryOption[];
   flushTop?: boolean;
+  onTotalCountChange?: (count: number) => void;
 }
 
 const PAGE_SIZE = 10;
 
-const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, searchParams, categoriesOverride, flushTop = false }) => {
+const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, searchParams, categoriesOverride, flushTop = false, onTotalCountChange }) => {
   const [jobs, setJobs] = useState<JobIndexPostResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -122,7 +123,9 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
           pageSize: PAGE_SIZE,
         });
         setJobs(response?.items?.filter(Boolean) ?? []);
-        setTotalCount(response?.totalCount ?? 0);
+        const count = response?.totalCount ?? 0;
+        setTotalCount(count);
+        onTotalCountChange?.(count);
       } catch (e) {
         const handled = await handleApiError(e);
         setError(handled.message);
@@ -131,7 +134,7 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
     };
 
     fetchRecommended();
-  }, [userId, currentPage, token, lastSearchParams]);
+  }, [userId, currentPage, token, lastSearchParams, onTotalCountChange]);
 
   const handleSearch = (params: {
     searchTerms?: string[];

@@ -51,6 +51,10 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
   // Category typeahead state
   const [categoryInputValue, setCategoryInputValue] = useState("");
   
+  // Track pending input values that haven't been converted to chips yet
+  const [searchTermInputValue, setSearchTermInputValue] = useState("");
+  const [locationInputValue, setLocationInputValue] = useState("");
+  
   // Date pickers
   const [postedAfter, setPostedAfter] = useState("");
   const [postedBefore, setPostedBefore] = useState("");
@@ -173,9 +177,16 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
     const postedAfterApi = postedAfter ? toApiDateString(postedAfter) ?? undefined : undefined;
     const postedBeforeApi = postedBefore ? toApiDateString(postedBefore) ?? undefined : undefined;
 
-    // Build arrays from chips
-    const searchTermsArray = searchTermChips.map(c => c.value).filter(s => s.length > 0);
-    const locationsArray = locationChips.map(c => c.value).filter(l => l.length > 0);
+    // Build arrays from chips, including any pending input values
+    const searchTermsArray = [
+      ...searchTermChips.map(c => c.value),
+      ...(searchTermInputValue.trim() ? [searchTermInputValue.trim()] : [])
+    ].filter(s => s.length > 0);
+    
+    const locationsArray = [
+      ...locationChips.map(c => c.value),
+      ...(locationInputValue.trim() ? [locationInputValue.trim()] : [])
+    ].filter(l => l.length > 0);
     
     // For categories, extract IDs from chips
     const categoryIdsArray: number[] = [];
@@ -211,6 +222,8 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
     setLocationChips([]);
     setCategoryChips([]);
     setCategoryInputValue("");
+    setSearchTermInputValue("");
+    setLocationInputValue("");
     setPostedAfter("");
     setPostedBefore("");
     setSubmitted(false);
@@ -249,6 +262,8 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
               inputId="searchTerm"
               ariaLabel="Søgeord"
               className="shadow"
+              onInputChange={setSearchTermInputValue}
+              inputValue={searchTermInputValue}
             />
           </div>
         </div>
@@ -267,6 +282,8 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
               inputId="locationInput"
               ariaLabel="Lokation"
               className="shadow"
+              onInputChange={setLocationInputValue}
+              inputValue={locationInputValue}
             />
           </div>
         </div>

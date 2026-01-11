@@ -69,6 +69,7 @@ const JobSearch: React.FC = () => {
     setRecommendedSearchParams(null);
     setLastSearchParams(null);
     setCurrentPage(1);
+    setTotalCount(0);
     setFormKey((k) => k + 1);
   };
 
@@ -78,6 +79,7 @@ const JobSearch: React.FC = () => {
     setLastSearchParams(null);
     setRecommendedSearchParams(null);
     setCurrentPage(1);
+    setTotalCount(0);
     setFormKey((k) => k + 1);
   };
 
@@ -285,6 +287,7 @@ const JobSearch: React.FC = () => {
               searchParams={recommendedSearchParams}
               categoriesOverride={categories}
               flushTop
+              onTotalCountChange={setTotalCount}
             />
           )}
         </div>
