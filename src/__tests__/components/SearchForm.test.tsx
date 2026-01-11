@@ -24,8 +24,8 @@ describe("SearchForm", () => {
     expect(onSearch).toHaveBeenCalledWith(
       expect.objectContaining({
         searchTerms: ["Frontend"],
-        locations: [],
-        categoryIds: [],
+        locations: undefined,
+        categoryIds: undefined,
         postedAfter: undefined,
         postedBefore: undefined,
       })
