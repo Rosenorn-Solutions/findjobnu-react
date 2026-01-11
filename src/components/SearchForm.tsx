@@ -195,8 +195,8 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
     onSearch({
       // New array-based fields
       searchTerms: searchTermsArray.length > 0 ? searchTermsArray : undefined,
-      locations: locationsArray.length > 0 ? locationsArray : [],
-      categoryIds: categoryIdsArray.length > 0 ? categoryIdsArray : [],
+      locations: locationsArray.length > 0 ? locationsArray : undefined,
+      categoryIds: categoryIdsArray.length > 0 ? categoryIdsArray : undefined,
       // Legacy single-value fields for backward compatibility
       searchTerm: searchTermsArray[0],
       location: locationsArray[0],
