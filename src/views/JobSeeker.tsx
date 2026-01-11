@@ -178,7 +178,7 @@ const JobSeeker: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div className="card bg-base-100 shadow-xl border h-full">
+        <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 h-full transition-all hover:shadow-2xl hover:-translate-y-1">
           <div className="card-body p-6 flex flex-col gap-3">
             <h2 className="text-xl font-semibold flex items-center gap-2">
               <span>Det gode CV</span>
@@ -195,7 +195,7 @@ const JobSeeker: React.FC = () => {
           </div>
         </div>
 
-        <div className="card bg-base-100 shadow-xl border h-full">
+        <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 h-full transition-all hover:shadow-2xl hover:-translate-y-1">
           <div className="card-body p-6 flex flex-col gap-3">
             <h2 className="text-xl font-semibold flex items-center gap-2">
               <span>Profil</span>
@@ -212,7 +212,7 @@ const JobSeeker: React.FC = () => {
           </div>
         </div>
 
-        <div className="card bg-base-100 shadow-xl border h-full">
+        <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 h-full transition-all hover:shadow-2xl hover:-translate-y-1">
           <div className="card-body p-6 flex flex-col gap-3">
             <h2 className="text-xl font-semibold flex items-center gap-2">
               <span>Jobagent</span>

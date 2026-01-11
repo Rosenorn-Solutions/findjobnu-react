@@ -1,10 +1,28 @@
 <!doctype html>
-<html lang="en" data-theme="dracula">
+<html lang="da">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/findjobnu-logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FindJob.nu</title>
+    <script>
+      // Apply saved theme immediately to prevent flash
+      (function() {
+        var theme = localStorage.getItem('fj-theme');
+        // Migrate old 'dracula' theme to 'dark'
+        if (theme === 'dracula') {
+          theme = 'dark';
+          localStorage.setItem('fj-theme', 'dark');
+        }
+        if (theme && ['light', 'dark'].includes(theme)) {
+          document.documentElement.dataset.theme = theme;
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.dataset.theme = 'dark';
+        } else {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8159463412036195"
      crossorigin="anonymous"></script>
   </head>

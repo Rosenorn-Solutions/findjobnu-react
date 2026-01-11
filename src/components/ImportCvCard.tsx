@@ -59,7 +59,7 @@ const ImportCvCard: React.FC<Props> = ({ accessToken, onImported }) => {
   };
 
   return (
-    <div className="card bg-base-100 shadow rounded-lg p-6 w-full h-fit mb-6">
+    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 w-full h-fit mb-6 transition-all hover:shadow-xl hover:-translate-y-1">
       <div className="flex items-center justify-between mb-3">
         <div>
           <h2 className="card-title">Importer CV</h2>

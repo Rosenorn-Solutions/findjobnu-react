@@ -6,7 +6,7 @@ const NotFound: React.FC = () => {
   return (
     <div className="container max-w-5xl mx-auto px-4 py-16">
       <Seo title="Siden blev ikke fundet" description="Siden blev ikke fundet" path="/404" noIndex />
-      <div className="card bg-base-100 shadow-xl border overflow-hidden">
+      <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-1">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr]">
           <div className="p-8 sm:p-10 space-y-4 bg-gradient-to-br from-primary/10 via-base-100 to-base-200">
             <p className="badge badge-primary badge-outline">404</p>

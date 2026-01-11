@@ -14,7 +14,7 @@ const JobListSkeleton: React.FC<Props> = ({ count = 5 }) => {
             <div className="skeleton h-6 w-1/2 max-w-80" />
             <div className="skeleton h-4 w-28 ml-auto" />
           </div>
-          <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
+          <div className="mt-2 flex items-center gap-2 text-sm text-base-content/50">
             <div className="skeleton h-4 w-32" />
             <span className="opacity-0">·</span>
             <div className="skeleton h-4 w-24" />

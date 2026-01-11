@@ -108,7 +108,7 @@ const Contact: React.FC = () => {
                     }
                 }}
             />
-            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
                 <div className="hero-content text-center py-12">
                     <div className="max-w-6xl w-full">
                         <div className="flex items-center justify-center gap-2 mb-4">
@@ -130,7 +130,7 @@ const Contact: React.FC = () => {
                             {contactMethods.map((method) => (
                                 <div key={method.title} className="">
                                     <div className="card-body">
-                                        <h2 className="card-title text-2xl flex items-center justify-between gap-3">
+                                        <h2 className="card-title text-2xl flex items-center justify-center gap-3">
                                             <span>{method.title}</span>
                                             <method.Icon className="w-7 h-7 text-primary" aria-hidden="true" />
                                         </h2>
@@ -147,7 +147,7 @@ const Contact: React.FC = () => {
                 </div>
             </div>
 
-            <div className="card bg-base-100 shadow-xl border transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+            <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
                 <div className="card-body p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <figure className="p-6 flex items-center justify-center">
                         <img
@@ -201,7 +201,7 @@ const Contact: React.FC = () => {
                 </div>
             </div>
 
-            <div className="card bg-base-100 shadow-xl border transition-all hover:shadow-2xl hover:-translate-y-1">
+            <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                 <div className="card-body p-6 md:p-8 space-y-8">
                     <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                         <div className="rounded-box shadow-lg border p-6">

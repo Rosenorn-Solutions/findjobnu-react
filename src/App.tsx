@@ -12,6 +12,7 @@ import { checkAndClearExpiredToken } from "./helpers/AuthHelper";
 import { useUser } from "./context/UserContext.shared";
 import { UserProvider } from "./context/UserContext";
 import { ConsentProvider } from "./context/ConsentContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import ConsentMessage from "./components/ConsentMessage";
 import JobSearch from "./views/JobSearch";
 import GoodCv from "./views/GoodCv";
@@ -27,11 +28,13 @@ import Tools from "./views/Tools";
 const App: React.FC = () => {
   return (
     <Router>
-      <ConsentProvider>
-        <UserProvider>
-          <AppWithAuthCheck />
-        </UserProvider>
-      </ConsentProvider>
+      <ThemeProvider>
+        <ConsentProvider>
+          <UserProvider>
+            <AppWithAuthCheck />
+          </UserProvider>
+        </ConsentProvider>
+      </ThemeProvider>
     </Router>
   );
 };

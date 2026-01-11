@@ -168,7 +168,7 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
 
         {renderSearchForm && (
           <div className="order-1 lg:order-2 shrink-0 w-full lg:w-fit">
-            <div className="card bg-base-100 shadow-xl lg:sticky lg:top-24 w-full">
+            <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 lg:sticky lg:top-24 w-full transition-all hover:shadow-2xl hover:-translate-y-1">
               <div className="p-4">
                 <SearchForm onSearch={handleSearch} categories={categories} />
               </div>

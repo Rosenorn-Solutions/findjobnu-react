@@ -56,7 +56,7 @@ const PopularCategories: React.FC<Props> = ({ limit = 10, className = "" }) => {
   };
 
   return (
-    <div className={`card bg-base-100 shadow rounded-lg p-6 ${className}`}>
+    <div className={`card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 transition-all hover:shadow-xl hover:-translate-y-1 ${className}`}>
       <h2 className="card-title mb-4">Populære kategorier</h2>
       {error && !loading && (
         <div className="alert alert-error py-2 text-sm">

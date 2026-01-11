@@ -57,7 +57,8 @@ const tools: Tool[] = [
         ],
         icon: <SparklesIcon className="w-8 h-8" aria-hidden="true" />,
         href: "/jobsearch?panel=recommended",
-        badge: "Gratis"
+        badge: "Gratis",
+        highlight: true
     },
     {
         title: "Jobagent",
@@ -240,7 +241,7 @@ const Tools: React.FC = () => {
                 ]}
             />
 
-            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
                 <div className="hero-content text-center py-12">
                     <div className="max-w-6xl w-full">
                         <div className="flex items-center justify-center gap-2 mb-4">
@@ -270,9 +271,7 @@ const Tools: React.FC = () => {
                     <Link
                         key={tool.slug}
                         to={tool.href}
-                        className={`card shadow-lg border transition-all hover:shadow-xl hover:-translate-y-1 ${
-                            tool.highlight ? "bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20" : "bg-base-100"
-                        }`}
+                        className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1"
                     >
                         <div className="card-body">
                             <div className="flex items-start justify-between">
@@ -306,7 +305,7 @@ const Tools: React.FC = () => {
                 ))}
             </div>
 
-            <div className="mt-12 card bg-base-100 shadow-xl border transition-all hover:shadow-2xl hover:-translate-y-1">
+            <div className="mt-12 card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                 <div className="card-body">
                     <div className="grid gap-8 lg:grid-cols-2 items-center">
                         <div>

@@ -57,7 +57,7 @@ const Sitemap: React.FC = () => {
           ),
         }}
       />
-      <div className="card bg-base-100 shadow-xl">
+      <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
         <div className="card-body space-y-2">
           <h1 className="text-3xl font-bold">Sitemap</h1>
           <p className="text-base-content/70">
@@ -68,7 +68,7 @@ const Sitemap: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {sections.map((section) => (
-          <div key={section.title} className="card bg-base-100 shadow">
+          <div key={section.title} className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
             <div className="card-body space-y-2">
               <h2 className="text-xl font-semibold">{section.title}</h2>
               <ul className="space-y-1">

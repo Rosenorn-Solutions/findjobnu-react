@@ -4,7 +4,7 @@ import logo from "../assets/RosenornSolutions.png";
 
 const Footer: React.FC = () => (
   <footer className="mt-8 border-t bg-base-100/80 backdrop-blur-sm shadow-lg">
-    <div className="max-w-[1400px] w-full mx-auto px-4 py-8 text-sm text-gray-700">
+    <div className="max-w-[1400px] w-full mx-auto px-4 py-8 text-sm text-base-content/70">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <aside className="flex flex-col gap-3 text-base-content/70 w-full lg:max-w-xs lg:pl-4">
           <a href="https://rosenornsolutions.dk" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 w-fit hover:no-underline">

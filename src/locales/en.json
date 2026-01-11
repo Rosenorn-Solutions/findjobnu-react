@@ -1,0 +1,44 @@
+{
+  "nav": {
+    "jobSearch": "Job Search",
+    "tools": "Tools",
+    "employer": "Employer",
+    "goodCv": "CV Guide",
+    "contact": "Contact",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Log out",
+    "login": "Log in",
+    "register": "Sign up",
+    "comingSoon": "Coming soon!",
+    "openMenu": "Open menu",
+    "userMenu": "User menu"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "reset": "Reset",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "theme": {
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme"
+  },
+  "language": {
+    "switchToEnglish": "Switch to English",
+    "switchToDanish": "Skift til dansk"
+  }
+}

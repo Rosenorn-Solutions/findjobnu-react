@@ -89,9 +89,9 @@ const About: React.FC = () => {
                         ]
                     }}
                 />
-                <div className="hero bg-base-100 rounded-box shadow-xl mb-10">
-                <div className="hero-content text-center">
-                    <div className="max-w-2xl">
+                <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+                <div className="hero-content text-center py-12">
+                    <div className="max-w-6xl w-full">
                         <h1 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-2">
                             <span>Om Findjobnu</span>
                             <BuildingOffice2Icon className="w-8 h-8 text-primary" aria-hidden="true" />
@@ -104,16 +104,16 @@ const About: React.FC = () => {
                             <span className="badge badge-secondary badge-outline">Gennemsigtighed</span>
                             <span className="badge badge-accent badge-outline">Kandidatfokus</span>
                         </div>
-                        <div className="rounded-box border mt-6 grid gap-3 text-left p-4">
-                            <div className="flex items-center gap-3">
+                        <div className="rounded-box mt-6 grid gap-3 text-center p-4">
+                            <div className="flex items-center justify-center gap-3">
                                 <span className="font-semibold">Grundlagt</span>
                                 <span className="text-base-content/70">2025 i Aalborg</span>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-center gap-3">
                                 <span className="font-semibold">Team</span>
                                 <span className="text-base-content/70">2 specialister i data, HR og produkt</span>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-center gap-3">
                                 <span className="font-semibold">Fokus</span>
                                 <span className="text-base-content/70">Jobsøgning, cv-optimering og talent matching</span>
                             </div>
@@ -122,7 +122,7 @@ const About: React.FC = () => {
                 </div>
             </div>
 
-            <div className="card bg-base-100 shadow-xl">
+            <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                 <div className="card-body p-6 md:p-8 gap-10">
                     {sections.map((s, index) => (
                         <React.Fragment key={s.title}>
@@ -191,7 +191,7 @@ const About: React.FC = () => {
                 <h3 className="text-xl font-semibold mb-3">Vores værdier</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {values.map((value) => (
-                        <div key={value.title} className="card bg-base-100 p-6">
+                        <div key={value.title} className="card bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
                             <h4 className="text-lg font-semibold">{value.title}</h4>
                             <p className="text-base-content/70 mt-2">{value.description}</p>
                         </div>

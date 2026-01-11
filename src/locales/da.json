@@ -1,0 +1,44 @@
+{
+  "nav": {
+    "jobSearch": "Jobsøgning",
+    "tools": "Værktøjer",
+    "employer": "Arbejdsgiver",
+    "goodCv": "Det gode CV",
+    "contact": "Kontakt",
+    "profile": "Profil",
+    "settings": "Indstillinger",
+    "logout": "Log ud",
+    "login": "Log ind",
+    "register": "Tilmeld",
+    "comingSoon": "Kommer snart!",
+    "openMenu": "Åbn menu",
+    "userMenu": "Bruger menu"
+  },
+  "common": {
+    "loading": "Indlæser...",
+    "error": "Der opstod en fejl",
+    "save": "Gem",
+    "cancel": "Annuller",
+    "delete": "Slet",
+    "edit": "Rediger",
+    "search": "Søg",
+    "reset": "Nulstil",
+    "submit": "Indsend",
+    "back": "Tilbage",
+    "next": "Næste",
+    "previous": "Forrige",
+    "close": "Luk",
+    "yes": "Ja",
+    "no": "Nej"
+  },
+  "theme": {
+    "light": "Lyst tema",
+    "dark": "Mørkt tema",
+    "switchToLight": "Skift til lyst tema",
+    "switchToDark": "Skift til mørkt tema"
+  },
+  "language": {
+    "switchToEnglish": "Switch to English",
+    "switchToDanish": "Skift til dansk"
+  }
+}

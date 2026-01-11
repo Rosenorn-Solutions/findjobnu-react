@@ -267,12 +267,12 @@ const JobList: React.FC<Props> = ({
 
     let descriptionBlock: React.ReactNode;
     if (!descriptionSource || descriptionSource.trim() === "") {
-      descriptionBlock = <p className="text-sm italic text-gray-600">Ingen beskrivelse tilgængelig.</p>;
+      descriptionBlock = <p className="text-sm italic text-base-content/60">Ingen beskrivelse tilgængelig.</p>;
     } else if (isOpen) {
       descriptionBlock = (
         <>
-          <p className="text-sm text-gray-800 whitespace-pre-line">{descriptionSource}</p>
-          <button type="button" onClick={() => handleToggleDescription(safeJobId)} className="mt-2 text-blue-600 hover:underline text-sm">
+          <p className="text-sm text-base-content whitespace-pre-line">{descriptionSource}</p>
+          <button type="button" onClick={() => handleToggleDescription(safeJobId)} className="mt-2 text-primary hover:underline text-sm">
             Vis mindre
           </button>
         </>
@@ -281,9 +281,9 @@ const JobList: React.FC<Props> = ({
       const { snippet, truncated } = truncateWords(descriptionSource, 100);
       descriptionBlock = (
         <>
-          <p className="text-sm text-gray-800 whitespace-pre-line">{snippet}</p>
+          <p className="text-sm text-base-content whitespace-pre-line">{snippet}</p>
           {truncated && (
-            <button type="button" onClick={() => handleToggleDescription(safeJobId)} className="mt-2 text-blue-600 hover:underline text-sm">
+            <button type="button" onClick={() => handleToggleDescription(safeJobId)} className="mt-2 text-primary hover:underline text-sm">
               Læs mere
             </button>
           )}
@@ -294,12 +294,12 @@ const JobList: React.FC<Props> = ({
     const safeJobUrl = sanitizeExternalUrl(job.jobUrl ?? undefined);
 
     return (
-      <div key={safeJobId ?? idx} className="card bg-base-100 shadow-xl space-y-3 p-4 transition-all border hover:shadow-2xl hover:-translate-y-1" data-testid="job-card">
+      <div key={safeJobId ?? idx} className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl space-y-3 p-4 transition-all border border-primary/20 hover:shadow-2xl hover:-translate-y-1" data-testid="job-card">
         <div className="flex justify-between items-start border-b my-2 p-1">
           <div className="flex-1">
-            <h2 className="text-lg font-semibold text-gray-900 leading-snug">{job.title ?? "(Ingen titel)"}</h2>
+            <h2 className="text-lg font-semibold text-base-content leading-snug">{job.title ?? "(Ingen titel)"}</h2>
             {(job.company || job.location) ? (
-              <p className="mt-1 text-sm text-gray-700 flex flex-wrap items-center gap-3">
+              <p className="mt-1 text-sm text-base-content/80 flex flex-wrap items-center gap-3">
                 {job.company && (
                   <span className="inline-flex items-center gap-1 font-medium">
                     <BuildingOffice2Icon className="w-4 h-4" aria-hidden="true" />
@@ -307,25 +307,25 @@ const JobList: React.FC<Props> = ({
                   </span>
                 )}
                 {job.location && (
-                  <span className="inline-flex items-center gap-1 text-gray-700">
+                  <span className="inline-flex items-center gap-1 text-base-content/80">
                     <MapPinIcon className="w-4 h-4" aria-hidden="true" />
                     {job.location}
                   </span>
                 )}
               </p>
             ) : (
-              <p className="mt-1 text-sm italic text-gray-500">Ingen virksomhedsoplysninger.</p>
+              <p className="mt-1 text-sm italic text-base-content/50">Ingen virksomhedsoplysninger.</p>
             )}
           </div>
           <div className="text-right min-w-[140px] flex flex-col items-end gap-1">
             {job.postedDate && (
-              <p className="text-xs text-gray-500 inline-flex items-center gap-1">
+              <p className="text-xs text-base-content/60 inline-flex items-center gap-1">
                 <CalendarDaysIcon className="w-4 h-4" aria-hidden="true" />
                 Publiceret {new Date(job.postedDate).toLocaleDateString("da-DK")}
               </p>
             )}
             {job.category && (
-              <p className="text-xs text-gray-600 inline-flex items-center gap-1">
+              <p className="text-xs text-base-content/70 inline-flex items-center gap-1">
                 <TagIcon className="w-4 h-4" aria-hidden="true" />
                 {job.category}
               </p>
@@ -345,7 +345,7 @@ const JobList: React.FC<Props> = ({
         )}
         {bannerPicture && <div className="divider my-1" />}
 
-        <div className="border border-gray-400 p-2 bg-base-200/40 my-2">{descriptionBlock}</div>
+        <div className="border border-base-content/20 p-2 bg-base-200/40 my-2">{descriptionBlock}</div>
 
         {footerPicture && <div className="divider my-3" />}
         {footerPicture && (
@@ -361,7 +361,7 @@ const JobList: React.FC<Props> = ({
 
         <div className="flex flex-wrap gap-3">
           {safeJobUrl && (
-            <a href={safeJobUrl} target="_blank" rel="noopener noreferrer" className="text-sm px-3 py-1 rounded border border-blue-600 text-blue-600 hover:bg-blue-50">
+            <a href={safeJobUrl} target="_blank" rel="noopener noreferrer" className="text-sm px-3 py-1 rounded border border-primary text-primary hover:bg-primary/10">
               <span className="inline-flex items-center gap-1">
                 <ArrowTopRightOnSquareIcon className="w-4 h-4" aria-hidden="true" />
                 Gå til opslag
@@ -373,7 +373,7 @@ const JobList: React.FC<Props> = ({
               type="button"
               disabled={isSaving}
               onClick={() => handleSaveJob(safeJobId)}
-              className="text-sm px-3 py-1 rounded border border-green-600 text-green-700 hover:bg-green-50 disabled:opacity-50"
+              className="text-sm px-3 py-1 rounded border border-success text-success hover:bg-success/10 disabled:opacity-50"
             >
               <span className="inline-flex items-center gap-1">
                 <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
@@ -386,7 +386,7 @@ const JobList: React.FC<Props> = ({
               type="button"
               disabled={isSaving}
               onClick={() => handleRemoveSavedJob(safeJobId)}
-              className="text-sm px-3 py-1 rounded border border-red-600 text-red-700 hover:bg-red-50 disabled:opacity-50"
+              className="text-sm px-3 py-1 rounded border border-error text-error hover:bg-error/10 disabled:opacity-50"
             >
               <span className="inline-flex items-center gap-1">
                 <BookmarkSlashIcon className="w-4 h-4" aria-hidden="true" />
@@ -398,7 +398,7 @@ const JobList: React.FC<Props> = ({
             <button
               type="button"
               disabled
-              className="text-sm px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed"
+              className="text-sm px-3 py-1 rounded border border-base-content/30 text-base-content/40 cursor-not-allowed"
               title="Log ind for at gemme job"
             >
               <span className="inline-flex items-center gap-1">
@@ -408,7 +408,7 @@ const JobList: React.FC<Props> = ({
             </button>
           )}
           {descriptionSource && descriptionSource.trim() !== "" && !isOpen && (
-            <button type="button" onClick={() => handleToggleDescription(safeJobId)} className="text-sm px-3 py-1 rounded border border-gray-400 text-gray-700 hover:bg-gray-100">
+            <button type="button" onClick={() => handleToggleDescription(safeJobId)} className="text-sm px-3 py-1 rounded border border-base-content/40 text-base-content/70 hover:bg-base-content/10">
               Læs mere
             </button>
           )}

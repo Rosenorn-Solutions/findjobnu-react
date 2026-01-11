@@ -220,16 +220,23 @@ const JobsByLocation: React.FC = () => {
                     ]}
                 />
 
-                <div className="hero bg-base-100 rounded-box shadow-xl mb-10">
-                    <div className="hero-content text-center">
-                        <div className="max-w-3xl">
-                            <h1 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-2">
-                                <span>Find job i hele Danmark</span>
-                                <MapPinIcon className="w-8 h-8 text-primary" aria-hidden="true" />
+                <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+                    <div className="hero-content text-center py-12">
+                        <div className="max-w-6xl w-full">
+                            <div className="flex items-center justify-center gap-2 mb-4">
+                                <MapPinIcon className="w-10 h-10 text-primary" aria-hidden="true" />
+                            </div>
+                            <h1 className="text-3xl md:text-4xl font-bold">
+                                Find job i hele Danmark
                             </h1>
-                            <p className="text-base-content/70 mt-2">
+                            <p className="text-base-content/70 mt-3 text-lg">
                                 Vælg din by nedenfor for at se ledige stillinger i dit område.
                             </p>
+                            <div className="mt-6 flex justify-center gap-2 flex-wrap">
+                                <span className="badge badge-primary">20 danske byer</span>
+                                <span className="badge badge-secondary badge-outline">Opdateret dagligt</span>
+                                <span className="badge badge-accent badge-outline">Gratis at bruge</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -239,7 +246,7 @@ const JobsByLocation: React.FC = () => {
                         <Link
                             key={c.slug}
                             to={`/job/${c.slug}`}
-                            className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow border"
+                            className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-md border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1"
                         >
                             <div className="card-body p-4">
                                 <div className="flex items-center gap-2">
@@ -257,7 +264,7 @@ const JobsByLocation: React.FC = () => {
                     ))}
                 </div>
 
-                <div className="mt-10 card bg-base-100 shadow-xl border">
+                <div className="mt-10 card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                     <div className="card-body">
                         <h2 className="card-title">Kan du ikke finde din by?</h2>
                         <p className="text-base-content/70">
@@ -285,8 +292,8 @@ const JobsByLocation: React.FC = () => {
                     path={`/job/${city}`}
                     noIndex
                 />
-                <div className="hero bg-base-100 rounded-box shadow-xl">
-                    <div className="hero-content text-center">
+                <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
+                    <div className="hero-content text-center py-12">
                         <div className="max-w-lg">
                             <h1 className="text-3xl font-bold">By ikke fundet</h1>
                             <p className="text-base-content/70 mt-2">
@@ -342,9 +349,9 @@ const JobsByLocation: React.FC = () => {
                 ]}
             />
 
-            <div className="hero bg-base-100 rounded-box shadow-xl mb-8">
-                <div className="hero-content text-center">
-                    <div className="max-w-3xl">
+            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-8">
+                <div className="hero-content text-center py-12">
+                    <div className="max-w-6xl w-full">
                         <div className="flex items-center justify-center gap-2 text-sm text-base-content/70 mb-2">
                             <Link to="/job" className="link link-hover">Job efter by</Link>
                             <span>/</span>
@@ -394,7 +401,7 @@ const JobsByLocation: React.FC = () => {
                 </div>
 
                 <aside className="space-y-6">
-                    <div className="card bg-base-100 shadow-md border sticky top-24">
+                    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-md border border-primary/20 sticky top-24 z-10 transition-all hover:shadow-xl hover:-translate-y-1">
                         <div className="card-body">
                             <h3 className="card-title text-lg">Søg mere specifikt</h3>
                             <p className="text-sm text-base-content/70">
@@ -409,7 +416,7 @@ const JobsByLocation: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="card bg-base-100 shadow-md border">
+                    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-md border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
                         <div className="card-body">
                             <h3 className="card-title text-lg">Andre byer</h3>
                             <div className="flex flex-wrap gap-2">
@@ -432,7 +439,7 @@ const JobsByLocation: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="card bg-gradient-to-br from-primary/10 to-secondary/10 shadow-md border">
+                    <div className="card bg-gradient-to-br from-primary/10 to-secondary/10 shadow-md border transition-all hover:shadow-xl hover:-translate-y-1">
                         <div className="card-body">
                             <h3 className="card-title text-lg">Få job direkte i indbakken</h3>
                             <p className="text-sm text-base-content/70">

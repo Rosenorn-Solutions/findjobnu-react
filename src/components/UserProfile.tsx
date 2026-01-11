@@ -329,7 +329,7 @@ const UserProfileComponent: React.FC<Props> = ({ userId, refreshKey }) => {
 
   if (!profile) {
     return (
-      <div className="card bg-base-100 shadow rounded-lg p-6 w-full h-fit">
+      <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 w-full h-fit transition-all hover:shadow-xl hover:-translate-y-1">
         <div className="text-center py-8 space-y-4">
           <p>{error ?? "Ingen profil fundet."}</p>
           <button className="btn btn-primary" onClick={handleCreateProfile}>

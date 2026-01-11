@@ -228,7 +228,7 @@ const GoodCv: React.FC = () => {
                     }
                 ]}
             />
-            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
                 <div className="hero-content text-center py-12">
                     <div className="max-w-3xl">
                         <div className="flex items-center justify-center gap-2 mb-4">
@@ -392,7 +392,7 @@ const GoodCv: React.FC = () => {
                 </div>
             </div>
 
-            <div className="card bg-base-100 shadow-xl border transition-all hover:shadow-2xl hover:-translate-y-1">
+            <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                 <div className="card-body p-6 md:p-8 gap-10">
                     {sections.map((s, i) => (
                         <React.Fragment key={s.title}>

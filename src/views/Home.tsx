@@ -64,6 +64,7 @@ const Home: React.FC = () => {
 		tag?: string;
 		icon: React.ReactNode;
 		features: string[];
+		highlight?: boolean;
 	}> = [
 		{
 			title: "Jobsøgning",
@@ -71,6 +72,7 @@ const Home: React.FC = () => {
 			to: "/jobsearch",
 			tag: "Ny visning",
 			icon: <MagnifyingGlassIcon className="w-8 h-8" aria-hidden="true" />,
+			highlight: true,
 			features: [
 				"Søg blandt alle danske job",
 				"Filtrér efter kategori og placering",
@@ -84,6 +86,7 @@ const Home: React.FC = () => {
 			to: "/jobsearch?panel=recommended",
 			tag: "Personligt",
 			icon: <SparklesIcon className="w-8 h-8" aria-hidden="true" />,
+			highlight: true,
 			features: [
 				"Matcher på dine kompetencer",
 				"Baseret på din profil",
@@ -231,7 +234,7 @@ const Home: React.FC = () => {
 			/>
 
 			<section className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] items-stretch">
-			<div className="card bg-gradient-to-br from-primary/15 via-base-100 to-secondary/10 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
+				<div className="card bg-gradient-to-br from-primary/15 via-base-100 to-secondary/10 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
 					<div className="card-body p-8 flex flex-col gap-6">
 						<div className="space-y-3">
 							<p className="text-sm uppercase tracking-[0.2em] text-primary/80 font-semibold">Velkommen til FindJob.nu</p>
@@ -268,7 +271,7 @@ const Home: React.FC = () => {
 					</div>
 				</div>
 
-			<div className="card bg-base-100 shadow-lg border border-base-200 transition-all hover:shadow-xl hover:-translate-y-1">
+			<div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
 					<div className="card-body p-6 flex flex-col gap-4">
 						<div className="flex items-start justify-between gap-4">
 							<div>
@@ -354,11 +357,11 @@ const Home: React.FC = () => {
 						const content = (
 							<div className="card-body">
 								<div className="flex items-start justify-between">
-									<div className="p-3 rounded-lg bg-base-200 text-base-content/80">
+									<div className={`p-3 rounded-lg ${card.highlight ? "bg-primary/10 text-primary" : "bg-base-200 text-base-content/80"}`}>
 										{card.icon}
 									</div>
 									{card.tag && (
-										<span className="badge badge-outline badge-primary">
+										<span className={`badge ${card.highlight ? "badge-primary" : "badge-outline"}`}>
 											{card.tag}
 										</span>
 									)}
@@ -388,21 +391,21 @@ const Home: React.FC = () => {
 							<Link
 								key={card.title}
 								to={card.to}
-								className="card shadow-lg border transition-all hover:shadow-xl hover:-translate-y-1 bg-base-100"
-							>
-								{content}
-							</Link>
-						) : (
-							<div key={card.title} className="card shadow-lg border transition-all hover:shadow-xl hover:-translate-y-1 bg-base-100">
-								{content}
-							</div>
-						);
-					})}
-				</div>
-			</section>
+							className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1"
+						>
+							{content}
+						</Link>
+					) : (
+						<div key={card.title} className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
+						{content}
+					</div>
+				);
+			})}
+		</div>
+	</section>
 
-			<section className="mt-12 grid gap-6 lg:grid-cols-3">
-				<div className="card bg-base-100 border border-base-200 shadow-sm lg:col-span-2">
+	<section className="mt-12 grid gap-6 lg:grid-cols-3">
+				<div className="card bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 shadow-sm lg:col-span-2 transition-all hover:shadow-xl hover:-translate-y-1">
 					<div className="card-body gap-4">
 						<h3 className="text-xl font-bold">Sådan kommer du i gang</h3>
 						<ul className="list-disc list-inside space-y-2 text-base-content/80">
