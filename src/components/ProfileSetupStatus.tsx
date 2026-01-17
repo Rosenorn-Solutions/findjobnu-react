@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 
 interface SetupState {
@@ -70,10 +71,10 @@ const ProfileSetupStatus: React.FC<ProfileSetupStatusProps> = ({ userId, setupSt
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <a className="btn btn-sm btn-primary" href="/profile">Opdatér profil</a>
-            <a className="btn btn-sm btn-outline" href="/profile?panel=jobAgent">Åbn jobagent</a>
-            <a className="btn btn-sm btn-outline" href="/profile">Tilføj kompetencer</a>
-            <a className="btn btn-sm btn-outline" href="/profile?panel=connections">Forbind LinkedIn</a>
+            <Link className="btn btn-sm btn-primary" to="/profile">Opdatér profil</Link>
+            <Link className="btn btn-sm btn-outline" to="/profile/job-agent">Åbn jobagent</Link>
+            <Link className="btn btn-sm btn-outline" to="/profile">Tilføj kompetencer</Link>
+            <Link className="btn btn-sm btn-outline" to="/profile/connections">Forbind LinkedIn</Link>
           </div>
         </div>
       ) : (
@@ -83,8 +84,8 @@ const ProfileSetupStatus: React.FC<ProfileSetupStatusProps> = ({ userId, setupSt
             Opret en konto, udfyld din profil, og kom tilbage for at se hvordan du står for anbefalingerne.
           </p>
           <div className="flex justify-center gap-3">
-            <a className="btn btn-primary" href="/register">Opret bruger</a>
-            <a className="btn btn-outline" href="/login">Log ind</a>
+            <Link className="btn btn-primary" to="/register">Opret bruger</Link>
+            <Link className="btn btn-outline" to="/login">Log ind</Link>
           </div>
         </div>
       )}

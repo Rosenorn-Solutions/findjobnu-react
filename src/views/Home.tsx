@@ -133,7 +133,7 @@ const Home: React.FC = () => {
 		{
 			title: "Jobagenter",
 			description: "Opsæt og justér dine jobagenter, så nye opslag lander direkte i din indbakke.",
-			to: "/profile?panel=jobAgent",
+			to: "/profile/job-agent",
 			icon: <BellAlertIcon className="w-8 h-8" aria-hidden="true" />,
 			features: [
 				"Automatiske notifikationer",
@@ -145,7 +145,7 @@ const Home: React.FC = () => {
 		{
 			title: "Gemte job",
 			description: "Se og administrér de opslag, du har gemt til senere opfølgning.",
-			to: "/profile?panel=savedJobs",
+			to: "/profile/saved-jobs",
 			icon: <BookmarkIcon className="w-8 h-8" aria-hidden="true" />,
 			features: [
 				"Ubegrænset lagring",
@@ -237,9 +237,9 @@ const Home: React.FC = () => {
 				<div className="card bg-gradient-to-br from-primary/15 via-base-100 to-secondary/10 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
 					<div className="card-body p-8 flex flex-col gap-6">
 						<div className="space-y-3">
-							<p className="text-sm uppercase tracking-[0.2em] text-primary/80 font-semibold">Velkommen til FindJob.nu</p>
+							<p className="text-sm uppercase tracking-[0.2em] text-primary/80 font-semibold leading-relaxed">Velkommen til FindJob.nu</p>
 							<h1 className="text-3xl md:text-4xl font-bold leading-tight text-base-content">En samlet forside til jobsøgning, læring og overblik</h1>
-							<p className="text-lg text-base-content/80 max-w-2xl">Find relevante job, opbyg dit CV og følg udviklingen på jobmarkedet. Vi har samlet de vigtigste funktioner ét sted, så du kan vælge det, der passer dig.</p>
+							<p className="text-lg text-base-content/80 max-w-2xl leading-relaxed">Find relevante job, opbyg dit CV og følg udviklingen på jobmarkedet. Vi har samlet de vigtigste funktioner ét sted, så du kan vælge det, der passer dig.</p>
 						</div>
 						<div className="flex flex-wrap gap-3">
 							<Link to="/jobsearch" className="btn btn-primary btn-lg">Start jobsøgningen</Link>
@@ -247,25 +247,25 @@ const Home: React.FC = () => {
 						</div>
 						<div className="grid gap-3 md:grid-cols-3">
 							<Link to="/cv" className="bg-base-100/80 rounded-box p-4 shadow-sm border border-base-200 hover:no-underline focus-visible:outline-none">
-								<div className="flex items-center gap-2 text-sm text-base-content/70">
+								<div className="flex items-center gap-2 text-sm text-base-content/70 leading-relaxed">
 									<DocumentTextIcon className="w-5 h-5 text-primary" aria-hidden="true" />
 									<span>Det gode CV</span>
 								</div>
-								<p className="text-xl font-semibold">Guides, eksempler og checklister</p>
+								<p className="text-xl font-semibold leading-relaxed">Guides, eksempler og checklister</p>
 							</Link>
 							<Link to="/profile" className="bg-base-100/80 rounded-box p-4 shadow-sm border border-base-200 hover:no-underline focus-visible:outline-none">
-								<div className="flex items-center gap-2 text-sm text-base-content/70">
+								<div className="flex items-center gap-2 text-sm text-base-content/70 leading-relaxed">
 									<IdentificationIcon className="w-5 h-5 text-secondary" aria-hidden="true" />
 									<span>Profil og anbefalinger</span>
 								</div>
-								<p className="text-xl font-semibold">Tilpas din profil og få bedre match</p>
+								<p className="text-xl font-semibold leading-relaxed">Tilpas din profil og få bedre match</p>
 							</Link>
-							<Link to="/profile?panel=savedJobs" className="bg-base-100/80 rounded-box p-4 shadow-sm border border-base-200 hover:no-underline focus-visible:outline-none">
-								<div className="flex items-center gap-2 text-sm text-base-content/70">
+							<Link to="/profile/saved-jobs" className="bg-base-100/80 rounded-box p-4 shadow-sm border border-base-200 hover:no-underline focus-visible:outline-none">
+								<div className="flex items-center gap-2 text-sm text-base-content/70 leading-relaxed">
 									<BookmarkIcon className="w-5 h-5 text-accent" aria-hidden="true" />
 									<span>Gemte job</span>
 								</div>
-								<p className="text-xl font-semibold">Følg dine fund og jobagenter</p>
+								<p className="text-xl font-semibold leading-relaxed">Følg dine fund og jobagenter</p>
 							</Link>
 						</div>
 					</div>
@@ -275,9 +275,9 @@ const Home: React.FC = () => {
 					<div className="card-body p-6 flex flex-col gap-4">
 						<div className="flex items-start justify-between gap-4">
 							<div>
-								<p className="text-sm uppercase tracking-[0.2em] text-base-content/70 font-semibold">Jobindsigt</p>
+								<p className="text-sm uppercase tracking-[0.2em] text-base-content/70 font-semibold leading-relaxed">Jobindsigt</p>
 								<h2 className="text-2xl font-bold">Aktuelle nøgletal fra jobmarkedet</h2>
-								<p className="text-base text-base-content/70">Data opdateres fra JobIndex og viser et hurtigt overblik over nye og aktive opslag.</p>
+								<p className="text-base text-base-content/70 leading-relaxed">Data opdateres fra JobIndex og viser et hurtigt overblik over nye og aktive opslag.</p>
 							</div>
 							{statsLoading && <span className="loading loading-spinner loading-md text-primary" aria-label="Henter statistik" />}
 						</div>
@@ -289,20 +289,20 @@ const Home: React.FC = () => {
 								{ label: "Nye job i sidste måned", value: formatNumber(stats?.newJobsLastMonth), icon: <ChartBarIcon className="w-5 h-5 text-accent" aria-hidden="true" /> }
 							].map((item) => (
 						<div key={item.label} className="rounded-box border border-base-200 bg-base-100 p-4 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-									<div className="flex items-center gap-2 text-sm text-base-content/60">
+									<div className="flex items-center gap-2 text-sm text-base-content/60 leading-relaxed">
 										{item.icon}
 										<span>{item.label}</span>
 									</div>
-									<p className="text-3xl font-bold text-base-content mt-2">{item.value}</p>
+									<p className="text-3xl font-bold text-base-content mt-2 leading-relaxed">{item.value}</p>
 								</div>
 							))}
 						</div>
 
 						<div>
-							<p className="text-sm font-semibold text-base-content/80">Mest udbudte kategorier</p>
+							<p className="text-sm font-semibold text-base-content/80 leading-relaxed">Mest udbudte kategorier</p>
 							<div className="mt-3 grid auto-rows-fr gap-3 sm:grid-cols-2">
 								{topCategories.length === 0 && !statsLoading && (
-									<span className="text-base-content/60 text-sm">Ingen data tilgængelig endnu.</span>
+									<span className="text-base-content/60 text-sm leading-relaxed">Ingen data tilgængelig endnu.</span>
 								)}
 								{topCategories.map((category) => {
 									const icon = getCategoryIcon(category.name);
@@ -317,7 +317,7 @@ const Home: React.FC = () => {
 													<span className="text-sm text-base-content/70">{formatNumber(category.numberOfJobs)} opslag</span>
 												</div>
 											</div>
-											<span className="text-primary font-semibold text-sm">Se job →</span>
+											<span className="text-primary font-semibold text-sm leading-relaxed">Se job →</span>
 										</div>
 									);
 									return category.id != null ? (
@@ -347,9 +347,9 @@ const Home: React.FC = () => {
 			<section className="mt-10">
 				<div className="flex items-center justify-between flex-wrap gap-3 mb-4">
 					<div>
-						<p className="text-sm uppercase tracking-[0.2em] text-base-content/70 font-semibold">Overblik</p>
+						<p className="text-sm uppercase tracking-[0.2em] text-base-content/70 font-semibold leading-relaxed">Overblik</p>
 						<h2 className="text-2xl font-bold">Vælg den del af FindJob.nu, du vil bruge</h2>
-						<p className="text-base text-base-content/70">Hop direkte til den funktion, der hjælper dig nu – fra jobsøgning og CV til jobagenter.</p>
+						<p className="text-base text-base-content/70 leading-relaxed">Hop direkte til den funktion, der hjælper dig nu – fra jobsøgning og CV til jobagenter.</p>
 					</div>
 				</div>
 				<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -367,7 +367,7 @@ const Home: React.FC = () => {
 									)}
 								</div>
 								<h3 className="card-title mt-4">{card.title}</h3>
-								<p className="text-base-content/70">{card.description}</p>
+								<p className="text-base-content/70 leading-relaxed">{card.description}</p>
 								<ul className="mt-4 space-y-2">
 									{card.features.map((feature) => (
 										<li key={feature} className="flex items-center gap-2 text-sm text-base-content/80">
@@ -408,7 +408,7 @@ const Home: React.FC = () => {
 				<div className="card bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 shadow-sm lg:col-span-2 transition-all hover:shadow-xl hover:-translate-y-1">
 					<div className="card-body gap-4">
 						<h3 className="text-xl font-bold">Sådan kommer du i gang</h3>
-						<ul className="list-disc list-inside space-y-2 text-base-content/80">
+						<ul className="list-disc list-inside space-y-2 text-base-content/80 leading-relaxed">
 							<li>Start i jobsøgningen for at få et hurtigt overblik over aktuelle opslag.</li>
 							<li>Opdatér din profil med erfaring og færdigheder for at få mere relevante anbefalinger.</li>
 							<li>Læs vores guide til det gode CV, og brug den som tjekliste, inden du sender ansøgninger.</li>
@@ -419,7 +419,7 @@ const Home: React.FC = () => {
 				<div className="card bg-secondary text-secondary-content shadow-sm">
 					<div className="card-body gap-4">
 						<h3 className="text-xl font-bold">Tip: Brug data i din søgning</h3>
-						<p className="text-secondary-content/90">Kig på de mest udbudte kategorier og de nye tendenser fra den seneste uge, før du målretter dit næste søgeord.</p>
+						<p className="text-secondary-content/90 leading-relaxed">Kig på de mest udbudte kategorier og de nye tendenser fra den seneste uge, før du målretter dit næste søgeord.</p>
 						<Link to="/jobsearch" className="btn btn-outline border-secondary-content text-secondary-content">Se job og filtrér nu</Link>
 					</div>
 				</div>

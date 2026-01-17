@@ -399,7 +399,7 @@ const GoodCv: React.FC = () => {
                             <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                                 {i % 2 === 0 ? (
                                     <>
-                                        <div className="rounded-box border p-6 self-center">
+                                        <div className="rounded-box p-6 self-center">
                                             <h2 className="text-2xl font-semibold flex items-center justify-between gap-3">
                                                 <span>{s.title}</span>
                                                 <s.icon className="w-7 h-7 text-primary" aria-hidden="true" />
@@ -435,7 +435,7 @@ const GoodCv: React.FC = () => {
                                                 loading="lazy"
                                             />
                                         </figure>
-                                        <div className="rounded-box border p-6 self-center">
+                                        <div className="rounded-box p-6 self-center">
                                             <h2 className="text-2xl font-semibold flex items-center justify-between gap-3">
                                                 <span>{s.title}</span>
                                                 <s.icon className="w-7 h-7 text-primary" aria-hidden="true" />

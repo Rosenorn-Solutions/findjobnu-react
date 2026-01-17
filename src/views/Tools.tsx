@@ -71,7 +71,7 @@ const tools: Tool[] = [
             "Afmeld når du vil"
         ],
         icon: <BellAlertIcon className="w-8 h-8" aria-hidden="true" />,
-        href: "/profile?panel=jobAgent"
+        href: "/profile/job-agent"
     },
     {
         title: "Profil og kompetencer",
@@ -97,7 +97,7 @@ const tools: Tool[] = [
             "Tilgængelig på alle enheder"
         ],
         icon: <BookmarkIcon className="w-8 h-8" aria-hidden="true" />,
-        href: "/profile?panel=savedJobs"
+        href: "/profile/saved-jobs"
     }
 ];
 

@@ -45,6 +45,10 @@ const AppWithAuthCheck: React.FC = () => {
   const navigationType = useNavigationType();
   const [direction, setDirection] = useState<"forward" | "back" | "neutral">("neutral");
   const previousIndexRef = useRef<number | null>(null);
+  const routeKey = useMemo(
+    () => (location.pathname.startsWith("/profile") ? "/profile" : location.pathname),
+    [location.pathname]
+  );
   useEffect(() => {
     checkAndClearExpiredToken(setUser);
     const interval = setInterval(() => {
@@ -97,24 +101,24 @@ const AppWithAuthCheck: React.FC = () => {
       <Navbar />
       <main className="flex-1">
         <AnimatePresence mode="wait" initial={false}>
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<PageWrapper direction={direction} pathKey={location.pathname}><Home /></PageWrapper>} />
-            <Route path="/login" element={<PageWrapper direction={direction} pathKey={location.pathname}><Login /></PageWrapper>} />
-            <Route path="/register" element={<PageWrapper direction={direction} pathKey={location.pathname}><Register /></PageWrapper>} />
-            <Route path="/profile" element={<PageWrapper direction={direction} pathKey={location.pathname}><Profile /></PageWrapper>} />
-            <Route path="/settings" element={<Navigate to="/profile?panel=settings" replace />} />
-            <Route path="/profile/linkedin-auth" element={<PageWrapper direction={direction} pathKey={location.pathname}><LinkedInAuthHandler /></PageWrapper>} />
-            <Route path="/about" element={<PageWrapper direction={direction} pathKey={location.pathname}><About /></PageWrapper>} />
-            <Route path="/contact" element={<PageWrapper direction={direction} pathKey={location.pathname}><Contact /></PageWrapper>} />
-            <Route path="/jobsearch" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobSearch /></PageWrapper>} />
-            <Route path="/cv" element={<PageWrapper direction={direction} pathKey={location.pathname}><GoodCv /></PageWrapper>} />
-            <Route path="/vaerktoejer" element={<PageWrapper direction={direction} pathKey={location.pathname}><Tools /></PageWrapper>} />
-            <Route path="/job" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobsByLocation /></PageWrapper>} />
-            <Route path="/job/:city" element={<PageWrapper direction={direction} pathKey={location.pathname}><JobsByLocation /></PageWrapper>} />
-            <Route path="/privatlivspolitik" element={<PageWrapper direction={direction} pathKey={location.pathname}><PrivacyPolicy /></PageWrapper>} />
-            <Route path="/cookie-information" element={<PageWrapper direction={direction} pathKey={location.pathname}><CookieInformation /></PageWrapper>} />
-            <Route path="/sitemap" element={<PageWrapper direction={direction} pathKey={location.pathname}><Sitemap /></PageWrapper>} />
-            <Route path="*" element={<PageWrapper direction={direction} pathKey={location.pathname}><NotFound /></PageWrapper>} />
+          <Routes location={location} key={routeKey}>
+            <Route path="/" element={<PageWrapper direction={direction} pathKey={routeKey}><Home /></PageWrapper>} />
+            <Route path="/login" element={<PageWrapper direction={direction} pathKey={routeKey}><Login /></PageWrapper>} />
+            <Route path="/register" element={<PageWrapper direction={direction} pathKey={routeKey}><Register /></PageWrapper>} />
+            <Route path="/profile/*" element={<PageWrapper direction={direction} pathKey={routeKey}><Profile /></PageWrapper>} />
+            <Route path="/settings" element={<Navigate to="/profile/settings" replace />} />
+            <Route path="/profile/linkedin-auth" element={<PageWrapper direction={direction} pathKey={routeKey}><LinkedInAuthHandler /></PageWrapper>} />
+            <Route path="/about" element={<PageWrapper direction={direction} pathKey={routeKey}><About /></PageWrapper>} />
+            <Route path="/contact" element={<PageWrapper direction={direction} pathKey={routeKey}><Contact /></PageWrapper>} />
+            <Route path="/jobsearch" element={<PageWrapper direction={direction} pathKey={routeKey}><JobSearch /></PageWrapper>} />
+            <Route path="/cv" element={<PageWrapper direction={direction} pathKey={routeKey}><GoodCv /></PageWrapper>} />
+            <Route path="/vaerktoejer" element={<PageWrapper direction={direction} pathKey={routeKey}><Tools /></PageWrapper>} />
+            <Route path="/job" element={<PageWrapper direction={direction} pathKey={routeKey}><JobsByLocation /></PageWrapper>} />
+            <Route path="/job/:city" element={<PageWrapper direction={direction} pathKey={routeKey}><JobsByLocation /></PageWrapper>} />
+            <Route path="/privatlivspolitik" element={<PageWrapper direction={direction} pathKey={routeKey}><PrivacyPolicy /></PageWrapper>} />
+            <Route path="/cookie-information" element={<PageWrapper direction={direction} pathKey={routeKey}><CookieInformation /></PageWrapper>} />
+            <Route path="/sitemap" element={<PageWrapper direction={direction} pathKey={routeKey}><Sitemap /></PageWrapper>} />
+            <Route path="*" element={<PageWrapper direction={direction} pathKey={routeKey}><NotFound /></PageWrapper>} />
           </Routes>
         </AnimatePresence>
       </main>

@@ -105,7 +105,7 @@ const JobSeeker: React.FC = () => {
                   position: 3,
                   name: "Jobagent",
                   description: "Få besked når nye relevante job bliver opslået",
-                  url: "https://findjob.nu/profile?panel=jobAgent"
+                  url: "https://findjob.nu/profile/job-agent"
                 }
               ]
             }
@@ -225,7 +225,7 @@ const JobSeeker: React.FC = () => {
               <li>Notifikationer når nye opslag matcher dig</li>
               <li>Skift filter hurtigt uden at miste historik</li>
             </ul>
-            <a href="/profile?panel=jobAgent" className="btn btn-accent btn-sm w-fit mt-auto">Aktivér jobagent</a>
+            <a href="/profile/job-agent" className="btn btn-accent btn-sm w-fit mt-auto">Aktivér jobagent</a>
           </div>
         </div>
       </div>
@@ -246,7 +246,7 @@ const JobSeeker: React.FC = () => {
               </ul>
               <div className="flex flex-wrap gap-3">
                 <a className="btn btn-primary" href="/profile">Åbn profil</a>
-                <a className="btn btn-outline" href="/profile?panel=jobAgent">Jobagent</a>
+                <a className="btn btn-outline" href="/profile/job-agent">Jobagent</a>
                 <a className="btn btn-outline" href="/jobsearch?panel=recommended">Se anbefalinger</a>
               </div>
             </div>

@@ -42,17 +42,17 @@ const sections: Section[] = [
         badges: ["Støtte", "Værktøjer", "Samarbejde"],
     },
     {
-        title: "Et team af specialister i jobmarkedet",
+        title: "Datadrevet og fremtidssikret jobmatch",
         text:
-            "Vores hold består af rekrutteringskonsulenter, data scientists og produktfolk, der selv har prøvet at sidde på begge sider af bordet. Det giver os en jordnær tilgang og løsninger, der virker.",
+            "Vi bygger løsninger, der lærer af markedet og skalerer med dine behov. Med robuste datafundamenter og løbende kvalitetstjek gør vi vores platform klar til nye tendenser og teknologier.",
         bullets: [
-            "10+ års erfaring fra HR-tech og public sector",
-            "Fokus på tilgængelighed og inklusion i alle produkter",
-            "Partnerskaber med brancheorganisationer og jobcentre",
+            "Løbende analyse af jobmarkedets signaler og kompetencebehov",
+            "Automatiske kvalitetsmålinger, der holder anbefalingerne skarpe",
+            "Fremtidssikret arkitektur, der gør os klar til nye krav og muligheder",
         ],
         image: illuExperts,
-        imageAlt: "Illustration af team",
-        badges: ["Erfaring", "Inklusion", "Partnerskaber"],
+        imageAlt: "Illustration af data og fremtidssikring",
+        badges: ["Datadrevet", "Fremtidssikret", "Skalerbart"],
     },
 ];
 
@@ -129,7 +129,7 @@ const About: React.FC = () => {
                             <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                                 {index % 2 === 0 ? (
                                     <>
-                                        <div className="rounded-box border p-6 self-center flex flex-col">
+                                        <div className="rounded-box p-6 self-center flex flex-col">
                                             <h2 className="text-2xl font-semibold">{s.title}</h2>
                                             <p className="text-base-content/80">{s.text}</p>
                                             <ul className="list-disc ml-5 mt-2 space-y-1 text-base-content/80">
@@ -162,7 +162,7 @@ const About: React.FC = () => {
                                                 loading="lazy"
                                             />
                                         </figure>
-                                        <div className="rounded-box border p-6 self-center flex flex-col">
+                                        <div className="rounded-box p-6 self-center flex flex-col">
                                             <h2 className="text-2xl font-semibold">{s.title}</h2>
                                             <p className="text-base-content/80">{s.text}</p>
                                             <ul className="list-disc ml-5 mt-2 space-y-1 text-base-content/80">

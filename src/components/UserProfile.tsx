@@ -386,7 +386,7 @@ const UserProfileComponent: React.FC<Props> = ({ userId, refreshKey }) => {
           onKeywordsChange={(value) => setKeywordsInput(value)}
         />
 
-        <div role="tablist" className="tabs tabs-box">
+        <div role="tablist" className="tabs bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 mb-6 transition-all hover:shadow-xl hover:-translate-y-1">
           <input
             type="radio"
             name="profile-details"
@@ -396,7 +396,7 @@ const UserProfileComponent: React.FC<Props> = ({ userId, refreshKey }) => {
             checked={detailsTab === "experiences"}
             onChange={() => switchDetailsTab("experiences")}
           />
-          <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-4 md:p-6">
+          <div role="tabpanel" className="tab-content">
             <ExperiencesCard
               experiences={experiences}
               editing={editingCard === 'experiences'}
@@ -418,7 +418,7 @@ const UserProfileComponent: React.FC<Props> = ({ userId, refreshKey }) => {
             checked={detailsTab === "educations"}
             onChange={() => switchDetailsTab("educations")}
           />
-          <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-4 md:p-6">
+          <div role="tabpanel" className="tab-content">
             <EducationsCard
               educations={educations}
               editing={editingCard === 'educations'}
@@ -440,7 +440,7 @@ const UserProfileComponent: React.FC<Props> = ({ userId, refreshKey }) => {
             checked={detailsTab === "skills"}
             onChange={() => switchDetailsTab("skills")}
           />
-          <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-4 md:p-6">
+          <div role="tabpanel" className="tab-content">
             <SkillsCard
               skills={skills}
               editing={editingCard === 'skills'}

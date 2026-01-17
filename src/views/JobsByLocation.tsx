@@ -290,7 +290,6 @@ const JobsByLocation: React.FC = () => {
                     title="By ikke fundet | FindJob.nu"
                     description="Den valgte by blev ikke fundet. Se job i andre danske byer."
                     path={`/job/${city}`}
-                    noIndex
                 />
                 <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                     <div className="hero-content text-center py-12">
@@ -445,7 +444,7 @@ const JobsByLocation: React.FC = () => {
                             <p className="text-sm text-base-content/70">
                                 Opret en gratis jobagent og få besked når nye job i {cityInfo.name} bliver opslået.
                             </p>
-                            <Link to="/profile?panel=jobAgent" className="btn btn-secondary btn-sm mt-2">
+                            <Link to="/profile/job-agent" className="btn btn-secondary btn-sm mt-2">
                                 Opret jobagent
                             </Link>
                         </div>

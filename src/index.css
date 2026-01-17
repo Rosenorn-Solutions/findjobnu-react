@@ -8,6 +8,11 @@
       scrollbar-gutter: stable;
    }
 
+   /* WCAG accessibility: paragraphs need at least 1.5x line-height */
+   p, li, span, label, td, th, dd, dt {
+      line-height: 1.5 !important;
+   }
+
    body {
       min-height: 100vh;
       overflow-y: scroll;

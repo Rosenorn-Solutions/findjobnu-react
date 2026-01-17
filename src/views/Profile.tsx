@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useUser } from "../context/UserContext.shared";
 import UserProfileComponent from "../components/UserProfile";
 import ConnectionsComponent from "../components/Connections";
 import JobAgentCard from "../components/JobAgentCard";
 import SavedJobs from "../components/SavedJobs";
 import SettingsPanel from "../components/SettingsPanel";
-import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import { NavLink, Navigate, Route, Routes, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Seo from "../components/Seo";
+import { AnimatePresence, motion } from "framer-motion";
 
 type PanelKey = "profile" | "connections" | "jobAgent" | "savedJobs" | "settings";
 
@@ -15,14 +16,9 @@ const Profile: React.FC = () => {
   const userId = user?.userId || "";
   const token = user?.accessToken || "";
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
-  const panelFromParams = useCallback((): PanelKey => {
-    const panel = searchParams.get("panel");
-    if (panel === "connections" || panel === "jobAgent" || panel === "savedJobs" || panel === "settings") return panel;
-    return "profile";
-  }, [searchParams]);
   const [profileRefreshKey] = useState(0);
-  const [activePanel, setActivePanel] = useState<PanelKey>(() => panelFromParams());
 
   useEffect(() => {
     if (!userId || !token) {
@@ -31,14 +27,25 @@ const Profile: React.FC = () => {
   }, [userId, token, navigate]);
 
   useEffect(() => {
-    setActivePanel(panelFromParams());
-  }, [panelFromParams]);
+    const panel = searchParams.get("panel") as PanelKey | null;
+    if (!panel) return;
+    const panelPathMap: Record<PanelKey, string> = {
+      profile: "",
+      connections: "connections",
+      jobAgent: "job-agent",
+      savedJobs: "saved-jobs",
+      settings: "settings",
+    };
+    const target = panelPathMap[panel] ?? "";
+    navigate(target ? `/profile/${target}` : "/profile", { replace: true });
+  }, [navigate, searchParams]);
 
   const navItems = useMemo(
     () => [
       {
         key: "profile" as const,
         label: "Profil",
+        path: "/profile",
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4Z" />
@@ -49,6 +56,7 @@ const Profile: React.FC = () => {
       {
         key: "connections" as const,
         label: "Forbindelser",
+        path: "/profile/connections",
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm14 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6 20a4 4 0 0 1 4-4h0M14 16h0a4 4 0 0 1 4 4M12 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm-6 10a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4" />
@@ -58,6 +66,7 @@ const Profile: React.FC = () => {
       {
         key: "jobAgent" as const,
         label: "Jobagent",
+        path: "/profile/job-agent",
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16v10H4z" />
@@ -68,6 +77,7 @@ const Profile: React.FC = () => {
       {
         key: "savedJobs" as const,
         label: "Gemte Jobs",
+        path: "/profile/saved-jobs",
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6.5 4.5h11a1 1 0 0 1 1 1V20l-7.5-4.5L5.5 20V5.5a1 1 0 0 1 1-1Z" />
@@ -77,6 +87,7 @@ const Profile: React.FC = () => {
       {
         key: "settings" as const,
         label: "Indstillinger",
+        path: "/profile/settings",
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.757.426 1.757 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.757-2.924 1.757-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.757-.426-1.757-2.924 0-3.35.657-.159 1.182-.684 1.065-1.34-.94-1.543.826-3.31 2.37-2.37.642.392 1.456.133 1.572-.698Z" />
@@ -88,21 +99,17 @@ const Profile: React.FC = () => {
     []
   );
 
-  const renderActivePanel = () => {
-    switch (activePanel) {
-      case "connections":
-        return <ConnectionsComponent userId={userId} accessToken={token} />;
-      case "jobAgent":
-        return <JobAgentCard userId={userId} accessToken={token} />;
-      case "savedJobs":
-        return <SavedJobs userId={userId} />;
-      case "settings":
-        return <SettingsPanel />;
-      case "profile":
-      default:
-        return <UserProfileComponent userId={userId} refreshKey={profileRefreshKey} />;
-    }
-  };
+  const PanelWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <motion.div
+      className="min-h-[200px]"
+      initial={{ opacity: 0, x: 24 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -24 }}
+      transition={{ duration: 0.22, ease: "easeOut" }}
+    >
+      {children}
+    </motion.div>
+  );
 
   return (
     <div className="container max-w-7xl mx-auto px-4">
@@ -120,13 +127,13 @@ const Profile: React.FC = () => {
               {navItems.map((item) => (
                 <NavLink
                   key={item.key}
-                  to={{ pathname: "/profile", search: `?panel=${item.key}` }}
+                  to={item.path}
+                  end={item.key === "profile"}
                   className={({ isActive }) =>
                     `btn btn-sm justify-start gap-2 ${isActive ? "btn-primary" : "btn-ghost"}`
                   }
                   role="button"
-                  aria-current={activePanel === item.key ? "page" : undefined}
-                  onClick={() => setActivePanel(item.key)}
+                  aria-current={undefined}
                 >
                   <span className="text-base-content/80">{item.icon}</span>
                   <span>{item.label}</span>
@@ -136,12 +143,55 @@ const Profile: React.FC = () => {
           </div>
         </aside>
 
-        <section className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-sm border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
+        <section className="card">
           <div
             className="card-body p-0 sm:p-4 lg:p-6 transition-opacity duration-200"
-            key={activePanel}
           >
-            {renderActivePanel()}
+            <AnimatePresence mode="wait" initial={false}>
+              <Routes location={location} key={location.pathname}>
+                <Route
+                  index
+                  element={
+                    <PanelWrapper>
+                      <UserProfileComponent userId={userId} refreshKey={profileRefreshKey} />
+                    </PanelWrapper>
+                  }
+                />
+                <Route
+                  path="connections"
+                  element={
+                    <PanelWrapper>
+                      <ConnectionsComponent userId={userId} accessToken={token} />
+                    </PanelWrapper>
+                  }
+                />
+                <Route
+                  path="job-agent"
+                  element={
+                    <PanelWrapper>
+                      <JobAgentCard userId={userId} accessToken={token} />
+                    </PanelWrapper>
+                  }
+                />
+                <Route
+                  path="saved-jobs"
+                  element={
+                    <PanelWrapper>
+                      <SavedJobs userId={userId} />
+                    </PanelWrapper>
+                  }
+                />
+                <Route
+                  path="settings"
+                  element={
+                    <PanelWrapper>
+                      <SettingsPanel />
+                    </PanelWrapper>
+                  }
+                />
+                <Route path="*" element={<Navigate to="/profile" replace />} />
+              </Routes>
+            </AnimatePresence>
           </div>
         </section>
       </div>

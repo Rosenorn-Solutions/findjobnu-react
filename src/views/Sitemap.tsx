@@ -8,7 +8,7 @@ const sections = [
       { label: "Forside", href: "/" },
       { label: "Værktøjer", href: "/vaerktoejer" },
       { label: "Joboversigt", href: "/jobsearch" },
-      { label: "Mine job", href: "/profile?panel=savedJobs" },
+      { label: "Mine job", href: "/profile/saved-jobs" },
     ],
   },
   {

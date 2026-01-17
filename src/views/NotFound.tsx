@@ -24,7 +24,7 @@ const NotFound: React.FC = () => {
             <div className="text-sm uppercase tracking-wide text-base-content/60">Hurtige links</div>
             <div className="flex flex-col gap-3">
               <Link to="/profile" className="link link-hover">Min profil</Link>
-              <Link to="/profile?panel=jobAgent" className="link link-hover">Jobagent</Link>
+              <Link to="/profile/job-agent" className="link link-hover">Jobagent</Link>
               <Link to="/register" className="link link-hover">Opret bruger</Link>
               <Link to="/login" className="link link-hover">Log ind</Link>
             </div>

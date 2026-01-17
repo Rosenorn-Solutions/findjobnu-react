@@ -56,10 +56,16 @@ const faqs = [
 ];
 
 const Contact: React.FC = () => {
+    const [contactName, setContactName] = useState("");
+    const [contactEmail, setContactEmail] = useState("");
     const [message, setMessage] = useState("");
     const [newsletterEmail, setNewsletterEmail] = useState("");
     const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "loading" | "success" | "exists" | "error">("idle");
     const [newsletterError, setNewsletterError] = useState<string | null>(null);
+
+    const isContactFormValid = contactName.trim().length > 0
+        && contactEmail.trim().length > 0
+        && message.trim().length > 0;
 
     const handleNewsletterSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -157,7 +163,7 @@ const Contact: React.FC = () => {
                             loading="lazy"
                         />
                     </figure>
-                    <div className="rounded-box border p-6 h-full bg-base-200/30">
+                    <div className="rounded-box p-6 h-full">
                         <h2 className="text-2xl font-semibold flex items-center justify-between gap-2">
                             <span>Send os en besked</span>
                             <PaperAirplaneIcon className="w-6 h-6 text-primary" aria-hidden="true" />
@@ -165,20 +171,36 @@ const Contact: React.FC = () => {
                         <p className="text-base-content/70 mt-2">
                             Brug formularen, hvis du vil dele feedback, fejl eller idéer. Vi læser alt og svarer hurtigst muligt.
                         </p>
-                        <form className="mt-4" aria-label="Kontaktformular">
+                        <form className="mt-4" aria-label="Kontaktformular" onSubmit={(event) => event.preventDefault()}>
                             <fieldset className="fieldset gap-4">
                                 <legend className="fieldset-legend text-xl font-semibold">Send os en besked</legend>
                                 <div className="form-control gap-2">
                                     <label className="label p-0" htmlFor="contact-name">
                                         <span className="label-text">Navn</span>
                                     </label>
-                                    <input id="contact-name" type="text" className="input input-bordered w-full" placeholder="Dit navn" />
+                                    <input
+                                        id="contact-name"
+                                        type="text"
+                                        className="input input-bordered w-full"
+                                        placeholder="Dit navn"
+                                        value={contactName}
+                                        onChange={(event) => setContactName(event.target.value)}
+                                        required
+                                    />
                                 </div>
                                 <div className="form-control gap-2">
                                     <label className="label p-0" htmlFor="contact-email">
                                         <span className="label-text">E-mail</span>
                                     </label>
-                                    <input id="contact-email" type="email" className="input input-bordered w-full" placeholder="dig@eksempel.dk" />
+                                    <input
+                                        id="contact-email"
+                                        type="email"
+                                        className="input input-bordered w-full"
+                                        placeholder="dig@eksempel.dk"
+                                        value={contactEmail}
+                                        onChange={(event) => setContactEmail(event.target.value)}
+                                        required
+                                    />
                                 </div>
                                 <div className="form-control gap-2">
                                     <label className="label p-0" htmlFor="contact-message">
@@ -190,9 +212,10 @@ const Contact: React.FC = () => {
                                         placeholder="Fortæl os hvad du har på hjertet"
                                         value={message}
                                         onChange={(event) => setMessage(event.target.value)}
+                                        required
                                     />
                                 </div>
-                                <button type="button" className="btn btn-primary" disabled={message.trim().length === 0}>
+                                <button type="submit" className="btn btn-primary" disabled={!isContactFormValid}>
                                     Send besked
                                 </button>
                             </fieldset>
@@ -204,7 +227,7 @@ const Contact: React.FC = () => {
             <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                 <div className="card-body p-6 md:p-8 space-y-8">
                     <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                        <div className="rounded-box shadow-lg border p-6">
+                        <div className="rounded-box p-6">
                             <h3 className="text-xl font-semibold flex items-center justify-between gap-2">
                                 <span>Hold dig opdateret</span>
                                 <BellAlertIcon className="w-6 h-6 text-primary" aria-hidden="true" />

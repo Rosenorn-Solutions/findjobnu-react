@@ -24,7 +24,7 @@ const EditableCardFrame: React.FC<EditableCardFrameProps> = ({
   actions,
 }) => {
   return (
-    <div className="bg-base-100 shadow rounded-lg p-6 mb-6">
+    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 mb-6 transition-all hover:shadow-xl hover:-translate-y-1">
       <div className="mb-4 flex items-center justify-between">
         <div className="card-title flex items-center gap-2">{title}</div>
         <div className="flex items-center gap-2">
