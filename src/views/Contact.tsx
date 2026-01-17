@@ -90,7 +90,7 @@ const Contact: React.FC = () => {
     };
 
     return (
-        <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral max-w-none">
+        <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral">
             <Seo
                 title="Kontakt FindJob.nu – Support, partnerskab og feedback"
                 description="Kontakt FindJob.nu for support, partnerskaber eller feedback. Vi svarer normalt inden for én arbejdsdag."

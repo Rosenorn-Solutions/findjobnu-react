@@ -164,7 +164,7 @@ const Tools: React.FC = () => {
     }, [userId, token]);
 
     return (
-        <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral max-w-none">
+        <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral">
             <Seo
                 title="Gratis jobsøgningsværktøjer 2026 – CV-tjek, jobagent og mere | FindJob.nu"
                 description="Brug vores gratis værktøjer til jobsøgning: CV-analyse, personlige jobanbefalinger, jobagent og mere. Alt du behøver for at finde dit næste job."

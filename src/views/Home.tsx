@@ -183,7 +183,7 @@ const Home: React.FC = () => {
 	const topCategories = (stats?.topCategories ?? []).slice(0, 6).filter((c): c is CategoryJobCountResponse => Boolean(c?.name));
 
 	return (
-		<div className="max-w-7xl w-full mx-auto px-4 pb-12 prose prose-neutral max-w-none">
+		<div className="max-w-7xl w-full mx-auto px-4 pb-12 prose prose-neutral">
 			<Seo
 				title="FindJob.nu – Gratis jobsøgning, CV-tjek og jobanbefalinger i Danmark"
 				description="Find dit næste job med gratis CV-analyse, personlige jobanbefalinger og jobagenter. Søg blandt tusindvis af danske stillinger."

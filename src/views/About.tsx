@@ -73,7 +73,7 @@ const values = [
 
 const About: React.FC = () => {
     return (
-        <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral max-w-none">
+        <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral">
                 <Seo
                     title="Om FindJob.nu – Data, transparens og fairness"
                     description="Læs om FindJob.nu, vores mission om et fair dansk jobmarked og hvordan vi kombinerer data med menneskelig indsigt."

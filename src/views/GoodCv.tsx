@@ -117,7 +117,7 @@ const GoodCv: React.FC = () => {
     };
 
     return (
-        <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral max-w-none">
+        <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral">
             <Seo
                 title="Gratis CV-tjek og ATS-guide 2026 – Få din PDF analyseret | FindJob.nu"
                 description="Upload dit CV og få gratis læsbarheds-score, ATS-tjek og konkrete tips. Lær hvordan du skriver et CV der bliver set af rekrutterere."
