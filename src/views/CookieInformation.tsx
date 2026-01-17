@@ -3,7 +3,7 @@ import Seo from "../components/Seo";
 
 const CookieInformation: React.FC = () => {
   return (
-    <div className="container max-w-5xl mx-auto px-4 py-8 space-y-6">
+    <div className="container max-w-5xl mx-auto px-4 py-8 space-y-6 prose prose-neutral max-w-none">
       <Seo
         title="Cookie-information | FindJob.nu"
         description="Se hvordan FindJob.nu bruger nødvendige og begrænsede ydeevne-cookies. Ingen salg eller deling af data via cookies."

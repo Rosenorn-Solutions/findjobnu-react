@@ -2,7 +2,7 @@ import React from "react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import Profile from "../../views/Profile";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { renderWithProviders, screen, waitFor } from "../../test/testUtils";
 
 const navigateMock = vi.fn();
@@ -44,7 +44,9 @@ describe("Profile view", () => {
   it("redirects to login when no user is present", async () => {
     renderWithProviders(
       <MemoryRouter initialEntries={["/profile"]}>
-        <Profile />
+        <Routes>
+          <Route path="/profile/*" element={<Profile />} />
+        </Routes>
       </MemoryRouter>
     );
 
@@ -54,7 +56,9 @@ describe("Profile view", () => {
   it("renders profile content when user is present", async () => {
     renderWithProviders(
       <MemoryRouter initialEntries={["/profile"]}>
-        <Profile />
+        <Routes>
+          <Route path="/profile/*" element={<Profile />} />
+        </Routes>
       </MemoryRouter>,
       {
         userContext: { user: { userId: "user-123", accessToken: "token-abc" } },
@@ -63,12 +67,12 @@ describe("Profile view", () => {
 
     await waitFor(() => expect(navigateMock).not.toHaveBeenCalled());
 
-    expect(screen.getByTestId("user-profile")).toHaveTextContent("user-123");
+    expect(await screen.findByTestId("user-profile")).toHaveTextContent("user-123");
 
-    await userEvent.click(screen.getByRole("button", { name: /forbindelser/i }));
+    await userEvent.click(await screen.findByRole("button", { name: /forbindelser/i }));
     expect(await screen.findByTestId("connections")).toHaveTextContent("user-123:token-abc");
 
-    await userEvent.click(screen.getByRole("button", { name: /jobagent/i }));
+    await userEvent.click(await screen.findByRole("button", { name: /jobagent/i }));
     expect(await screen.findByTestId("job-agent")).toHaveTextContent("user-123:token-abc");
   });
 
@@ -77,7 +81,9 @@ describe("Profile view", () => {
 
     const { rerender } = renderWithProviders(
       <MemoryRouter initialEntries={["/profile"]}>
-        <Profile />
+        <Routes>
+          <Route path="/profile/*" element={<Profile />} />
+        </Routes>
       </MemoryRouter>,
       {
         userContext: { user },
@@ -88,7 +94,9 @@ describe("Profile view", () => {
 
     rerender(
       <MemoryRouter initialEntries={["/profile"]}>
-        <Profile />
+        <Routes>
+          <Route path="/profile/*" element={<Profile />} />
+        </Routes>
       </MemoryRouter>
     );
 

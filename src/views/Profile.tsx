@@ -145,7 +145,7 @@ const Profile: React.FC = () => {
 
         <section className="card">
           <div
-            className="card-body p-0 sm:p-4 lg:p-6 transition-opacity duration-200"
+            className="card-body p-0 sm:p-4 lg:p-6 transition-opacity duration-200 prose prose-neutral max-w-none"
           >
             <AnimatePresence mode="wait" initial={false}>
               <Routes location={location} key={location.pathname}>

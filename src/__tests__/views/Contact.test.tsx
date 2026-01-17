@@ -29,6 +29,8 @@ describe("Contact view", () => {
     const sendButton = screen.getByRole("button", { name: "Send besked" });
     expect(sendButton).toBeDisabled();
 
+    await user.type(screen.getByLabelText("Navn"), "Test Person");
+    await user.type(screen.getByLabelText("E-mail"), "test@example.com");
     await user.type(screen.getByLabelText("Besked"), "Hej der");
 
     expect(sendButton).not.toBeDisabled();

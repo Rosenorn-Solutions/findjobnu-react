@@ -227,7 +227,7 @@ const JobSearch: React.FC = () => {
   }, [searchParams]);
 
   return (
-    <div className="container max-w-7xl mx-auto px-4">
+    <div className="container max-w-7xl mx-auto px-4 prose prose-neutral max-w-none">
       <Seo
         title="Jobsøgning – Søg i 1000+ danske jobopslag | FindJob.nu"
         description="Find dit næste job blandt tusindvis af aktuelle stillinger. Filtrér på branche, lokation og jobtitel. Gratis at bruge."
