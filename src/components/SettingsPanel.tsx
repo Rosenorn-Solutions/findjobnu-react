@@ -11,7 +11,11 @@ export type SettingsCardProps = {
 };
 
 const SettingsCard: React.FC<SettingsCardProps> = ({ title, children, tone = "default" }) => (
-  <div className={`card bg-base-100 shadow-md p-6 ${tone === "danger" ? "border border-error/20" : ""}`}>
+  <div
+    className={`card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-sm border transition-all hover:shadow-xl hover:-translate-y-1 p-6 prose prose-neutral max-w-none ${
+      tone === "danger" ? "border-error/20" : "border-primary/20"
+    }`}
+  >
     {title ? <h2 className={`card-title mb-4 ${tone === "danger" ? "text-error" : ""}`}>{title}</h2> : null}
     {children}
   </div>

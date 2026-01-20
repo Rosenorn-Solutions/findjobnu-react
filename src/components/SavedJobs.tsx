@@ -46,7 +46,7 @@ const SavedJobs: React.FC<Props> = ({ userId }) => {
   }
 
   return (
-    <div className="mt-8">
+    <div>
       <JobList
         jobs={jobs}
         loading={loading}

@@ -121,7 +121,7 @@ const Profile: React.FC = () => {
       />
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 pb-8 items-start">
         <aside className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-sm border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1 self-start">
-          <div className="card-body p-4">
+          <div className="card-body p-0 sm:p-4 lg:p-6">
             <h2 className="card-title text-lg mb-2">Min profil</h2>
             <div className="flex flex-col gap-2" aria-label="Profil navigation">
               {navItems.map((item) => (
@@ -145,7 +145,7 @@ const Profile: React.FC = () => {
 
         <section className="card">
           <div
-            className="card-body p-0 sm:p-4 lg:p-6 transition-opacity duration-200 prose prose-neutral"
+            className="card-body p-0 transition-opacity duration-200 prose prose-neutral"
           >
             <AnimatePresence mode="wait" initial={false}>
               <Routes location={location} key={location.pathname}>

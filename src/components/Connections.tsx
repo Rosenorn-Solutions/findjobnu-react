@@ -133,7 +133,7 @@ const ConnectionsComponent: React.FC<Props> = ({ userId, accessToken }) => {
   };
 
   return (
-    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 w-full h-fit transition-all hover:shadow-xl hover:-translate-y-1">
+    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 w-full h-fit transition-all hover:shadow-xl hover:-translate-y-1 prose prose-neutral max-w-none">
       <h2 className="card-title mb-4 flex items-center gap-2">
         <span>Tilslutninger</span>
         <LinkIcon className="w-5 h-5 text-primary" aria-hidden="true" />

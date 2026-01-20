@@ -11,9 +11,7 @@ import LinkedInAuthHandler from "./views/LinkedInAuthHandler";
 import { checkAndClearExpiredToken } from "./helpers/AuthHelper";
 import { useUser } from "./context/UserContext.shared";
 import { UserProvider } from "./context/UserContext";
-import { ConsentProvider } from "./context/ConsentContext";
 import { ThemeProvider } from "./context/ThemeContext";
-import ConsentMessage from "./components/ConsentMessage";
 import JobSearch from "./views/JobSearch";
 import GoodCv from "./views/GoodCv";
 import About from "./views/About";
@@ -29,11 +27,9 @@ const App: React.FC = () => {
   return (
     <Router>
       <ThemeProvider>
-        <ConsentProvider>
-          <UserProvider>
-            <AppWithAuthCheck />
-          </UserProvider>
-        </ConsentProvider>
+        <UserProvider>
+          <AppWithAuthCheck />
+        </UserProvider>
       </ThemeProvider>
     </Router>
   );
@@ -122,7 +118,6 @@ const AppWithAuthCheck: React.FC = () => {
           </Routes>
         </AnimatePresence>
       </main>
-      <ConsentMessage />
       <Footer />
     </div>
   );
