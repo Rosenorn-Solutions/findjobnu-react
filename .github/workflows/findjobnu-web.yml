@@ -43,6 +43,9 @@ jobs:
 
       - name: Build web bundle
         run: npm run build
+        env:
+          VITE_GOOGLE_ADS_CLIENT_ID: ${{ vars.VITE_GOOGLE_ADS_CLIENT_ID }}
+          VITE_GOOGLE_ADS_JOBLIST_SLOT_ID: ${{ vars.VITE_GOOGLE_ADS_JOBLIST_SLOT_ID }}
 
       - name: Create deployment bundle
         run: tar -czf findjobnu-web.tar.gz dist server.js package.json package-lock.json
