@@ -44,6 +44,22 @@ app.get(/\.(js|css|html|svg|json|xml|txt|woff2?)$/, (req, res, next) => {
 app.use(express.static(distDir, { setHeaders: (res, filePath) => {
   if (filePath.endsWith('.gz')) res.setHeader('Content-Type', contentTypeFor(filePath.slice(0, -3)));
   if (filePath.endsWith('.br')) res.setHeader('Content-Type', contentTypeFor(filePath.slice(0, -3)));
+
+  const cleanPath = filePath.replace(/\.(br|gz)$/i, '');
+  const isHtml = cleanPath.endsWith('.html');
+  const hasHash = /\.[a-f0-9]{8,}\./i.test(cleanPath);
+
+  if (isHtml) {
+    res.setHeader('Cache-Control', 'no-cache');
+    return;
+  }
+
+  if (hasHash) {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    return;
+  }
+
+  res.setHeader('Cache-Control', 'public, max-age=3600');
 }}));
 
 app.get('*', (req, res) => {
