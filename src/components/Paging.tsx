@@ -4,6 +4,8 @@ interface PagingProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  scrollTargetId?: string;
+  scrollBehavior?: ScrollBehavior;
 }
 
 function getPageNumbers(current: number, total: number, window: number = 2) {
@@ -25,8 +27,36 @@ function getPageNumbers(current: number, total: number, window: number = 2) {
   return pages;
 }
 
-const Paging: React.FC<PagingProps> = ({ currentPage, totalPages, onPageChange }) => {
+const Paging: React.FC<PagingProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  scrollTargetId,
+  scrollBehavior,
+}) => {
   if (totalPages <= 1) return null;
+
+  const getScrollBehavior = (): ScrollBehavior => {
+    if (scrollBehavior) return scrollBehavior;
+    if (typeof window === "undefined") return "auto";
+    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    return prefersReduced ? "auto" : "smooth";
+  };
+
+  const scrollToTarget = () => {
+    if (!scrollTargetId) return;
+    const target = document.getElementById(scrollTargetId);
+    if (!target) return;
+    target.scrollIntoView({ behavior: getScrollBehavior(), block: "start" });
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages || page === currentPage) return;
+    onPageChange(page);
+    if (scrollTargetId) {
+      window.requestAnimationFrame(scrollToTarget);
+    }
+  };
 
   return (
     <div className="flex justify-center mt-6">
@@ -34,7 +64,7 @@ const Paging: React.FC<PagingProps> = ({ currentPage, totalPages, onPageChange }
         <button
           className="join-item btn btn-lg bg-base-100 border border-base-300 hover:bg-base-200 text-base-content"
           disabled={currentPage === 1}
-          onClick={() => onPageChange(currentPage - 1)}
+          onClick={() => handlePageChange(currentPage - 1)}
         >
           «
         </button>
@@ -54,7 +84,7 @@ const Paging: React.FC<PagingProps> = ({ currentPage, totalPages, onPageChange }
                   ? "btn-primary"
                   : "bg-base-100 border border-base-300 hover:bg-base-200"
               }`}
-              onClick={() => onPageChange(Number(page))}
+              onClick={() => handlePageChange(Number(page))}
             >
               {page}
             </button>
@@ -63,7 +93,7 @@ const Paging: React.FC<PagingProps> = ({ currentPage, totalPages, onPageChange }
         <button
           className="join-item btn btn-lg bg-base-100 border border-base-300 hover:bg-base-200 text-base-content"
           disabled={currentPage === totalPages}
-          onClick={() => onPageChange(currentPage + 1)}
+          onClick={() => handlePageChange(currentPage + 1)}
         >
           »
         </button>

@@ -67,16 +67,19 @@ const JobSearch: React.FC = () => {
     setPanelQueryParam("search");
     setActivePanel("search");
     setRecommendedSearchParams(null);
-    setLastSearchParams(null);
     setCurrentPage(1);
     setTotalCount(0);
     setFormKey((k) => k + 1);
+    if (lastSearchParams) {
+      handleSearch(lastSearchParams, 1);
+    } else {
+      fetchAllJobs(1);
+    }
   };
 
   const switchToRecommended = () => {
     setPanelQueryParam("recommended");
     setActivePanel("recommended");
-    setLastSearchParams(null);
     setRecommendedSearchParams(null);
     setCurrentPage(1);
     setTotalCount(0);

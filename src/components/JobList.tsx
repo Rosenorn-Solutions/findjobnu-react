@@ -39,6 +39,7 @@ const JobList: React.FC<Props> = ({
   totalCount,
   onPageChange,
 }) => {
+  const listTopId = "job-list-top";
   const [openJobIds, setOpenJobIds] = useState<Set<number>>(new Set());
   const [savingJobIds, setSavingJobIds] = useState<Set<number>>(new Set());
   const [savedJobIds, setSavedJobIds] = useState<Set<number>>(new Set());
@@ -417,8 +418,24 @@ const JobList: React.FC<Props> = ({
     );
   };
 
-  if (loading) return <JobListSkeleton count={pageSize} />;
-  if (!jobs.length) return <div className="text-center py-8">Ingen job fundet.</div>;
+  if (loading) {
+    return (
+      <>
+        <div id={listTopId} className="scroll-mt-24" aria-hidden="true" />
+        <JobListSkeleton count={pageSize} />
+      </>
+    );
+  }
+
+  if (!jobs.length) {
+    return (
+      <>
+        <div id={listTopId} className="scroll-mt-24" aria-hidden="true" />
+        <div className="text-center py-8">Ingen job fundet.</div>
+      </>
+    );
+  }
+
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const items: Array<{ kind: "job"; job: JobIndexPostResponse; idx: number } | { kind: "ad"; key: string }> = [];
@@ -431,6 +448,7 @@ const JobList: React.FC<Props> = ({
 
   return (
     <>
+      <div id={listTopId} className="scroll-mt-24" aria-hidden="true" />
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={currentPage}
@@ -453,7 +471,13 @@ const JobList: React.FC<Props> = ({
           })}
         </motion.div>
       </AnimatePresence>
-      <Paging currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+      <Paging
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+        scrollTargetId={listTopId}
+        scrollBehavior="smooth"
+      />
     </>
   );
 };
