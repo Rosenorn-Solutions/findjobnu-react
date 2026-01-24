@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="bg-base-100/80 backdrop-blur-md shadow-lg mb-5 sticky top-0 z-50 transition-colors border-b border-base-content/10">
-      <div className="max-w-[1400px] w-full mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-350 w-full mx-auto px-4 h-16 flex items-center justify-between gap-4">
         {/* Left: Logo and Navigation */}
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -84,7 +84,7 @@ const Navbar: React.FC = () => {
             </li>
             <li>
               <span
-                className="py-3 px-2 text-base min-h-[44px] flex items-center text-base-content/40 cursor-not-allowed tooltip tooltip-bottom"
+                className="py-3 px-2 text-base min-h-11 flex items-center text-base-content/40 cursor-not-allowed tooltip tooltip-bottom"
                 data-tip={t("nav.comingSoon")}
                 aria-disabled="true"
               >
@@ -119,7 +119,7 @@ const Navbar: React.FC = () => {
           <button
             type="button"
             onClick={toggleLanguage}
-            className="relative py-3 px-3 min-h-[44px] min-w-[44px] flex items-center justify-center text-base text-base-content/80 transition-colors duration-200 hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
+            className="relative py-3 px-3 min-h-11 min-w-11 flex items-center justify-center text-base text-base-content/80 transition-colors duration-200 hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
             aria-label={`${i18n.language} - ${languageSwitchLabel}`}
             title={languageSwitchLabel}
           >
@@ -181,13 +181,13 @@ const Navbar: React.FC = () => {
             </div>
           ) : (
             <div className="flex items-center gap-2 ml-2">
-              <Link to="/register" className="btn btn btn-success min-h-[44px]">
+              <Link to="/register" className="btn btn-success min-h-11">
                 <span className="flex items-center gap-2">
                   <UserPlusIcon className="w-5 h-5" />
                   {t("nav.register")}
                 </span>
               </Link>
-              <Link to="/login" className="btn btn-primary min-h-[44px]">
+              <Link to="/login" className="btn btn-primary min-h-11">
                 <span className="flex items-center gap-2">
                   <ArrowRightStartOnRectangleIcon className="w-5 h-5" />
                   {t("nav.login")}
@@ -265,7 +265,7 @@ const Navbar: React.FC = () => {
               </span>
             </NavLink>
             <span
-              className="block py-3 px-3 min-h-[44px] flex items-center text-base text-base-content/40 cursor-not-allowed"
+              className="py-3 px-3 min-h-11 flex items-center text-base text-base-content/40 cursor-not-allowed"
               aria-disabled="true"
             >
               <span className="flex items-center gap-2">

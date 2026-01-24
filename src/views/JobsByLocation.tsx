@@ -220,7 +220,7 @@ const JobsByLocation: React.FC = () => {
                     ]}
                 />
 
-                <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+                <div className="hero bg-linear-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
                     <div className="hero-content text-center py-12">
                         <div className="max-w-6xl w-full">
                             <div className="flex items-center justify-center gap-2 mb-4">
@@ -246,7 +246,7 @@ const JobsByLocation: React.FC = () => {
                         <Link
                             key={c.slug}
                             to={`/job/${c.slug}`}
-                            className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-md border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1"
+                            className="card bg-linear-to-br from-primary/5 to-secondary/5 shadow-md border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1"
                         >
                             <div className="card-body p-4">
                                 <div className="flex items-center gap-2">
@@ -264,7 +264,7 @@ const JobsByLocation: React.FC = () => {
                     ))}
                 </div>
 
-                <div className="mt-10 card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
+                <div className="mt-10 card bg-linear-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                     <div className="card-body">
                         <h2 className="card-title">Kan du ikke finde din by?</h2>
                         <p className="text-base-content/70">
@@ -291,7 +291,7 @@ const JobsByLocation: React.FC = () => {
                     description="Den valgte by blev ikke fundet. Se job i andre danske byer."
                     path={`/job/${city}`}
                 />
-                <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
+                <div className="hero bg-linear-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                     <div className="hero-content text-center py-12">
                         <div className="max-w-lg">
                             <h1 className="text-3xl font-bold">By ikke fundet</h1>
@@ -348,7 +348,7 @@ const JobsByLocation: React.FC = () => {
                 ]}
             />
 
-            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-8">
+            <div className="hero bg-linear-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-8">
                 <div className="hero-content text-center py-12">
                     <div className="max-w-6xl w-full">
                         <div className="flex items-center justify-center gap-2 text-sm text-base-content/70 mb-2">
@@ -400,7 +400,7 @@ const JobsByLocation: React.FC = () => {
                 </div>
 
                 <aside className="space-y-6">
-                    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-md border border-primary/20 sticky top-24 z-10 transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div className="card bg-linear-to-br from-primary/5 to-secondary/5 shadow-md border border-primary/20 sticky top-24 z-10 transition-all hover:shadow-xl hover:-translate-y-1">
                         <div className="card-body">
                             <h3 className="card-title text-lg">Søg mere specifikt</h3>
                             <p className="text-sm text-base-content/70">
@@ -415,7 +415,7 @@ const JobsByLocation: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-md border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div className="card bg-linear-to-br from-primary/5 to-secondary/5 shadow-md border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1">
                         <div className="card-body">
                             <h3 className="card-title text-lg">Andre byer</h3>
                             <div className="flex flex-wrap gap-2">
@@ -438,7 +438,7 @@ const JobsByLocation: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="card bg-gradient-to-br from-primary/10 to-secondary/10 shadow-md border transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div className="card bg-linear-to-br from-primary/10 to-secondary/10 shadow-md border transition-all hover:shadow-xl hover:-translate-y-1">
                         <div className="card-body">
                             <h3 className="card-title text-lg">Få job direkte i indbakken</h3>
                             <p className="text-sm text-base-content/70">

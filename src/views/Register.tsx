@@ -115,7 +115,7 @@ const Register: React.FC = () => {
   }, [success]);
 
   return (
-    <div className="card max-w-md mx-auto mt-12 p-8 bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 mb-6 transition-all hover:shadow-xl hover:-translate-y-1 prose prose-neutral">
+    <div className="card max-w-md mx-auto mt-12 bg-linear-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 mb-6 transition-all hover:shadow-xl hover:-translate-y-1 prose prose-neutral">
       <Seo
         title="Opret bruger | FindJob.nu"
         description="Opret en konto på FindJob.nu for at gemme jobs, aktivere jobagenter og få personlige anbefalinger."
@@ -240,7 +240,7 @@ const Register: React.FC = () => {
       </form>
       <div className="divider my-6">eller</div>
       <div className="text-center">
-        <Link to="/login" className="btn btn-primary min-h-[44px] w-full">Log ind</Link>
+        <Link to="/login" className="btn btn-primary min-h-11 w-full">Log ind</Link>
       </div>
     </div>
   );

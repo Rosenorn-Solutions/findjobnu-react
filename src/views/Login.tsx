@@ -108,7 +108,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="card max-w-md mx-auto mt-12 p-8 bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 mb-6 transition-all hover:shadow-xl hover:-translate-y-1 prose prose-neutral">
+    <div className="card max-w-md mx-auto mt-12 bg-linear-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 mb-6 transition-all hover:shadow-xl hover:-translate-y-1 prose prose-neutral">
       <Seo
         title="Log ind | FindJob.nu"
         description="Log ind på FindJob.nu for at se dine jobanbefalinger, gemte jobs og profil."
@@ -181,7 +181,7 @@ const Login: React.FC = () => {
       </button>
       <div className="divider my-6">eller</div> 
       <div className="text-center">
-        <Link to="/register" className="btn btn-success min-h-[44px] w-full">Opret bruger</Link>
+        <Link to="/register" className="btn btn-success min-h-11 w-full">Opret bruger</Link>
       </div>
     </div>
   );

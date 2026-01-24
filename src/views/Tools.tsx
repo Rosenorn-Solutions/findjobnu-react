@@ -241,7 +241,7 @@ const Tools: React.FC = () => {
                 ]}
             />
 
-            <div className="hero bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
+            <div className="hero bg-linear-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
                 <div className="hero-content text-center py-12">
                     <div className="max-w-6xl w-full">
                         <div className="flex items-center justify-center gap-2 mb-4">
@@ -271,7 +271,7 @@ const Tools: React.FC = () => {
                     <Link
                         key={tool.slug}
                         to={tool.href}
-                        className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1"
+                        className="card bg-linear-to-br from-primary/5 to-secondary/5 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1"
                     >
                         <div className="card-body">
                             <div className="flex items-start justify-between">
@@ -289,7 +289,7 @@ const Tools: React.FC = () => {
                             <ul className="mt-4 space-y-2">
                                 {tool.features.map((feature) => (
                                     <li key={feature} className="flex items-center gap-2 text-sm text-base-content/80">
-                                        <CheckCircleIcon className="w-4 h-4 text-success flex-shrink-0" aria-hidden="true" />
+                                        <CheckCircleIcon className="w-4 h-4 text-success shrink-0" aria-hidden="true" />
                                         {feature}
                                     </li>
                                 ))}
@@ -305,7 +305,7 @@ const Tools: React.FC = () => {
                 ))}
             </div>
 
-            <div className="mt-12 card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
+            <div className="mt-12 card bg-linear-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
                 <div className="card-body">
                     <div className="grid gap-8 lg:grid-cols-2 items-center">
                         <div>
@@ -315,21 +315,21 @@ const Tools: React.FC = () => {
                             </p>
                             <ul className="mt-4 space-y-3">
                                 <li className="flex items-start gap-3">
-                                    <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 flex-shrink-0" aria-hidden="true" />
+                                    <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 shrink-0" aria-hidden="true" />
                                     <div>
                                         <span className="font-medium">100% gratis</span>
                                         <p className="text-sm text-base-content/70">Alle funktioner er gratis – nu og altid.</p>
                                     </div>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 flex-shrink-0" aria-hidden="true" />
+                                    <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 shrink-0" aria-hidden="true" />
                                     <div>
                                         <span className="font-medium">Respekt for dit privatliv</span>
                                         <p className="text-sm text-base-content/70">Vi gemmer ikke dit CV og sælger ikke dine data.</p>
                                     </div>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 flex-shrink-0" aria-hidden="true" />
+                                    <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 shrink-0" aria-hidden="true" />
                                     <div>
                                         <span className="font-medium">Bygget til danske jobsøgende</span>
                                         <p className="text-sm text-base-content/70">Fokuseret på det danske jobmarked og danske virksomheder.</p>

@@ -101,7 +101,7 @@ const Profile: React.FC = () => {
 
   const PanelWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     <motion.div
-      className="min-h-[200px]"
+      className="min-h-50"
       initial={{ opacity: 0, x: 24 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -24 }}
@@ -120,7 +120,7 @@ const Profile: React.FC = () => {
         noIndex
       />
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 pb-8 items-start">
-        <aside className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-sm border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1 self-start">
+        <aside className="card bg-linear-to-br from-primary/5 to-secondary/5 shadow-sm border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1 self-start">
           <div className="card-body p-0 sm:p-4 lg:p-6">
             <h2 className="card-title text-lg mb-2">Min profil</h2>
             <div className="flex flex-col gap-2" aria-label="Profil navigation">

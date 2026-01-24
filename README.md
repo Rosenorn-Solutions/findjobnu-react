@@ -74,21 +74,51 @@ The app will be available at [http://localhost:4173](http://localhost:4173).
 
 ```
 src/
-  components/      # Reusable UI components (Navbar, Footer, JobList, SearchForm)
-  views/           # Page components (Home)
+  components/      # Reusable UI components (Navbar, Footer, JobList, SearchForm, etc.)
+  views/           # Page components (Home, JobSearch, Profile, About, Contact, etc.)
+  context/         # React context providers (User, Theme, Consent)
   findjobnu-api/   # OpenAPI-generated API client
-  assets/          # Static assets
+  findjobnu-auth/  # OpenAPI-generated Auth client
+  helpers/         # Utility functions and custom hooks
+  locales/         # i18n translation files (da, en)
+  assets/          # Static assets and illustrations
+  __tests__/       # Unit and integration tests
   App.tsx          # Main app component
   main.tsx         # Entry point
+  i18n.ts          # Internationalization setup
+```
+
+## Testing
+
+Run all tests:
+
+```sh
+npm test
+```
+
+Run tests in watch mode:
+
+```sh
+npm run test:watch
+```
+
+Run tests with coverage:
+
+```sh
+npm run test:coverage
 ```
 
 ## Technologies
 
-- [React](https://react.dev/)
-- [Vite](https://vitejs.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [daisyUI](https://daisyui.com/)
+- [React](https://react.dev/) 19
+- [Vite](https://vitejs.dev/) 6
+- [TypeScript](https://www.typescriptlang.org/) 5.8
+- [Tailwind CSS](https://tailwindcss.com/) 4
+- [daisyUI](https://daisyui.com/) 5
+- [React Router](https://reactrouter.com/) 7
+- [i18next](https://www.i18next.com/) for internationalization
+- [Framer Motion](https://www.framer.com/motion/) for animations
+- [Vitest](https://vitest.dev/) for testing
 - [OpenAPI Generator](https://openapi-generator.tech/)
 
 ## License
@@ -97,4 +127,4 @@ MIT
 
 ---
 
-© {2025} FindJob.nu. All rights reserved.
+© 2026 FindJob.nu. All rights reserved.
