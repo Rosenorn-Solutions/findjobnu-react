@@ -38,6 +38,9 @@ const Navbar: React.FC = () => {
     document.documentElement.setAttribute("lang", newLang);
   };
 
+  const languageSwitchLabel =
+    i18n.language === "da" ? t("language.switchToDanish") : t("language.switchToEnglish");
+
   // Base classes for nav links - min 44px touch target for accessibility
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
     `relative py-3 px-2 text-base min-h-[44px] flex items-center transition-colors duration-200 hover:text-primary ${
@@ -117,8 +120,8 @@ const Navbar: React.FC = () => {
             type="button"
             onClick={toggleLanguage}
             className="relative py-3 px-3 min-h-[44px] min-w-[44px] flex items-center justify-center text-base text-base-content/80 transition-colors duration-200 hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
-            aria-label={t("language.switchToDanish")}
-            title={i18n.language === "da" ? "Switch to English" : "Skift til dansk"}
+            aria-label={`${i18n.language} - ${languageSwitchLabel}`}
+            title={languageSwitchLabel}
           >
             <span className="text-xs font-bold uppercase">{i18n.language}</span>
           </button>
@@ -201,7 +204,8 @@ const Navbar: React.FC = () => {
             type="button"
             onClick={toggleLanguage}
             className="btn btn-ghost btn-circle btn-sm"
-            aria-label={i18n.language === "da" ? "Switch to English" : "Skift til dansk"}
+            aria-label={`${i18n.language} - ${languageSwitchLabel}`}
+            title={languageSwitchLabel}
           >
             <span className="text-xs font-bold uppercase">{i18n.language}</span>
           </button>

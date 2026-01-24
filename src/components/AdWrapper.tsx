@@ -63,6 +63,24 @@ const AdWrapper: React.FC<AdWrapperProps> = ({
     }
   }, [canRequestAd, scriptReady, slotId, layout, format]);
 
+  useEffect(() => {
+    const container = adRef.current;
+    if (!container || !canRequestAd || !scriptReady) return;
+
+    const applyIframeTitle = () => {
+      const iframe = container.querySelector("iframe");
+      if (iframe && !iframe.title) {
+        iframe.title = title;
+      }
+    };
+
+    applyIframeTitle();
+    const observer = new MutationObserver(() => applyIframeTitle());
+    observer.observe(container, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, [title, canRequestAd, scriptReady]);
+
   const showPlaceholder = !canRequestAd;
   const needsConfig = !GOOGLE_ADS_CLIENT || !slotId;
 

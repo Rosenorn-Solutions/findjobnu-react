@@ -3,14 +3,29 @@
    themes: light --default, dark --prefersdark;
 }
 
+/* WCAG: Override Tailwind's default font-size utilities to use 1.5 line-height */
+@theme {
+   --font-size-xs: 0.75rem;
+   --font-size-xs--line-height: 1.5;
+   --font-size-sm: 0.875rem;
+   --font-size-sm--line-height: 1.5;
+   --font-size-base: 1rem;
+   --font-size-base--line-height: 1.5;
+   --font-size-lg: 1.125rem;
+   --font-size-lg--line-height: 1.5;
+   --font-size-xl: 1.25rem;
+   --font-size-xl--line-height: 1.5;
+   --font-size-2xl: 1.5rem;
+   --font-size-2xl--line-height: 1.5;
+   --font-size-3xl: 1.875rem;
+   --font-size-3xl--line-height: 1.5;
+   --font-size-4xl: 2.25rem;
+   --font-size-4xl--line-height: 1.5;
+}
+
 @layer base {
    html {
       scrollbar-gutter: stable;
-   }
-
-   /* WCAG accessibility: paragraphs need at least 1.5x line-height */
-   p, li, span, label, td, th, dd, dt {
-      line-height: 1.5 !important;
    }
 
    body {

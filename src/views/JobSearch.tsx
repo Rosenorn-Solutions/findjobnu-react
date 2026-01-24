@@ -231,6 +231,7 @@ const JobSearch: React.FC = () => {
 
   return (
     <div className="container max-w-7xl mx-auto px-4 prose prose-neutral">
+      <h1 className="sr-only">Jobsøgning</h1>
       <Seo
         title="Jobsøgning – Søg i 1000+ danske jobopslag | FindJob.nu"
         description="Find dit næste job blandt tusindvis af aktuelle stillinger. Filtrér på branche, lokation og jobtitel. Gratis at bruge."
@@ -296,7 +297,7 @@ const JobSearch: React.FC = () => {
         </div>
 
         <div className="order-1 lg:order-2 shrink-0 w-full lg:w-72 max-w-xs lg:sticky lg:top-24 self-start flex flex-col gap-4">
-          <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 shadow-xl rounded-box transition-all hover:shadow-2xl hover:-translate-y-1 p-3 flex items-center justify-between gap-3">
+          <div className="card bg-linear-to-br from-primary/5 to-secondary/5 border border-primary/20 shadow-xl rounded-box transition-all hover:shadow-2xl hover:-translate-y-1 p-3 flex items-center justify-between gap-3">
             <div className="flex flex-col text-sm text-base-content/80">
               <span className="font-semibold">Anbefalede jobs</span>
               <span className="text-xs text-base-content/60">Slå til for at se anbefalinger</span>
@@ -330,7 +331,7 @@ const JobSearch: React.FC = () => {
           </div>
 
           <div className="w-full lg:w-72 max-w-xs">
-            <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 w-full lg:w-72 max-w-xs">
+            <div className="card bg-linear-to-br from-primary/5 to-secondary/5 border border-primary/20 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 w-full lg:w-72 max-w-xs">
               <div className="p-4">
                 <SearchForm
                   key={`search-form-${formKey}-${activePanel}`}

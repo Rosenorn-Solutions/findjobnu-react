@@ -236,6 +236,9 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
   const successClass = (base: string, condition: boolean) =>
     condition && submitted ? `${base} input-success` : base;
 
+  const dateInputClass =
+    "input input-bordered shadow transition-colors hover:border-base-content/40 focus:border-base-content focus:outline-2 focus:outline-offset-2";
+
   // Handle category chip changes
   const handleCategoryChipsChange = useCallback((chips: ChipItem[]) => {
     setCategoryChips(chips);
@@ -246,6 +249,7 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
   return (
     <form className="flex flex-col" onSubmit={handleSubmit}>
       <fieldset className="fieldset gap-3">
+        <legend className="sr-only">Søgefiltre</legend>
         <div className={`relative ${inputWidthClass}`}>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="searchTerm">
@@ -322,7 +326,7 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
               id="postedAfter"
               type="text"
               inputMode="numeric"
-              className={successClass("input input-bordered shadow", postedAfterValid && !!postedAfter)}
+              className={successClass(dateInputClass, postedAfterValid && !!postedAfter)}
               value={postedAfter}
               onChange={e => setPostedAfter(e.target.value)}
               placeholder="dd/mm/yyyy"
@@ -343,7 +347,7 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
               id="postedBefore"
               type="text"
               inputMode="numeric"
-              className={successClass("input input-bordered shadow", postedBeforeValid && !!postedBefore)}
+              className={successClass(dateInputClass, postedBeforeValid && !!postedBefore)}
               value={postedBefore}
               onChange={e => setPostedBefore(e.target.value)}
               placeholder="dd/mm/yyyy"
@@ -355,11 +359,15 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
           </div>
         </div>
         <div className={`flex gap-2 ${inputWidthClass}`}>
-          <button className="btn btn-secondary-ghost shadow" type="button" onClick={handleReset}>
+          <button
+            className="btn btn-secondary-ghost shadow min-h-11 min-w-11"
+            type="button"
+            onClick={handleReset}
+          >
             <ArrowPathIcon className="w-4 h-4" aria-hidden="true" />
             Nulstil
           </button>
-          <button className="btn btn-primary shadow flex-1" type="submit">
+          <button className="btn btn-primary shadow flex-1 min-h-11" type="submit">
             <MagnifyingGlassIcon className="w-5 h-5" aria-hidden="true" />
             Søg
           </button>

@@ -295,10 +295,10 @@ const JobList: React.FC<Props> = ({
     const safeJobUrl = sanitizeExternalUrl(job.jobUrl ?? undefined);
 
     return (
-      <div key={safeJobId ?? idx} className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-xl space-y-3 p-4 transition-all border border-primary/20 hover:shadow-2xl hover:-translate-y-1" data-testid="job-card">
+      <div key={safeJobId ?? idx} className="card bg-linear-to-br from-primary/5 to-secondary/5 shadow-xl space-y-3 p-4 transition-all border border-primary/20 hover:shadow-2xl hover:-translate-y-1" data-testid="job-card">
         <div className="flex justify-between items-start border-b my-2 p-1">
           <div className="flex-1">
-            <h2 className="text-lg font-semibold text-base-content leading-snug">{job.title ?? "(Ingen titel)"}</h2>
+            <h2 className="text-lg font-semibold text-base-content">{job.title ?? "(Ingen titel)"}</h2>
             {(job.company || job.location) ? (
               <p className="mt-1 text-sm text-base-content/80 flex flex-wrap items-center gap-3">
                 {job.company && (
@@ -318,7 +318,7 @@ const JobList: React.FC<Props> = ({
               <p className="mt-1 text-sm italic text-base-content/50">Ingen virksomhedsoplysninger.</p>
             )}
           </div>
-          <div className="text-right min-w-[140px] flex flex-col items-end gap-1">
+          <div className="text-right min-w-35 flex flex-col items-end gap-1">
             {job.postedDate && (
               <p className="text-xs text-base-content/60 inline-flex items-center gap-1">
                 <CalendarDaysIcon className="w-4 h-4" aria-hidden="true" />
