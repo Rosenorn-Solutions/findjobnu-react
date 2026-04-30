@@ -16,10 +16,15 @@ const emptySkill: Skill = {
   proficiency: SkillProficiency.NUMBER_0,
 };
 
+const proficiencyLabels = ["Begynder", "Let øvet", "Øvet", "Ekspert"];
+
 const SkillList: React.FC<Props> = ({ skills, onAdd, onUpdate, onDelete, readOnly = false }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<Skill>(emptySkill);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const labelClass = "text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-base-content/45";
+  const inputClass = "input input-bordered validator w-full rounded-2xl border-base-300 bg-base-100/90";
+  const selectClass = "select select-bordered validator w-full rounded-2xl border-base-300 bg-base-100/90";
 
   const handleEdit = (skill: Skill) => {
     if (readOnly) return;
@@ -63,52 +68,60 @@ const SkillList: React.FC<Props> = ({ skills, onAdd, onUpdate, onDelete, readOnl
 
   return (
     <div ref={containerRef} className="space-y-4">
-      <ul className="list-disc ml-6">
-        {skills.map((skill) => (
-          <li key={skill.id} className="mb-2 flex items-center gap-2">
-            <span>{skill.name} ({["Begynder","Let øvet","Øvet","Ekspert"][skill.proficiency]})</span>
-            {!readOnly && (
-              <>
-                <button className="btn btn-xs btn-outline btn-warning gap-1" onClick={() => handleEdit(skill)}>
-                  Rediger
-                  <PencilSquareIcon className="w-4 h-4" aria-hidden="true" />
-                </button>
-                <button className="btn btn-xs btn-outline btn-error gap-1" onClick={() => onDelete(skill.id!)}>
-                  Slet
-                  <TrashIcon className="w-4 h-4" aria-hidden="true" />
-                </button>
-              </>
-            )}
-          </li>
+      <div className="space-y-3">
+        {skills.map((skill, index) => (
+          <article key={skill.id ?? `${skill.name}-${index}`} className="rounded-[1.35rem] border border-base-300/70 bg-base-100/82 p-4 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="space-y-2">
+                <p className="text-lg font-semibold text-base-content">{skill.name || "Færdighed"}</p>
+                <span className="inline-flex items-center rounded-full border border-primary/15 bg-primary/8 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-base-content/65 shadow-sm">
+                  {proficiencyLabels[skill.proficiency]}
+                </span>
+              </div>
+
+              {!readOnly && (
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" className="btn btn-ghost btn-sm min-h-10 rounded-2xl border border-base-300/70 bg-base-100/85 px-4" onClick={() => handleEdit(skill)}>
+                    <PencilSquareIcon className="w-4 h-4" aria-hidden="true" />
+                    Rediger
+                  </button>
+                  <button type="button" className="btn btn-ghost btn-sm min-h-10 rounded-2xl border border-error/20 bg-error/10 px-4 text-error hover:bg-error/15" onClick={() => onDelete(skill.id!)}>
+                    <TrashIcon className="w-4 h-4" aria-hidden="true" />
+                    Slet
+                  </button>
+                </div>
+              )}
+            </div>
+          </article>
         ))}
-      </ul>
+      </div>
 
       {!readOnly && editingId === null && (
-        <button className="btn btn-primary gap-2" onClick={() => { setEditingId(0); setForm(emptySkill); }}>
+        <button type="button" className="btn btn-primary min-h-11 rounded-2xl px-5 shadow-lg shadow-primary/20" onClick={() => { setEditingId(0); setForm(emptySkill); }}>
           Tilføj færdighed
           <PlusCircleIcon className="w-5 h-5" aria-hidden="true" />
         </button>
       )}
 
       {!readOnly && editingId !== null && (
-        <div className="space-y-2">
+        <div className="rounded-[1.35rem] border border-base-300/70 bg-base-200/35 p-4 shadow-sm sm:p-5">
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="skill-name-new">
-              <span className="label-text">Færdighed</span>
+              <span className={labelClass}>Færdighed</span>
             </label>
-            <input id="skill-name-new" className="input input-bordered validator w-full" name="name" value={form.name || ""} onChange={handleChange} placeholder="Færdighed" title="Færdighed" required minLength={2} pattern="^[A-Za-zÀ-ÿ0-9' .,-]{2,}$" />
+            <input id="skill-name-new" className={inputClass} name="name" value={form.name || ""} onChange={handleChange} placeholder="Færdighed" title="Færdighed" required minLength={2} pattern="^[A-Za-zÀ-ÿ0-9' .,-]{2,}$" />
           </div>
           <p className="validator-hint">Mindst 2 tegn</p>
-          <select className="select select-bordered validator w-full" name="proficiency" value={form.proficiency} onChange={handleChange} title="Kompetenceniveau">
+          <select className={selectClass} name="proficiency" value={form.proficiency} onChange={handleChange} title="Kompetenceniveau">
             <option value={SkillProficiency.NUMBER_0}>Begynder</option>
             <option value={SkillProficiency.NUMBER_1}>Let øvet</option>
             <option value={SkillProficiency.NUMBER_2}>Øvet</option>
             <option value={SkillProficiency.NUMBER_3}>Ekspert</option>
           </select>
           <div className="validator-hint">Vælg kompetenceniveau</div>
-          <div className="flex gap-2 mt-2">
-            <button className="btn btn-sm btn-success" onClick={handleSave}>Gem</button>
-            <button className="btn btn-sm btn-outline btn-error" onClick={handleCancel}>Annuller</button>
+          <div className="mt-4 flex flex-col gap-3 border-t border-base-300/70 pt-4 sm:flex-row">
+            <button type="button" className="btn btn-success min-h-11 rounded-2xl px-5 shadow-lg shadow-success/20" onClick={handleSave}>Gem</button>
+            <button type="button" className="btn btn-ghost min-h-11 rounded-2xl border border-base-300/70 bg-base-100/78 px-5" onClick={handleCancel}>Annuller</button>
           </div>
         </div>
       )}

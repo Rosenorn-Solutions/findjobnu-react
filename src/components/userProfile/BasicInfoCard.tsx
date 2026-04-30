@@ -40,16 +40,21 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
   onImportClick,
 }) => {
   const renderValue = (value?: string | null) => {
-    if (!value || value.trim().length === 0) return <span className="text-gray-400">Ikke angivet</span>;
+    if (!value || value.trim().length === 0) return <span className="text-base-content/35">Ikke angivet</span>;
     return value;
   };
 
   const renderDate = (value?: string | Date | null) => {
-    if (!value) return <span className="text-gray-400">Ikke angivet</span>;
+    if (!value) return <span className="text-base-content/35">Ikke angivet</span>;
     const parsed = value instanceof Date ? value : new Date(value);
-    if (Number.isNaN(parsed.getTime())) return <span className="text-gray-400">Ikke angivet</span>;
+    if (Number.isNaN(parsed.getTime())) return <span className="text-base-content/35">Ikke angivet</span>;
     return parsed.toLocaleDateString("da-DK");
   };
+
+  const fieldShellClass = "rounded-[1.35rem] border border-base-300/70 bg-base-100/82 p-4 shadow-sm";
+  const labelClass = "text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-base-content/45";
+  const valueClass = "mt-2 text-base leading-7 text-base-content";
+  const inputClass = "input input-bordered validator w-full rounded-2xl border-base-300 bg-base-100/90";
 
   return (
     <EditableCardFrame
@@ -59,7 +64,7 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
           {" "}
           <button
             type="button"
-            className="tooltip tooltip-left"
+            className="tooltip tooltip-left inline-flex h-8 w-8 items-center justify-center rounded-full border border-base-300/70 bg-base-100/75 text-base-content/60 transition hover:border-primary/25 hover:text-base-content"
             data-tip="Vi bruger dine informationer til at finde relevante job annoncer i bla. 'Anbefalede job'. Vi videregiver aldrig dine oplysninger til tredjeparter."
             aria-label="Hjælp til Min Profil"
           >
@@ -71,7 +76,7 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
       actions={(
         <button
           type="button"
-          className="tooltip tooltip-bottom"
+          className="tooltip tooltip-bottom btn btn-ghost btn-sm min-h-11 rounded-2xl border border-base-300/70 bg-base-100/78 px-4"
           data-tip="Importér fra PDF"
           onClick={onImportClick}
           aria-label="Importér fra PDF"
@@ -82,10 +87,11 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="w-6 h-6 hover:text-primary"
+            className="w-5 h-5"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0 3.5-3.5M12 15l-3.5-3.5M5 19h14" />
           </svg>
+          Importér CV
         </button>
       )}
       editing={editing}
@@ -94,14 +100,14 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
       onSave={onSave}
       bodyClassName="grid gap-4 lg:grid-cols-2"
     >
-      <div>
+      <div className={fieldShellClass}>
         {editing ? (
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="firstName">
-              <span className="label-text">Fornavn</span>
+              <span className={labelClass}>Fornavn</span>
             </label>
             <input
-              className="input input-bordered validator w-full"
+              className={inputClass}
               id="firstName"
               name="firstName"
               value={form?.basicInfo?.firstName ?? ""}
@@ -118,20 +124,20 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
           </div>
         ) : (
           <>
-            <label className="label" htmlFor="firstName">Fornavn</label>
-            <div>{renderValue(profile.basicInfo?.firstName)}</div>
+            <label className={labelClass} htmlFor="firstName">Fornavn</label>
+            <div className={valueClass}>{renderValue(profile.basicInfo?.firstName)}</div>
           </>
         )}
       </div>
 
-      <div>
+      <div className={fieldShellClass}>
         {editing ? (
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="lastName">
-              <span className="label-text">Efternavn</span>
+              <span className={labelClass}>Efternavn</span>
             </label>
             <input
-              className="input input-bordered validator w-full"
+              className={inputClass}
               id="lastName"
               name="lastName"
               value={form?.basicInfo?.lastName ?? ""}
@@ -148,14 +154,14 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
           </div>
         ) : (
           <>
-            <label className="label" htmlFor="lastName">Efternavn</label>
-            <div>{renderValue(profile.basicInfo?.lastName)}</div>
+            <label className={labelClass} htmlFor="lastName">Efternavn</label>
+            <div className={valueClass}>{renderValue(profile.basicInfo?.lastName)}</div>
           </>
         )}
       </div>
 
-      <div>
-        <label className="label" htmlFor="location">
+      <div className={fieldShellClass}>
+        <label className={labelClass} htmlFor="location">
           By
         </label>
         {editing ? (
@@ -169,23 +175,23 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
               id: "location",
               pattern: "^[A-Za-zÀ-ÿ' .-]{2,}$",
               title: "Brug mindst 2 tegn. Tilladte tegn: bogstaver, mellemrum, punktum, bindestreg og apostrof.",
-              className: "input validator w-full",
+              className: inputClass,
             }}
           />
         ) : (
-          <div>{renderValue(profile.basicInfo?.location)}</div>
+          <div className={valueClass}>{renderValue(profile.basicInfo?.location)}</div>
         )}
       </div>
 
-      <div>
+      <div className={fieldShellClass}>
         {editing ? (
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="dateOfBirth">
-              <span className="label-text">Fødselsdato</span>
+              <span className={labelClass}>Fødselsdato</span>
             </label>
             <input
               ref={onDateInputRef}
-              className="input input-bordered validator w-full"
+              className={inputClass}
               id="dateOfBirth"
               name="dateOfBirth"
               type="text"
@@ -198,20 +204,20 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
           </div>
         ) : (
           <>
-            <label className="label" htmlFor="dateOfBirth">Fødselsdato</label>
-            <div>{renderDate(profile.basicInfo?.dateOfBirth ?? null)}</div>
+            <label className={labelClass} htmlFor="dateOfBirth">Fødselsdato</label>
+            <div className={valueClass}>{renderDate(profile.basicInfo?.dateOfBirth ?? null)}</div>
           </>
         )}
       </div>
 
-      <div>
+      <div className={fieldShellClass}>
         {editing ? (
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="jobTitle">
-              <span className="label-text">Jobtitel</span>
+              <span className={labelClass}>Jobtitel</span>
             </label>
             <input
-              className="input input-bordered validator w-full"
+              className={inputClass}
               id="jobTitle"
               name="jobTitle"
               value={form?.basicInfo?.jobTitle ?? ""}
@@ -224,20 +230,20 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
           </div>
         ) : (
           <>
-            <label className="label" htmlFor="jobTitle">Jobtitel</label>
-            <div>{renderValue(profile.basicInfo?.jobTitle)}</div>
+            <label className={labelClass} htmlFor="jobTitle">Jobtitel</label>
+            <div className={valueClass}>{renderValue(profile.basicInfo?.jobTitle)}</div>
           </>
         )}
       </div>
 
-      <div>
+      <div className={fieldShellClass}>
         {editing ? (
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="company">
-              <span className="label-text">Virksomhed</span>
+              <span className={labelClass}>Virksomhed</span>
             </label>
             <input
-              className="input input-bordered validator w-full"
+              className={inputClass}
               id="company"
               name="company"
               value={form?.basicInfo?.company ?? ""}
@@ -250,20 +256,20 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
           </div>
         ) : (
           <>
-            <label className="label" htmlFor="company">Virksomhed</label>
-            <div>{renderValue(profile.basicInfo?.company)}</div>
+            <label className={labelClass} htmlFor="company">Virksomhed</label>
+            <div className={valueClass}>{renderValue(profile.basicInfo?.company)}</div>
           </>
         )}
       </div>
 
-      <div>
+      <div className={fieldShellClass}>
         {editing ? (
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="phoneNumber">
-              <span className="label-text">Telefonnummer</span>
+              <span className={labelClass}>Telefonnummer</span>
             </label>
             <input
-              className="input input-bordered validator w-full"
+              className={inputClass}
               id="phoneNumber"
               name="phoneNumber"
               type="tel"
@@ -277,18 +283,18 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
           </div>
         ) : (
           <>
-            <label className="label" htmlFor="phoneNumber">Telefonnummer</label>
-            <div>{renderValue(profile.basicInfo?.phoneNumber)}</div>
+            <label className={labelClass} htmlFor="phoneNumber">Telefonnummer</label>
+            <div className={valueClass}>{renderValue(profile.basicInfo?.phoneNumber)}</div>
           </>
         )}
       </div>
 
-      <div className="lg:col-span-2">
-        <label className="label" htmlFor="openToWork">
+      <div className={`${fieldShellClass} lg:col-span-2`}>
+        <label className={labelClass} htmlFor="openToWork">
           Aktivt søgende?
         </label>
         {editing ? (
-          <div className="flex items-center gap-3">
+          <div className="mt-2 flex items-center gap-3">
             <input
               id="openToWork"
               type="checkbox"
@@ -299,7 +305,7 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({
             <span className="text-sm text-base-content/70">Vis at du er åben for nye muligheder</span>
           </div>
         ) : (
-          <div className="flex items-center gap-3">
+          <div className="mt-2 flex items-center gap-3">
             <input
               id="openToWork"
               type="checkbox"

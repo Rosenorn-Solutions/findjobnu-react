@@ -34,6 +34,153 @@ interface Props {
 const JOBLIST_AD_SLOT_ID = (import.meta.env.VITE_GOOGLE_ADS_JOBLIST_SLOT_ID as string | undefined)
   ?? (import.meta.env.VITE_GADS_JOBLIST_SLOT_ID as string | undefined);
 
+const truncateWords = (text: string, limit: number) => {
+  const words = text.trim().split(/\s+/);
+  if (words.length <= limit) {
+    return { snippet: text.trim(), truncated: false };
+  }
+
+  return { snippet: `${words.slice(0, limit).join(" ")}…`, truncated: true };
+};
+
+const getPageRangeLabel = (loading: boolean, pageStart: number, pageEnd: number) => {
+  if (loading) {
+    return "...";
+  }
+
+  if (pageStart > 0 && pageEnd > 0) {
+    return `${pageStart}-${pageEnd}`;
+  }
+
+  return "0";
+};
+
+const getDescriptionBlock = (descriptionSource: string | null | undefined, isOpen: boolean) => {
+  if (!descriptionSource || descriptionSource.trim() === "") {
+    return <p className="text-sm italic text-base-content/60">Ingen beskrivelse tilgængelig.</p>;
+  }
+
+  if (isOpen) {
+    return <p className="whitespace-pre-line text-sm leading-7 text-base-content">{descriptionSource}</p>;
+  }
+
+  const { snippet } = truncateWords(descriptionSource, 100);
+  return <p className="whitespace-pre-line text-sm leading-7 text-base-content">{snippet}</p>;
+};
+
+const getJobDetails = (detailsMap: Map<number, JobIndexPostResponse>, jobId?: number) => {
+  if (jobId == null) {
+    return undefined;
+  }
+
+  return detailsMap.get(jobId);
+};
+
+type JobCardActionsProps = {
+  safeJobUrl: string | null;
+  safeCompanyUrl: string | null;
+  canSave: boolean;
+  isSaved: boolean;
+  isSaving: boolean;
+  safeJobId?: number;
+  descriptionSource?: string | null;
+  isOpen: boolean;
+  onSaveJob: (jobId: number) => void;
+  onRemoveSavedJob: (jobId: number) => void;
+  onToggleDescription: (jobId: number) => void;
+};
+
+const JobCardActions: React.FC<JobCardActionsProps> = ({
+  safeJobUrl,
+  safeCompanyUrl,
+  canSave,
+  isSaved,
+  isSaving,
+  safeJobId,
+  descriptionSource,
+  isOpen,
+  onSaveJob,
+  onRemoveSavedJob,
+  onToggleDescription,
+}) => (
+  <div className="flex flex-col gap-2 border-t border-base-300/80 pt-3 sm:flex-row sm:flex-wrap sm:items-center">
+    {safeJobUrl && (
+      <a
+        href={safeJobUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn btn-primary btn-sm min-h-11 rounded-full px-4 shadow-sm"
+      >
+        <span className="inline-flex items-center gap-1">
+          <ArrowTopRightOnSquareIcon className="w-4 h-4" aria-hidden="true" />
+          Gå til opslag
+        </span>
+      </a>
+    )}
+    {safeCompanyUrl && (
+      <a
+        href={safeCompanyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn btn-ghost btn-sm min-h-11 rounded-full border border-base-300/80 bg-base-100/80 px-4"
+      >
+        <span className="inline-flex items-center gap-1">
+          <BuildingOffice2Icon className="w-4 h-4" aria-hidden="true" />
+          Virksomhed
+        </span>
+      </a>
+    )}
+    {canSave && !isSaved && safeJobId != null && (
+      <button
+        type="button"
+        disabled={isSaving}
+        onClick={() => onSaveJob(safeJobId)}
+        className="btn btn-sm min-h-11 rounded-full border border-success/40 bg-base-100/80 px-4 text-success hover:bg-success/10 disabled:opacity-50"
+      >
+        <span className="inline-flex items-center gap-1">
+          <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
+          {isSaving ? "Gemmer…" : "Gem job"}
+        </span>
+      </button>
+    )}
+    {canSave && isSaved && safeJobId != null && (
+      <button
+        type="button"
+        disabled={isSaving}
+        onClick={() => onRemoveSavedJob(safeJobId)}
+        className="btn btn-sm min-h-11 rounded-full border border-error/40 bg-base-100/80 px-4 text-error hover:bg-error/10 disabled:opacity-50"
+      >
+        <span className="inline-flex items-center gap-1">
+          <BookmarkSlashIcon className="w-4 h-4" aria-hidden="true" />
+          {isSaving ? "Fjerner…" : "Fjern gemt"}
+        </span>
+      </button>
+    )}
+    {!canSave && (
+      <button
+        type="button"
+        disabled
+        className="btn btn-sm min-h-11 rounded-full border border-base-content/20 bg-base-200/70 px-4 text-base-content/40 cursor-not-allowed"
+        title="Log ind for at gemme job"
+      >
+        <span className="inline-flex items-center gap-1">
+          <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
+          Gem job
+        </span>
+      </button>
+    )}
+    {descriptionSource && descriptionSource.trim() !== "" && safeJobId != null && (
+      <button
+        type="button"
+        onClick={() => onToggleDescription(safeJobId)}
+        className="btn btn-ghost btn-sm min-h-11 rounded-full border border-base-content/15 bg-base-100/70 px-4 text-base-content/75 hover:bg-base-content/8"
+      >
+        {isOpen ? "Vis mindre" : "Læs mere"}
+      </button>
+    )}
+  </div>
+);
+
 const JobList: React.FC<Props> = ({
   jobs,
   loading,
@@ -132,12 +279,6 @@ const JobList: React.FC<Props> = ({
         console.error("Error fetching saved jobs after removing:", e);
       }
     }
-  };
-
-  const truncateWords = (text: string, limit: number) => {
-    const words = text.trim().split(/\s+/);
-    if (words.length <= limit) return { snippet: text.trim(), truncated: false };
-    return { snippet: words.slice(0, limit).join(" ") + "…", truncated: true };
   };
 
   const handleToggleDescription = async (jobID?: number | null) => {
@@ -296,9 +437,7 @@ const JobList: React.FC<Props> = ({
         <div className="grid grid-cols-2 gap-3 sm:min-w-[17rem]">
           <div className="rounded-[1.25rem] border border-base-300/70 bg-base-100/80 p-3 shadow-sm">
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Viser</p>
-            <p className="mt-2 text-xl font-semibold text-base-content">
-              {loading ? "..." : pageStart && pageEnd ? `${pageStart}-${pageEnd}` : "0"}
-            </p>
+            <p className="mt-2 text-xl font-semibold text-base-content">{getPageRangeLabel(loading, pageStart, pageEnd)}</p>
             <p className="text-xs text-base-content/60">{loading ? "henter job" : `af ${totalCount} opslag`}</p>
           </div>
 
@@ -319,7 +458,7 @@ const JobList: React.FC<Props> = ({
     const isOpen = safeJobId != null && openJobIds.has(safeJobId);
     const isSaving = safeJobId != null && savingJobIds.has(safeJobId);
     const isSaved = safeJobId != null && savedJobIds.has(safeJobId);
-    const freshDetails = safeJobId != null ? detailsMap.get(safeJobId) : undefined;
+    const freshDetails = getJobDetails(detailsMap, safeJobId);
     const bannerPicture = resolvePictureSource(
       freshDetails?.bannerPicture ?? job.bannerPicture ?? null,
       freshDetails?.bannerMimeType ?? job.bannerMimeType ?? null,
@@ -335,18 +474,8 @@ const JobList: React.FC<Props> = ({
     const resultNumber = (currentPage - 1) * pageSize + idx + 1;
     const postedDateLabel = formatPostedDate(job.postedDate ?? null);
     const safeCompanyUrl = sanitizeExternalUrl(job.companyUrl ?? undefined);
-
-    let descriptionBlock: React.ReactNode;
-    if (!descriptionSource || descriptionSource.trim() === "") {
-      descriptionBlock = <p className="text-sm italic text-base-content/60">Ingen beskrivelse tilgængelig.</p>;
-    } else if (isOpen) {
-      descriptionBlock = <p className="whitespace-pre-line text-sm leading-7 text-base-content">{descriptionSource}</p>;
-    } else {
-      const { snippet, truncated } = truncateWords(descriptionSource, 100);
-      descriptionBlock = <p className="whitespace-pre-line text-sm leading-7 text-base-content">{snippet}</p>;
-    }
-
     const safeJobUrl = sanitizeExternalUrl(job.jobUrl ?? undefined);
+    const descriptionBlock = getDescriptionBlock(descriptionSource, isOpen);
 
     return (
       <article
@@ -437,82 +566,21 @@ const JobList: React.FC<Props> = ({
           </div>
         )}
 
-          <div className="flex flex-col gap-2 border-t border-base-300/80 pt-3 sm:flex-row sm:flex-wrap sm:items-center">
-          {safeJobUrl && (
-            <a
-              href={safeJobUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary btn-sm min-h-11 rounded-full px-4 shadow-sm"
-            >
-              <span className="inline-flex items-center gap-1">
-                <ArrowTopRightOnSquareIcon className="w-4 h-4" aria-hidden="true" />
-                Gå til opslag
-              </span>
-            </a>
-          )}
-          {safeCompanyUrl && (
-            <a
-              href={safeCompanyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-ghost btn-sm min-h-11 rounded-full border border-base-300/80 bg-base-100/80 px-4"
-            >
-              <span className="inline-flex items-center gap-1">
-                <BuildingOffice2Icon className="w-4 h-4" aria-hidden="true" />
-                Virksomhed
-              </span>
-            </a>
-          )}
-          {canSave && !isSaved && safeJobId != null && (
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={() => handleSaveJob(safeJobId)}
-              className="btn btn-sm min-h-11 rounded-full border border-success/40 bg-base-100/80 px-4 text-success hover:bg-success/10 disabled:opacity-50"
-            >
-              <span className="inline-flex items-center gap-1">
-                <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
-                {isSaving ? "Gemmer…" : "Gem job"}
-              </span>
-            </button>
-          )}
-          {canSave && isSaved && safeJobId != null && (
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={() => handleRemoveSavedJob(safeJobId)}
-              className="btn btn-sm min-h-11 rounded-full border border-error/40 bg-base-100/80 px-4 text-error hover:bg-error/10 disabled:opacity-50"
-            >
-              <span className="inline-flex items-center gap-1">
-                <BookmarkSlashIcon className="w-4 h-4" aria-hidden="true" />
-                {isSaving ? "Fjerner…" : "Fjern gemt"}
-              </span>
-            </button>
-          )}
-          {!canSave && (
-            <button
-              type="button"
-              disabled
-              className="btn btn-sm min-h-11 rounded-full border border-base-content/20 bg-base-200/70 px-4 text-base-content/40 cursor-not-allowed"
-              title="Log ind for at gemme job"
-            >
-              <span className="inline-flex items-center gap-1">
-                <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
-                Gem job
-              </span>
-            </button>
-          )}
-          {descriptionSource && descriptionSource.trim() !== "" && safeJobId != null && (
-            <button
-              type="button"
-              onClick={() => handleToggleDescription(safeJobId)}
-              className="btn btn-ghost btn-sm min-h-11 rounded-full border border-base-content/15 bg-base-100/70 px-4 text-base-content/75 hover:bg-base-content/8"
-            >
-              {isOpen ? "Vis mindre" : "Læs mere"}
-            </button>
-          )}
-          </div>
+          <JobCardActions
+            safeJobUrl={safeJobUrl}
+            safeCompanyUrl={safeCompanyUrl}
+            canSave={canSave}
+            isSaved={isSaved}
+            isSaving={isSaving}
+            safeJobId={safeJobId}
+            descriptionSource={descriptionSource}
+            isOpen={isOpen}
+            onSaveJob={handleSaveJob}
+            onRemoveSavedJob={handleRemoveSavedJob}
+            onToggleDescription={(jobIdToToggle) => {
+              void handleToggleDescription(jobIdToToggle);
+            }}
+          />
         </div>
       </article>
     );

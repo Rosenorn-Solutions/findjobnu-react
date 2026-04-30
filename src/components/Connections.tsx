@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { LinkIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowTopRightOnSquareIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  LinkIcon,
+  ShieldCheckIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
 import { AuthenticationApi, LinkedInAuthApi } from "../findjobnu-auth";
 import { createAuthClient } from "../helpers/ApiFactory";
 import { prepareLinkedInLogin } from "../helpers/oauth";
@@ -18,6 +25,43 @@ interface Connection {
   profileUrl?: string;
   lastSync?: Date;
 }
+
+type LinkedInUserInfo = {
+  hasVerifiedLinkedIn?: boolean | null;
+  userName?: string | null;
+  linkedInProfileUrl?: string | null;
+  lastLinkedInSync?: Date | null;
+};
+
+const updateConnectionByPlatform = (
+  items: Connection[],
+  platform: string,
+  updater: (connection: Connection) => Connection,
+) => items.map((connection) => (connection.platform === platform ? updater(connection) : connection));
+
+const updateConnectionById = (
+  items: Connection[],
+  connectionId: string,
+  updater: (connection: Connection) => Connection,
+) => items.map((connection) => (connection.id === connectionId ? updater(connection) : connection));
+
+const applyLinkedInUserInformation = (items: Connection[], userInformation?: LinkedInUserInfo) =>
+  updateConnectionByPlatform(items, "LinkedIn", (connection) => ({
+    ...connection,
+    isConnected: userInformation?.hasVerifiedLinkedIn ?? false,
+    username: userInformation?.userName ?? "",
+    profileUrl: userInformation?.linkedInProfileUrl ?? "",
+    lastSync: userInformation?.lastLinkedInSync ?? new Date(),
+  }));
+
+const clearConnection = (items: Connection[], connectionId: string) =>
+  updateConnectionById(items, connectionId, (connection) => ({
+    ...connection,
+    isConnected: false,
+    username: "",
+    profileUrl: "",
+    lastSync: undefined,
+  }));
 
 const ConnectionsComponent: React.FC<Props> = ({ userId, accessToken }) => {
   const [connections, setConnections] = useState<Connection[]>([
@@ -39,6 +83,7 @@ const ConnectionsComponent: React.FC<Props> = ({ userId, accessToken }) => {
     },
   ]);
   const [loading, setLoading] = useState(false);
+  const connectedCount = connections.filter((connection) => connection.isConnected).length;
 
   useEffect(() => {
     // Fetch user profile to check if LinkedIn user
@@ -48,13 +93,7 @@ const ConnectionsComponent: React.FC<Props> = ({ userId, accessToken }) => {
         const response = await authApi.getUserInformation();
         // If the user is a LinkedIn user, update the LinkedIn connection status
         if (response.success && response.userInformation?.hasVerifiedLinkedIn === true) {
-          setConnections(prev =>
-            prev.map(conn =>
-              conn.platform === "LinkedIn"
-                ? { ...conn, isConnected: response.userInformation?.hasVerifiedLinkedIn ?? false, username: response.userInformation?.userName ?? "", profileUrl: response.userInformation?.linkedInProfileUrl ?? "", lastSync: response.userInformation?.lastLinkedInSync ?? new Date() }
-                : conn
-            )
-          );
+          setConnections((prev) => applyLinkedInUserInformation(prev, response.userInformation));
         }
       } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -90,19 +129,7 @@ const ConnectionsComponent: React.FC<Props> = ({ userId, accessToken }) => {
     try {
       const linkedInAuthApi = createAuthClient(LinkedInAuthApi, accessToken);
       await linkedInAuthApi.unlinkLinkedInProfile();
-      setConnections(prev =>
-        prev.map(conn =>
-          conn.id === connectionId
-            ? {
-              ...conn,
-              isConnected: false,
-              username: "",
-              profileUrl: "",
-              lastSync: undefined
-            }
-            : conn
-        )
-      );
+      setConnections((prev) => clearConnection(prev, connectionId));
     } catch (error) {
       console.error("Error unlinking user profile:", error);
     }
@@ -133,79 +160,159 @@ const ConnectionsComponent: React.FC<Props> = ({ userId, accessToken }) => {
   };
 
   return (
-    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 w-full h-fit transition-all hover:shadow-xl hover:-translate-y-1 prose prose-neutral max-w-none">
-      <h2 className="card-title mb-4 flex items-center gap-2">
-        <span>Tilslutninger</span>
-        <LinkIcon className="w-5 h-5 text-primary" aria-hidden="true" />
-      </h2>
-      <div className="space-y-4">
+    <div className="space-y-6">
+      <section className="relative overflow-hidden rounded-[1.85rem] border border-primary/15 bg-gradient-to-br from-base-100 via-primary/6 to-secondary/10 shadow-[0_24px_70px_-36px_rgba(15,23,42,0.45)]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.74),transparent_54%)]" />
+        <div className="pointer-events-none absolute -left-10 bottom-0 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
+
+        <div className="relative grid gap-6 p-5 sm:p-6 xl:grid-cols-[minmax(0,1.1fr)_300px]">
+          <div className="space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-base-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary shadow-sm backdrop-blur">
+              <LinkIcon className="h-4 w-4" aria-hidden="true" />
+              Tilslutninger
+            </div>
+
+            <div className="space-y-3">
+              <h2 className="text-3xl font-semibold tracking-tight text-base-content sm:text-4xl">
+                Forbind dine profiler uden at miste overblikket
+              </h2>
+              <p className="max-w-3xl text-base leading-7 text-base-content/72 sm:text-lg">
+                Saml eksterne profiler ét sted, så import og profilmatch bliver nemmere at forstå og hurtigere at administrere på både mobil og desktop.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {[
+                "LinkedIn kan bruges til hurtigere onboarding og profilberigelse.",
+                "Se tydeligt hvilke profiler der er aktive, og hvornår de sidst blev synkroniseret.",
+                "Afbryd forbindelser igen uden at ændre resten af din profilopsætning.",
+              ].map((point) => (
+                <div key={point} className="flex items-start gap-3 text-sm leading-6 text-base-content/72 sm:text-base">
+                  <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
+                  <span>{point}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[1.5rem] border border-base-300/70 bg-base-100/84 p-5 shadow-lg backdrop-blur-sm sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Forbindelsesstatus</p>
+            <div className="mt-4 grid gap-3">
+              <div className="rounded-[1.25rem] border border-base-300/70 bg-base-200/35 p-4 shadow-sm">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-base-content/45">Aktive</p>
+                <p className="mt-2 text-3xl font-semibold text-base-content">{connectedCount}</p>
+                <p className="text-sm leading-6 text-base-content/65">af {connections.length} profiler er tilsluttet lige nu</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-primary/15 bg-primary/8 p-4 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <ShieldCheckIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                  <p className="text-sm leading-6 text-base-content/68">
+                    Forbindelser bruges til at forbedre profilkontekst og import, ikke til at overtage dine eksisterende profilfelter automatisk.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="grid gap-4">
         {connections.map((connection) => {
           const safeProfileUrl = sanitizeExternalUrl(connection.profileUrl);
+
           return (
-            <div key={connection.id} className="border border-base-300 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {getPlatformIcon(connection.platform)}
-                <div>
-                  <h3 className="font-semibold text-lg">{connection.platform}</h3>
-                  {connection.isConnected ? (
-                    <div className="text-sm text-gray-600">
-                      <p>Bruger: {connection.username}</p>
-                      {connection.lastSync && (
-                        <p>Sidst synkroniseret: {connection.lastSync.toLocaleDateString("da-DK")}</p>
-                      )}
+            <article key={connection.id} className="rounded-[1.6rem] border border-base-300/70 bg-gradient-to-br from-base-100/95 via-base-100/88 to-primary/5 p-5 shadow-lg backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_24px_60px_-40px_rgba(15,23,42,0.42)] sm:p-6">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-base-100/84 shadow-sm">
+                    {getPlatformIcon(connection.platform)}
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="text-xl font-semibold text-base-content">{connection.platform}</h3>
+                      <span className={[
+                        "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] shadow-sm",
+                        connection.isConnected
+                          ? "border-success/25 bg-success/10 text-success"
+                          : "border-base-300/70 bg-base-100/82 text-base-content/55",
+                      ].join(" ")}>
+                        <span className={[
+                          "h-2 w-2 rounded-full",
+                          connection.isConnected ? "bg-success" : "bg-base-content/25",
+                        ].join(" ")} />
+                        {connection.isConnected ? "Aktiv forbindelse" : "Ikke tilsluttet"}
+                      </span>
                     </div>
+
+                    {connection.isConnected ? (
+                      <div className="space-y-2 text-sm leading-6 text-base-content/68 sm:text-base">
+                        <p>
+                          <span className="font-semibold text-base-content">Bruger:</span>{" "}
+                          {connection.username || "Profil fundet"}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2 text-sm text-base-content/60">
+                          <ClockIcon className="h-4 w-4 text-primary" aria-hidden="true" />
+                          <span>
+                            Sidst synkroniseret: {connection.lastSync ? connection.lastSync.toLocaleDateString("da-DK") : "Ikke registreret endnu"}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="max-w-2xl text-sm leading-6 text-base-content/65 sm:text-base">
+                        Forbind denne profil for at gøre import og profilopsætning mere sammenhængende.
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2 sm:flex-row lg:flex-col lg:items-stretch">
+                  {connection.isConnected ? (
+                    <>
+                      {safeProfileUrl && (
+                        <a
+                          href={safeProfileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-primary min-h-11 rounded-2xl px-5 shadow-lg shadow-primary/20"
+                        >
+                          Profil
+                          <ArrowTopRightOnSquareIcon className="h-4 w-4" aria-hidden="true" />
+                        </a>
+                      )}
+                      <button
+                        type="button"
+                        className="btn btn-ghost min-h-11 rounded-2xl border border-error/20 bg-error/10 px-5 text-error hover:bg-error/15"
+                        onClick={() => handleDisconnect(connection.id)}
+                        disabled={loading}
+                      >
+                        {loading ? "Fjerner..." : "Fjern"}
+                      </button>
+                    </>
                   ) : (
-                    <p className="text-sm text-gray-500">Ikke tilsluttet</p>
+                    <button
+                      type="button"
+                      className="btn btn-success min-h-11 rounded-2xl px-5 shadow-lg shadow-success/20"
+                      onClick={() => handleConnect(connection.id)}
+                      disabled={loading}
+                    >
+                      {loading ? "Tilslutter..." : "Tilslut"}
+                    </button>
                   )}
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                {connection.isConnected ? (
-                  <>
-                    {safeProfileUrl && (
-                      <a
-                        href={safeProfileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-sm btn-primary"
-                      >
-                        Profil
-                      </a>
-                    )}
-                    <button
-                      className="btn btn-sm btn-outline btn-error"
-                      onClick={() => handleDisconnect(connection.id)}
-                      disabled={loading}
-                    >
-                      {loading ? "Fjerner..." : "Fjern"}
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="btn btn-sm btn-success"
-                    onClick={() => handleConnect(connection.id)}
-                    disabled={loading}
-                  >
-                    {loading ? "Tilslutter..." : "Tilslut"}
-                  </button>
-                )}
-              </div>
-            </div>
-            {connection.isConnected && (
-              <div className="mt-3 flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm text-green-600">Aktiv forbindelse</span>
-              </div>
-            )}
-            </div>
+            </article>
           );
         })}
       </div>
-      <div className="mt-6">
-        <p className="text-sm text-gray-500">
+
+      <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 px-4 py-4 shadow-sm">
+        <div className="flex items-start gap-3 text-sm leading-6 text-base-content/65">
+          <SparklesIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+          <p>
           Tilslut dine profiler for at importere relevant information og forbedre din jobsøgning.
-        </p>
+          </p>
+        </div>
       </div>
     </div>
   );

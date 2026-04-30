@@ -198,10 +198,6 @@ const ChipLocationInput: React.FC<Props> = ({
     inputRef.current?.focus();
   };
 
-  const handleContainerClick = () => {
-    inputRef.current?.focus();
-  };
-
   const highlightText = (text: string, query: string) => {
     if (!query) return text;
     const lower = text.toLowerCase();
@@ -223,7 +219,6 @@ const ChipLocationInput: React.FC<Props> = ({
         className={`flex flex-wrap items-center gap-1.5 min-h-[2.5rem] px-3 py-2 border border-base-300 rounded-btn bg-base-100 cursor-text transition-colors hover:border-base-content/40 focus-within:border-base-content focus-within:outline-2 focus-within:outline-offset-2 ${
           disabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
-        onClick={handleContainerClick}
       >
         {chips.map((chip) => (
           <span

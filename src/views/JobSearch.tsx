@@ -55,7 +55,8 @@ const JobSearch: React.FC = () => {
     postedBefore?: string;
   } | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const toggleTooltip = userId ? undefined : "Log ind for at se anbefalede jobs";
+  const hasUser = userId.length > 0;
+  const toggleTooltip = hasUser ? undefined : "Log ind for at se anbefalede jobs";
 
   const setPanelQueryParam = (panel: "search" | "recommended") => {
     const next = new URLSearchParams(searchParams);
@@ -224,10 +225,22 @@ const JobSearch: React.FC = () => {
     const categoryId = parseCategoryFromQuery();
     const lastCategory = lastSearchParams?.categoryId;
     if (categoryId != null && categoryId !== lastCategory) {
-      handleSearch({ ...(lastSearchParams ?? {}), categoryId }, 1);
+      const nextParams = lastSearchParams ? { ...lastSearchParams, categoryId } : { categoryId };
+      handleSearch(nextParams, 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  const searchPanelButtonClass = activePanel === "search"
+    ? "btn-primary shadow-lg shadow-primary/20"
+    : "btn-ghost border border-base-300/80 bg-base-100/70";
+
+  let recommendedPanelButtonClass = "btn-ghost border border-base-300/80 bg-base-100/70";
+  if (hasUser === false) {
+    recommendedPanelButtonClass = "border border-base-200 bg-base-200/70 text-base-content/40";
+  } else if (activePanel === "recommended") {
+    recommendedPanelButtonClass = "btn-primary shadow-lg shadow-primary/20";
+  }
 
   return (
     <div className="container max-w-7xl mx-auto px-4 prose prose-neutral">
@@ -331,9 +344,7 @@ const JobSearch: React.FC = () => {
                 <div className="flex flex-col gap-2 sm:flex-row">
                   <button
                     type="button"
-                    className={`btn min-h-11 rounded-2xl px-4 ${activePanel === "search"
-                      ? "btn-primary shadow-lg shadow-primary/20"
-                      : "btn-ghost border border-base-300/80 bg-base-100/70"}`}
+                    className={`btn min-h-11 rounded-2xl px-4 ${searchPanelButtonClass}`}
                     onClick={switchToSearch}
                   >
                     <MagnifyingGlassIcon className="h-4 w-4" aria-hidden="true" />
@@ -343,13 +354,9 @@ const JobSearch: React.FC = () => {
                   <div className={`${toggleTooltip ? "tooltip tooltip-bottom lg:tooltip-left" : ""} w-full sm:w-auto`} data-tip={toggleTooltip}>
                     <button
                       type="button"
-                      className={`btn min-h-11 w-full rounded-2xl px-4 ${!userId
-                        ? "border border-base-200 bg-base-200/70 text-base-content/40"
-                        : activePanel === "recommended"
-                          ? "btn-primary shadow-lg shadow-primary/20"
-                          : "btn-ghost border border-base-300/80 bg-base-100/70"}`}
+                      className={`btn min-h-11 w-full rounded-2xl px-4 ${recommendedPanelButtonClass}`}
                       onClick={switchToRecommended}
-                      disabled={!userId}
+                      disabled={hasUser === false}
                     >
                       <SparklesIcon className="h-4 w-4" aria-hidden="true" />
                       Anbefalede jobs

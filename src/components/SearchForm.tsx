@@ -35,12 +35,83 @@ export type CategoryOption = {
 
 type CategoryInput = CategoryOption | string;
 
+type ValueChip = {
+  value: string;
+};
+
 interface Props {
   onSearch: (params: SearchParams) => void;
   categories: CategoryInput[];
   // Optional raw category (id or name) from query param to preselect
   queryCategory?: string;
 }
+
+const formatCategoryLabel = (category: CategoryOption) => {
+  const count = category.numberOfJobs ?? category.count;
+  const countSuffix = count ? ` (${count})` : "";
+  return `${category.name}${countSuffix}`;
+};
+
+const collectChipValues = <T extends ValueChip>(chips: T[], pendingInput: string) => {
+  const values = chips.map((chip) => chip.value);
+  const trimmedPendingInput = pendingInput.trim();
+
+  if (trimmedPendingInput.length === 0) {
+    return values;
+  }
+
+  return [...values, trimmedPendingInput];
+};
+
+const collectCategoryIds = (chips: ChipItem[], categories: CategoryOption[]) => {
+  const ids: number[] = [];
+
+  chips.forEach((chip) => {
+    const directId = typeof chip.id === "number" ? chip.id : undefined;
+    if (directId != null) {
+      if (!ids.includes(directId)) {
+        ids.push(directId);
+      }
+      return;
+    }
+
+    const match = categories.find((category) => category.name === chip.value || category.label === chip.label);
+    const matchId = match?.id;
+    if (matchId != null && !ids.includes(matchId)) {
+      ids.push(matchId);
+    }
+  });
+
+  return ids;
+};
+
+const buildSearchParams = (
+  searchTermChips: ChipItem[],
+  searchTermInputValue: string,
+  locationChips: LocationChip[],
+  locationInputValue: string,
+  categoryChips: ChipItem[],
+  normalizedCategories: CategoryOption[],
+  postedAfter: string,
+  postedBefore: string
+): SearchParams => {
+  const postedAfterApi = postedAfter ? toApiDateString(postedAfter) ?? undefined : undefined;
+  const postedBeforeApi = postedBefore ? toApiDateString(postedBefore) ?? undefined : undefined;
+  const searchTermsArray = collectChipValues(searchTermChips, searchTermInputValue).filter((value) => value.length > 0);
+  const locationsArray = collectChipValues(locationChips, locationInputValue).filter((value) => value.length > 0);
+  const categoryIdsArray = collectCategoryIds(categoryChips, normalizedCategories);
+
+  return {
+    searchTerms: searchTermsArray.length > 0 ? searchTermsArray : undefined,
+    locations: locationsArray.length > 0 ? locationsArray : undefined,
+    categoryIds: categoryIdsArray.length > 0 ? categoryIdsArray : undefined,
+    searchTerm: searchTermsArray[0],
+    location: locationsArray[0],
+    categoryId: categoryIdsArray[0],
+    postedAfter: postedAfterApi,
+    postedBefore: postedBeforeApi,
+  };
+};
 
 const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) => {
   // Chip-based state for multiple values
@@ -79,7 +150,7 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
       // Ensure label is set for object categories
       return {
         ...c,
-        label: c.label ?? `${c.name}${c.numberOfJobs ?? c.count ? ` (${c.numberOfJobs ?? c.count})` : ""}`,
+        label: c.label ?? formatCategoryLabel(c),
       };
     });
   }, [categories]);
@@ -173,48 +244,19 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    
-    const postedAfterApi = postedAfter ? toApiDateString(postedAfter) ?? undefined : undefined;
-    const postedBeforeApi = postedBefore ? toApiDateString(postedBefore) ?? undefined : undefined;
 
-    // Build arrays from chips, including any pending input values
-    const searchTermsArray = [
-      ...searchTermChips.map(c => c.value),
-      ...(searchTermInputValue.trim() ? [searchTermInputValue.trim()] : [])
-    ].filter(s => s.length > 0);
-    
-    const locationsArray = [
-      ...locationChips.map(c => c.value),
-      ...(locationInputValue.trim() ? [locationInputValue.trim()] : [])
-    ].filter(l => l.length > 0);
-    
-    // For categories, extract IDs from chips
-    const categoryIdsArray: number[] = [];
-    for (const chip of categoryChips) {
-      const id = typeof chip.id === 'number' ? chip.id : undefined;
-      if (id && !categoryIdsArray.includes(id)) {
-        categoryIdsArray.push(id);
-      } else {
-        // Try to match by name
-        const match = normalizedCategories.find(c => c.name === chip.value || c.label === chip.label);
-        if (match?.id && !categoryIdsArray.includes(match.id)) {
-          categoryIdsArray.push(match.id);
-        }
-      }
-    }
-
-    onSearch({
-      // New array-based fields
-      searchTerms: searchTermsArray.length > 0 ? searchTermsArray : undefined,
-      locations: locationsArray.length > 0 ? locationsArray : undefined,
-      categoryIds: categoryIdsArray.length > 0 ? categoryIdsArray : undefined,
-      // Legacy single-value fields for backward compatibility
-      searchTerm: searchTermsArray[0],
-      location: locationsArray[0],
-      categoryId: categoryIdsArray[0],
-      postedAfter: postedAfterApi,
-      postedBefore: postedBeforeApi,
-    });
+    onSearch(
+      buildSearchParams(
+        searchTermChips,
+        searchTermInputValue,
+        locationChips,
+        locationInputValue,
+        categoryChips,
+        normalizedCategories,
+        postedAfter,
+        postedBefore
+      )
+    );
   };
 
   const handleReset = () => {

@@ -22,6 +22,15 @@ const emptyExperience: Experience = {
   description: "",
 };
 
+const formatExperienceRange = (fromDate?: string | null, toDate?: string | null) => {
+  const from = formatDateForDisplay(fromDate ?? undefined);
+  const to = formatDateForDisplay(toDate ?? undefined);
+
+  if (!from) return "Dato ikke angivet";
+  if (!toDate || !to) return `${from} - Nu`;
+  return `${from} - ${to}`;
+};
+
 const WorkExperienceList: React.FC<Props> = ({ experiences, onAdd, onUpdate, onDelete, readOnly = false }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<Experience>(emptyExperience);
@@ -31,6 +40,9 @@ const WorkExperienceList: React.FC<Props> = ({ experiences, onAdd, onUpdate, onD
   const pikadayFromRef = useRef<Pikaday | null>(null);
   const pikadayToRef = useRef<Pikaday | null>(null);
   const [isCurrent, setIsCurrent] = useState<boolean>(false);
+  const labelClass = "text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-base-content/45";
+  const inputClass = "input input-bordered validator w-full rounded-2xl border-base-300 bg-base-100/90";
+  const textareaClass = "textarea textarea-bordered validator w-full rounded-[1.2rem] border-base-300 bg-base-100/90";
 
   const handleEdit = (exp: Experience) => {
     if (readOnly) return;
@@ -144,65 +156,82 @@ const WorkExperienceList: React.FC<Props> = ({ experiences, onAdd, onUpdate, onD
 
   return (
     <div ref={containerRef} className="space-y-4">
-      <ul className="list-disc ml-6">
-        {experiences.map((exp) => (
-          <li key={exp.id} className="mb-2 flex items-center gap-2">
-            <span>{exp.positionTitle} - {exp.company}</span>
-            {!readOnly && (
-              <>
-                <button className="btn btn-xs btn-outline btn-warning gap-1" onClick={() => handleEdit(exp)}>
-                  Rediger
-                  <PencilSquareIcon className="w-4 h-4" aria-hidden="true" />
-                </button>
-                <button className="btn btn-xs btn-outline btn-error gap-1" onClick={() => onDelete(exp.id!)}>
-                  Slet
-                  <TrashIcon className="w-4 h-4" aria-hidden="true" />
-                </button>
-              </>
-            )}
-          </li>
+      <div className="space-y-3">
+        {experiences.map((exp, index) => (
+          <article key={exp.id ?? `${exp.positionTitle}-${exp.company}-${index}`} className="rounded-[1.35rem] border border-base-300/70 bg-base-100/82 p-4 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="space-y-2">
+                <div>
+                  <p className="text-lg font-semibold text-base-content">{exp.positionTitle || "Stilling"}</p>
+                  <p className="text-sm leading-6 text-base-content/65">
+                    {[exp.company, exp.location].filter(Boolean).join(" · ") || "Tilføj virksomhed og lokation"}
+                  </p>
+                </div>
+                <span className="inline-flex items-center rounded-full border border-base-300/70 bg-base-200/35 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-base-content/55 shadow-sm">
+                  {formatExperienceRange(exp.fromDate ?? null, exp.toDate ?? null)}
+                </span>
+                {exp.description ? (
+                  <p className="text-sm leading-6 text-base-content/72">{exp.description}</p>
+                ) : null}
+              </div>
+
+              {!readOnly && (
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" className="btn btn-ghost btn-sm min-h-10 rounded-2xl border border-base-300/70 bg-base-100/85 px-4" onClick={() => handleEdit(exp)}>
+                    <PencilSquareIcon className="w-4 h-4" aria-hidden="true" />
+                    Rediger
+                  </button>
+                  <button type="button" className="btn btn-ghost btn-sm min-h-10 rounded-2xl border border-error/20 bg-error/10 px-4 text-error hover:bg-error/15" onClick={() => onDelete(exp.id!)}>
+                    <TrashIcon className="w-4 h-4" aria-hidden="true" />
+                    Slet
+                  </button>
+                </div>
+              )}
+            </div>
+          </article>
         ))}
-      </ul>
+      </div>
 
       {!readOnly && editingId === null && (
-        <button className="btn btn-primary gap-2" onClick={() => { setEditingId(0); setForm(emptyExperience); setIsCurrent(false); }}>
+        <button type="button" className="btn btn-primary min-h-11 rounded-2xl px-5 shadow-lg shadow-primary/20" onClick={() => { setEditingId(0); setForm(emptyExperience); setIsCurrent(false); }}>
           Tilføj erfaring
           <PlusCircleIcon className="w-5 h-5" aria-hidden="true" />
         </button>
       )}
 
       {!readOnly && editingId !== null && (
-        <div className="space-y-2">
-          <div className="form-control gap-2">
+        <div className="rounded-[1.35rem] border border-base-300/70 bg-base-200/35 p-4 shadow-sm sm:p-5">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="form-control gap-2">
             <label className="label p-0" htmlFor="positionTitle-new">
-              <span className="label-text">Titel</span>
+              <span className={labelClass}>Titel</span>
             </label>
-            <input id="positionTitle-new" className="input input-bordered validator w-full" name="positionTitle" value={form.positionTitle || ""} onChange={handleChange} placeholder="Titel" title="Titel" required minLength={2} pattern="^[A-Za-zÆØÅæøå0-9' .,-]{2,}$" />
+            <input id="positionTitle-new" className={inputClass} name="positionTitle" value={form.positionTitle || ""} onChange={handleChange} placeholder="Titel" title="Titel" required minLength={2} pattern="^[A-Za-zÆØÅæøå0-9' .,-]{2,}$" />
+            <p className="validator-hint">Mindst 2 tegn, fx "Softwareudvikler"</p>
           </div>
-          <p className="validator-hint">Mindst 2 tegn, fx "Softwareudvikler"</p>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="company-new">
-              <span className="label-text">Virksomhed</span>
+              <span className={labelClass}>Virksomhed</span>
             </label>
-            <input id="company-new" className="input input-bordered validator w-full" name="company" value={form.company || ""} onChange={handleChange} placeholder="Virksomhed" title="Virksomhed" required minLength={2} pattern="^[A-Za-zÆØÅæøå0-9' .,-]{2,}$" />
+            <input id="company-new" className={inputClass} name="company" value={form.company || ""} onChange={handleChange} placeholder="Virksomhed" title="Virksomhed" required minLength={2} pattern="^[A-Za-zÆØÅæøå0-9' .,-]{2,}$" />
+            <p className="validator-hint">Mindst 2 tegn, fx "FindJob.nu"</p>
           </div>
-          <p className="validator-hint">Mindst 2 tegn, fx "FindJob.nu"</p>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="fromDate-new">
-              <span className="label-text">Fra (dd/mm/yyyy)</span>
+              <span className={labelClass}>Fra (dd/mm/yyyy)</span>
             </label>
-            <input id="fromDate-new" className="input input-bordered validator w-full" name="fromDate" value={form.fromDate || ""} onChange={handleChange} placeholder="dd/mm/yyyy" title="Fra dato" required pattern={DANISH_DATE_PATTERN.source} ref={fromDateInputRef} autoComplete="off" />
+            <input id="fromDate-new" className={inputClass} name="fromDate" value={form.fromDate || ""} onChange={handleChange} placeholder="dd/mm/yyyy" title="Fra dato" required pattern={DANISH_DATE_PATTERN.source} ref={fromDateInputRef} autoComplete="off" />
+            <div className="validator-hint">Format: dd/mm/yyyy</div>
           </div>
-          <div className="validator-hint">Format: dd/mm/yyyy</div>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="toDate-new">
-              <span className="label-text">Til (dd/mm/yyyy eller tomt for nuværende)</span>
+              <span className={labelClass}>Til (dd/mm/yyyy eller tomt for nuværende)</span>
             </label>
-            <input id="toDate-new" className="input input-bordered validator w-full" name="toDate" value={form.toDate || ""} onChange={handleChange} placeholder="dd/mm/yyyy" title="Til dato" pattern={DANISH_DATE_PATTERN.source} ref={toDateInputRef} autoComplete="off" disabled={isCurrent} />
+            <input id="toDate-new" className={inputClass} name="toDate" value={form.toDate || ""} onChange={handleChange} placeholder="dd/mm/yyyy" title="Til dato" pattern={DANISH_DATE_PATTERN.source} ref={toDateInputRef} autoComplete="off" disabled={isCurrent} />
+            <div className="validator-hint">Format: dd/mm/yyyy. Lad feltet være tomt, hvis det er din nuværende stilling.</div>
           </div>
-          <div className="validator-hint">Format: dd/mm/yyyy. Lad feltet være tomt, hvis det er din nuværende stilling.</div>
-          <div className="form-control mb-1">
-            <label className="label cursor-pointer justify-start gap-3">
+          <div className="form-control mb-1 md:col-span-2">
+            <label className="label cursor-pointer justify-start gap-3 rounded-[1.1rem] border border-base-300/70 bg-base-100/82 px-4 py-3">
               <input
                 type="checkbox"
                 className="checkbox checkbox-primary"
@@ -214,21 +243,22 @@ const WorkExperienceList: React.FC<Props> = ({ experiences, onAdd, onUpdate, onD
           </div>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="location-new">
-              <span className="label-text">Lokation</span>
+              <span className={labelClass}>Lokation</span>
             </label>
-            <input id="location-new" className="input input-bordered validator w-full" name="location" value={form.location || ""} onChange={handleChange} placeholder="Lokation" title="Lokation" required pattern="^[A-Za-zÆØÅæøå' .-]{2,}$" />
+            <input id="location-new" className={inputClass} name="location" value={form.location || ""} onChange={handleChange} placeholder="Lokation" title="Lokation" required pattern="^[A-Za-zÆØÅæøå' .-]{2,}$" />
+            <div className="validator-hint">Mindst 2 tegn (bogstaver, mellemrum, punktum, bindestreg og apostrof)</div>
           </div>
-          <div className="validator-hint">Mindst 2 tegn (bogstaver, mellemrum, punktum, bindestreg og apostrof)</div>
-          <div className="form-control gap-2">
+          <div className="form-control gap-2 md:col-span-2">
             <label className="label p-0" htmlFor="description-new">
-              <span className="label-text">Beskrivelse</span>
+              <span className={labelClass}>Beskrivelse</span>
             </label>
-            <textarea id="description-new" className="textarea textarea-bordered validator w-full" name="description" value={form.description || ""} onChange={handleChange} placeholder="Beskrivelse" title="Beskrivelse" maxLength={1000} />
+            <textarea id="description-new" className={textareaClass} name="description" value={form.description || ""} onChange={handleChange} placeholder="Beskrivelse" title="Beskrivelse" maxLength={1000} rows={4} />
+            <div className="validator-hint">Maks 1000 tegn</div>
           </div>
-          <div className="validator-hint">Maks 1000 tegn</div>
-          <div className="flex gap-2 mt-2">
-            <button className="btn btn-sm btn-success" onClick={handleSave}>Gem</button>
-            <button className="btn btn-sm btn-outline btn-error" onClick={handleCancel}>Annuller</button>
+          </div>
+          <div className="mt-4 flex flex-col gap-3 border-t border-base-300/70 pt-4 sm:flex-row">
+            <button type="button" className="btn btn-success min-h-11 rounded-2xl px-5 shadow-lg shadow-success/20" onClick={handleSave}>Gem</button>
+            <button type="button" className="btn btn-ghost min-h-11 rounded-2xl border border-base-300/70 bg-base-100/78 px-5" onClick={handleCancel}>Annuller</button>
           </div>
         </div>
       )}

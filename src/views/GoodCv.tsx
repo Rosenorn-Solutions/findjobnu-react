@@ -114,6 +114,18 @@ const resources = [
     },
 ] as const;
 
+const formatReadabilityScorePercent = (score?: number | null) => {
+    if (score == null) {
+        return 0;
+    }
+
+    if (score <= 1) {
+        return Math.round(score * 100);
+    }
+
+    return Math.round(score);
+};
+
 const GoodCv: React.FC = () => {
     const { user } = useUser();
     const token = user?.accessToken ?? null;
@@ -145,11 +157,7 @@ const GoodCv: React.FC = () => {
         }
     };
 
-    const readabilityScorePercent = result
-        ? ((result.readabilityScore ?? 0) <= 1
-            ? Math.round((result.readabilityScore ?? 0) * 100)
-            : Math.round(result.readabilityScore ?? 0))
-        : 0;
+    const readabilityScorePercent = formatReadabilityScorePercent(result?.readabilityScore);
     const totalTips = sections.reduce((sum, section) => sum + section.bullets.length, 0);
 
     return (

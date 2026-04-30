@@ -30,6 +30,10 @@ const AboutKeywordsCard: React.FC<AboutKeywordsCardProps> = ({
   const aboutValue = profile.basicInfo?.about?.trim()
     ? profile.basicInfo.about
     : "";
+  const fieldShellClass = "rounded-[1.35rem] border border-base-300/70 bg-base-100/82 p-4 shadow-sm";
+  const labelClass = "text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-base-content/45";
+  const inputClass = "input input-bordered validator w-full rounded-2xl border-base-300 bg-base-100/90";
+  const textareaClass = "textarea textarea-bordered validator w-full rounded-[1.2rem] border-base-300 bg-base-100/90";
 
   return (
     <EditableCardFrame
@@ -40,14 +44,14 @@ const AboutKeywordsCard: React.FC<AboutKeywordsCardProps> = ({
       onCancel={onCancel}
       onSave={onSave}
     >
-      <div>
-        <label className="label" htmlFor="about">
+      <div className={fieldShellClass}>
+        <label className={labelClass} htmlFor="about">
           Om mig
         </label>
         {editing ? (
           <>
             <textarea
-              className="textarea textarea-bordered validator w-full"
+              className={textareaClass}
               id="about"
               name="about"
               value={form?.basicInfo?.about ?? ""}
@@ -60,19 +64,19 @@ const AboutKeywordsCard: React.FC<AboutKeywordsCardProps> = ({
             <div className="validator-hint">Maks 1000 tegn</div>
           </>
         ) : (
-          <div>{aboutValue || <span className="text-gray-400">Ikke angivet</span>}</div>
+          <div className="mt-2 text-base leading-7 text-base-content">{aboutValue || <span className="text-base-content/35">Ikke angivet</span>}</div>
         )}
       </div>
 
-      <div className="divider my-1" />
+      <div className="h-px bg-base-300/70" />
 
-      <div>
-        <label className="label" htmlFor="keywords">
+      <div className={fieldShellClass}>
+        <label className={labelClass} htmlFor="keywords">
           Top kompetencer
           {" "}
           <button
             type="button"
-            className="tooltip tooltip-left"
+            className="tooltip tooltip-left inline-flex h-8 w-8 items-center justify-center rounded-full border border-base-300/70 bg-base-100/75 text-base-content/60 transition hover:border-primary/25 hover:text-base-content"
             data-tip="Dine top kompetencer anvendes i højere grad end andre informationer, når vi udsøger anbefalede job."
             aria-label="Hjælp til Min Profil"
           >
@@ -82,7 +86,7 @@ const AboutKeywordsCard: React.FC<AboutKeywordsCardProps> = ({
         {editing ? (
           <>
             <input
-              className="input input-bordered validator w-full"
+              className={inputClass}
               id="keywords"
               name="keywords"
               value={keywordsInput}
@@ -92,11 +96,15 @@ const AboutKeywordsCard: React.FC<AboutKeywordsCardProps> = ({
             <div className="validator-hint">Adskil med komma. Eksempel: React, TypeScript, .NET</div>
           </>
         ) : (
-          <div>
+          <div className="mt-3 flex flex-wrap gap-2">
             {profile.keywords && profile.keywords.length > 0 ? (
-              profile.keywords.join(", ")
+              profile.keywords.map((keyword) => (
+                <span key={keyword} className="rounded-full border border-primary/15 bg-primary/8 px-3 py-1 text-sm text-base-content/72 shadow-sm">
+                  {keyword}
+                </span>
+              ))
             ) : (
-              <span className="text-gray-400">Ikke angivet</span>
+              <span className="text-base-content/35">Ikke angivet</span>
             )}
           </div>
         )}
