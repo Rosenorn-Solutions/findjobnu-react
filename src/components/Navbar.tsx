@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
     }`;
 
   return (
-    <nav className="bg-base-100/80 backdrop-blur-md shadow-lg mb-5 sticky top-0 z-50 transition-colors border-b border-base-content/10">
+    <nav className="sticky top-0 z-50 border-b border-base-content/10 bg-base-100/80 shadow-lg backdrop-blur-md transition-colors">
       <div className="max-w-350 w-full mx-auto px-4 h-16 flex items-center justify-between gap-4">
         {/* Left: Logo and Navigation */}
         <div className="flex items-center gap-8">

@@ -1,4 +1,5 @@
 import React from "react";
+import { CheckIcon, PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 interface EditableCardFrameProps {
   title: React.ReactNode;
@@ -24,51 +25,48 @@ const EditableCardFrame: React.FC<EditableCardFrameProps> = ({
   actions,
 }) => {
   return (
-    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 mb-6 transition-all hover:shadow-xl hover:-translate-y-1 prose prose-neutral max-w-none">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="card-title flex items-center gap-2">{title}</div>
-        <div className="flex items-center gap-2">
+    <div className="relative mb-6 overflow-hidden rounded-[1.75rem] border border-base-300/70 bg-gradient-to-br from-base-100/95 via-base-100/88 to-primary/5 p-5 shadow-lg backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_-40px_rgba(15,23,42,0.45)] sm:p-6">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.72),transparent_58%)]" />
+      <div className="pointer-events-none absolute -right-12 bottom-0 h-32 w-32 rounded-full bg-primary/8 blur-3xl" />
+
+      <div className="relative space-y-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="card-title flex items-center gap-2 text-xl font-semibold tracking-tight text-base-content">{title}</div>
+          <div className="flex flex-wrap items-center gap-2">
           {actions}
           <button
             type="button"
-            className="tooltip tooltip-bottom"
-            data-tip={editTooltip}
+            className={[
+              "btn btn-sm min-h-11 rounded-2xl border px-4 shadow-sm transition-all duration-200",
+              editing
+                ? "border-warning/30 bg-warning/10 text-warning hover:border-warning/40 hover:bg-warning/15"
+                : "border-base-300/70 bg-base-100/82 text-base-content/72 hover:border-primary/25 hover:bg-base-100 hover:text-base-content",
+            ].join(" ")}
             onClick={onToggleEdit}
             aria-label={editTooltip}
+            title={editTooltip}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6 hover:text-warning"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-              />
-            </svg>
+            <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
+            {editing ? "Luk redigering" : "Rediger"}
           </button>
         </div>
-      </div>
+        </div>
 
-      <div className={bodyClassName ?? "grid gap-4"}>{children}</div>
+        <div className={bodyClassName ?? "grid gap-4"}>{children}</div>
 
-      {editing && (
-        <div className="mt-4 flex gap-2">
-          <button className="btn btn-success" onClick={onSave}>
-            Gem
-          </button>
-          <button className="btn btn-outline btn-error" onClick={onCancel}>
-            Annuller
-          </button>
-          <div className="divider">
+        {editing && (
+          <div className="flex flex-col gap-3 border-t border-base-300/70 pt-4 sm:flex-row sm:items-center">
+            <button type="button" className="btn btn-success min-h-11 rounded-2xl px-5 shadow-lg shadow-success/20" onClick={onSave}>
+              <CheckIcon className="h-4 w-4" aria-hidden="true" />
+              Gem
+            </button>
+            <button type="button" className="btn btn-ghost min-h-11 rounded-2xl border border-base-300/70 bg-base-100/75 px-5" onClick={onCancel}>
+              <XMarkIcon className="h-4 w-4" aria-hidden="true" />
+              Annuller
+            </button>
           </div>
-        </div>
-        
-      )}
+        )}
+      </div>
     </div>
   );
 };

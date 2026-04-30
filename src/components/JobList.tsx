@@ -17,6 +17,8 @@ import {
   ArrowTopRightOnSquareIcon,
   BookmarkIcon,
   BookmarkSlashIcon,
+  MagnifyingGlassIcon,
+  SparklesIcon,
 } from "@heroicons/react/24/outline";
 
 interface Props {
@@ -26,10 +28,158 @@ interface Props {
   pageSize: number;
   totalCount: number;
   onPageChange: (page: number) => void;
+  mode?: "search" | "recommended";
 }
 
 const JOBLIST_AD_SLOT_ID = (import.meta.env.VITE_GOOGLE_ADS_JOBLIST_SLOT_ID as string | undefined)
   ?? (import.meta.env.VITE_GADS_JOBLIST_SLOT_ID as string | undefined);
+
+const truncateWords = (text: string, limit: number) => {
+  const words = text.trim().split(/\s+/);
+  if (words.length <= limit) {
+    return { snippet: text.trim(), truncated: false };
+  }
+
+  return { snippet: `${words.slice(0, limit).join(" ")}…`, truncated: true };
+};
+
+const getPageRangeLabel = (loading: boolean, pageStart: number, pageEnd: number) => {
+  if (loading) {
+    return "...";
+  }
+
+  if (pageStart > 0 && pageEnd > 0) {
+    return `${pageStart}-${pageEnd}`;
+  }
+
+  return "0";
+};
+
+const getDescriptionBlock = (descriptionSource: string | null | undefined, isOpen: boolean) => {
+  if (!descriptionSource || descriptionSource.trim() === "") {
+    return <p className="text-sm italic text-base-content/60">Ingen beskrivelse tilgængelig.</p>;
+  }
+
+  if (isOpen) {
+    return <p className="whitespace-pre-line text-sm leading-7 text-base-content">{descriptionSource}</p>;
+  }
+
+  const { snippet } = truncateWords(descriptionSource, 100);
+  return <p className="whitespace-pre-line text-sm leading-7 text-base-content">{snippet}</p>;
+};
+
+const getJobDetails = (detailsMap: Map<number, JobIndexPostResponse>, jobId?: number) => {
+  if (jobId == null) {
+    return undefined;
+  }
+
+  return detailsMap.get(jobId);
+};
+
+type JobCardActionsProps = {
+  safeJobUrl: string | null;
+  safeCompanyUrl: string | null;
+  canSave: boolean;
+  isSaved: boolean;
+  isSaving: boolean;
+  safeJobId?: number;
+  descriptionSource?: string | null;
+  isOpen: boolean;
+  onSaveJob: (jobId: number) => void;
+  onRemoveSavedJob: (jobId: number) => void;
+  onToggleDescription: (jobId: number) => void;
+};
+
+const JobCardActions: React.FC<JobCardActionsProps> = ({
+  safeJobUrl,
+  safeCompanyUrl,
+  canSave,
+  isSaved,
+  isSaving,
+  safeJobId,
+  descriptionSource,
+  isOpen,
+  onSaveJob,
+  onRemoveSavedJob,
+  onToggleDescription,
+}) => (
+  <div className="flex flex-col gap-2 border-t border-base-300/80 pt-3 sm:flex-row sm:flex-wrap sm:items-center">
+    {safeJobUrl && (
+      <a
+        href={safeJobUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn btn-primary btn-sm min-h-11 rounded-full px-4 shadow-sm"
+      >
+        <span className="inline-flex items-center gap-1">
+          <ArrowTopRightOnSquareIcon className="w-4 h-4" aria-hidden="true" />
+          Gå til opslag
+        </span>
+      </a>
+    )}
+    {safeCompanyUrl && (
+      <a
+        href={safeCompanyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn btn-ghost btn-sm min-h-11 rounded-full border border-base-300/80 bg-base-100/80 px-4"
+      >
+        <span className="inline-flex items-center gap-1">
+          <BuildingOffice2Icon className="w-4 h-4" aria-hidden="true" />
+          Virksomhed
+        </span>
+      </a>
+    )}
+    {canSave && !isSaved && safeJobId != null && (
+      <button
+        type="button"
+        disabled={isSaving}
+        onClick={() => onSaveJob(safeJobId)}
+        className="btn btn-sm min-h-11 rounded-full border border-success/40 bg-base-100/80 px-4 text-success hover:bg-success/10 disabled:opacity-50"
+      >
+        <span className="inline-flex items-center gap-1">
+          <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
+          {isSaving ? "Gemmer…" : "Gem job"}
+        </span>
+      </button>
+    )}
+    {canSave && isSaved && safeJobId != null && (
+      <button
+        type="button"
+        disabled={isSaving}
+        onClick={() => onRemoveSavedJob(safeJobId)}
+        className="btn btn-sm min-h-11 rounded-full border border-error/40 bg-base-100/80 px-4 text-error hover:bg-error/10 disabled:opacity-50"
+      >
+        <span className="inline-flex items-center gap-1">
+          <BookmarkSlashIcon className="w-4 h-4" aria-hidden="true" />
+          {isSaving ? "Fjerner…" : "Fjern gemt"}
+        </span>
+      </button>
+    )}
+    {!canSave && (
+      <button
+        type="button"
+        disabled
+        className="btn btn-sm min-h-11 rounded-full border border-base-content/20 bg-base-200/70 px-4 text-base-content/40 cursor-not-allowed"
+        title="Log ind for at gemme job"
+      >
+        <span className="inline-flex items-center gap-1">
+          <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
+          Gem job
+        </span>
+      </button>
+    )}
+    {descriptionSource && descriptionSource.trim() !== "" && safeJobId != null && (
+      <button
+        type="button"
+        onClick={() => onToggleDescription(safeJobId)}
+        className="btn btn-ghost btn-sm min-h-11 rounded-full border border-base-content/15 bg-base-100/70 px-4 text-base-content/75 hover:bg-base-content/8"
+      >
+        {isOpen ? "Vis mindre" : "Læs mere"}
+      </button>
+    )}
+  </div>
+);
 
 const JobList: React.FC<Props> = ({
   jobs,
@@ -38,6 +188,7 @@ const JobList: React.FC<Props> = ({
   pageSize,
   totalCount,
   onPageChange,
+  mode = "search",
 }) => {
   const listTopId = "job-list-top";
   const [openJobIds, setOpenJobIds] = useState<Set<number>>(new Set());
@@ -128,12 +279,6 @@ const JobList: React.FC<Props> = ({
         console.error("Error fetching saved jobs after removing:", e);
       }
     }
-  };
-
-  const truncateWords = (text: string, limit: number) => {
-    const words = text.trim().split(/\s+/);
-    if (words.length <= limit) return { snippet: text.trim(), truncated: false };
-    return { snippet: words.slice(0, limit).join(" ") + "…", truncated: true };
   };
 
   const handleToggleDescription = async (jobID?: number | null) => {
@@ -245,6 +390,67 @@ const JobList: React.FC<Props> = ({
     return trimmed;
   };
 
+  const formatPostedDate = (value?: Date | string | null): string | null => {
+    if (!value) return null;
+    const parsed = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed.toLocaleDateString("da-DK", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const totalPages = Math.ceil(totalCount / pageSize);
+  const pageStart = totalCount > 0 ? (currentPage - 1) * pageSize + 1 : 0;
+  const pageEnd = totalCount > 0 ? Math.min(currentPage * pageSize, totalCount) : 0;
+  const isRecommendedMode = mode === "recommended";
+  const ListModeIcon = isRecommendedMode ? SparklesIcon : MagnifyingGlassIcon;
+  const listTitle = isRecommendedMode ? "Anbefalede job" : "Søgeresultater";
+  const listDescription = isRecommendedMode
+    ? "Et roligere overblik over de job, der passer bedst til din profil og dine aktuelle filtre."
+    : "Aktuelle opslag i en mere overskuelig liste, så de er lettere at skimme på både mobil og desktop.";
+  const emptyTitle = isRecommendedMode ? "Ingen anbefalinger lige nu" : "Ingen job fundet";
+  const emptyDescription = isRecommendedMode
+    ? "Prøv at justere dine filtre eller vend tilbage senere, når der er flere relevante opslag."
+    : "Udvid din søgning med færre filtre eller flere søgeord for at få flere resultater.";
+
+  const renderListHeader = () => (
+    <section className="mb-4 rounded-[1.75rem] border border-base-300/70 bg-gradient-to-br from-base-100 via-base-100 to-primary/5 p-4 shadow-[0_20px_50px_-40px_rgba(15,23,42,0.55)] sm:p-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="space-y-3">
+          <span
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] ${isRecommendedMode
+              ? "border-secondary/20 bg-secondary/10 text-secondary"
+              : "border-primary/20 bg-primary/10 text-primary"}`}
+          >
+            <ListModeIcon className="h-4 w-4" aria-hidden="true" />
+            {isRecommendedMode ? "Anbefalet visning" : "Resultatvisning"}
+          </span>
+
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold tracking-tight text-base-content sm:text-[2rem]">{listTitle}</h2>
+            <p className="max-w-2xl text-sm leading-6 text-base-content/70 sm:text-base">{listDescription}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 sm:min-w-[17rem]">
+          <div className="rounded-[1.25rem] border border-base-300/70 bg-base-100/80 p-3 shadow-sm">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Viser</p>
+            <p className="mt-2 text-xl font-semibold text-base-content">{getPageRangeLabel(loading, pageStart, pageEnd)}</p>
+            <p className="text-xs text-base-content/60">{loading ? "henter job" : `af ${totalCount} opslag`}</p>
+          </div>
+
+          <div className="rounded-[1.25rem] border border-base-300/70 bg-base-100/80 p-3 shadow-sm">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Side</p>
+            <p className="mt-2 text-xl font-semibold text-base-content">{loading ? "..." : `${currentPage} / ${Math.max(totalPages, 1)}`}</p>
+            <p className="text-xs text-base-content/60">{isRecommendedMode ? "prioriterede match" : "opdaterede resultater"}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
   const renderJobCard = (job: JobIndexPostResponse, idx: number) => {
     const jobId = job.id;
     const hasValidId = typeof jobId === "number";
@@ -252,7 +458,7 @@ const JobList: React.FC<Props> = ({
     const isOpen = safeJobId != null && openJobIds.has(safeJobId);
     const isSaving = safeJobId != null && savingJobIds.has(safeJobId);
     const isSaved = safeJobId != null && savedJobIds.has(safeJobId);
-    const freshDetails = safeJobId != null ? detailsMap.get(safeJobId) : undefined;
+    const freshDetails = getJobDetails(detailsMap, safeJobId);
     const bannerPicture = resolvePictureSource(
       freshDetails?.bannerPicture ?? job.bannerPicture ?? null,
       freshDetails?.bannerMimeType ?? job.bannerMimeType ?? null,
@@ -265,156 +471,118 @@ const JobList: React.FC<Props> = ({
     );
     const descriptionSource = freshDetails?.description ?? job.description ?? null;
     const canSave = Boolean(user?.userId && user?.accessToken && safeJobId != null);
-
-    let descriptionBlock: React.ReactNode;
-    if (!descriptionSource || descriptionSource.trim() === "") {
-      descriptionBlock = <p className="text-sm italic text-base-content/60">Ingen beskrivelse tilgængelig.</p>;
-    } else if (isOpen) {
-      descriptionBlock = (
-        <>
-          <p className="text-sm text-base-content whitespace-pre-line">{descriptionSource}</p>
-          <button type="button" onClick={() => handleToggleDescription(safeJobId)} className="mt-2 text-primary hover:underline text-sm">
-            Vis mindre
-          </button>
-        </>
-      );
-    } else {
-      const { snippet, truncated } = truncateWords(descriptionSource, 100);
-      descriptionBlock = (
-        <>
-          <p className="text-sm text-base-content whitespace-pre-line">{snippet}</p>
-          {truncated && (
-            <button type="button" onClick={() => handleToggleDescription(safeJobId)} className="mt-2 text-primary hover:underline text-sm">
-              Læs mere
-            </button>
-          )}
-        </>
-      );
-    }
-
+    const resultNumber = (currentPage - 1) * pageSize + idx + 1;
+    const postedDateLabel = formatPostedDate(job.postedDate ?? null);
+    const safeCompanyUrl = sanitizeExternalUrl(job.companyUrl ?? undefined);
     const safeJobUrl = sanitizeExternalUrl(job.jobUrl ?? undefined);
+    const descriptionBlock = getDescriptionBlock(descriptionSource, isOpen);
 
     return (
-      <div key={safeJobId ?? idx} className="card bg-linear-to-br from-primary/5 to-secondary/5 shadow-xl space-y-3 p-4 transition-all border border-primary/20 hover:shadow-2xl hover:-translate-y-1" data-testid="job-card">
-        <div className="flex justify-between items-start border-b my-2 p-1">
-          <div className="flex-1">
-            <h2 className="text-lg font-semibold text-base-content">{job.title ?? "(Ingen titel)"}</h2>
+      <article
+        key={safeJobId ?? idx}
+        className="group rounded-[1.75rem] border border-base-300/70 bg-gradient-to-br from-base-100 via-base-100 to-primary/5 p-4 shadow-[0_22px_60px_-42px_rgba(15,23,42,0.58)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_72px_-42px_rgba(15,23,42,0.64)] sm:p-5"
+        data-testid="job-card"
+      >
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${isRecommendedMode
+                  ? "border-secondary/20 bg-secondary/10 text-secondary"
+                  : "border-primary/20 bg-primary/10 text-primary"}`}
+              >
+                {isRecommendedMode ? <SparklesIcon className="h-4 w-4" aria-hidden="true" /> : <MagnifyingGlassIcon className="h-4 w-4" aria-hidden="true" />}
+                {isRecommendedMode ? "Anbefalet match" : `Resultat ${resultNumber}`}
+              </span>
+
+              {job.category && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1 text-xs font-medium text-base-content/75">
+                  <TagIcon className="h-4 w-4" aria-hidden="true" />
+                  {job.category}
+                </span>
+              )}
+
+              {postedDateLabel && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1 text-xs font-medium text-base-content/70">
+                  <CalendarDaysIcon className="h-4 w-4" aria-hidden="true" />
+                  Publiceret {postedDateLabel}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold leading-tight text-base-content sm:text-[1.6rem]">{job.title ?? "(Ingen titel)"}</h3>
+
             {(job.company || job.location) ? (
-              <p className="mt-1 text-sm text-base-content/80 flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap gap-2 text-sm text-base-content/80">
                 {job.company && (
-                  <span className="inline-flex items-center gap-1 font-medium">
-                    <BuildingOffice2Icon className="w-4 h-4" aria-hidden="true" />
+                  <span className="inline-flex items-center gap-2 rounded-full border border-base-300/80 bg-base-100/85 px-3 py-1.5 font-medium shadow-sm">
+                    <BuildingOffice2Icon className="h-4 w-4" aria-hidden="true" />
                     {job.company}
                   </span>
                 )}
                 {job.location && (
-                  <span className="inline-flex items-center gap-1 text-base-content/80">
-                    <MapPinIcon className="w-4 h-4" aria-hidden="true" />
+                  <span className="inline-flex items-center gap-2 rounded-full border border-base-300/80 bg-base-100/85 px-3 py-1.5 shadow-sm">
+                    <MapPinIcon className="h-4 w-4" aria-hidden="true" />
                     {job.location}
                   </span>
                 )}
-              </p>
+              </div>
             ) : (
-              <p className="mt-1 text-sm italic text-base-content/50">Ingen virksomhedsoplysninger.</p>
+              <p className="text-sm italic text-base-content/50">Ingen virksomhedsoplysninger.</p>
             )}
           </div>
-          <div className="text-right min-w-35 flex flex-col items-end gap-1">
-            {job.postedDate && (
-              <p className="text-xs text-base-content/60 inline-flex items-center gap-1">
-                <CalendarDaysIcon className="w-4 h-4" aria-hidden="true" />
-                Publiceret {new Date(job.postedDate).toLocaleDateString("da-DK")}
-              </p>
-            )}
-            {job.category && (
-              <p className="text-xs text-base-content/70 inline-flex items-center gap-1">
-                <TagIcon className="w-4 h-4" aria-hidden="true" />
-                {job.category}
-              </p>
-            )}
-          </div>
-        </div>
 
         {bannerPicture && (
-          <div className="flex justify-center pt-2">
+          <div className="mx-auto w-full max-w-2xl overflow-hidden rounded-[1.5rem] border border-base-300/70 bg-base-100/80 p-3 shadow-sm">
             <img
               src={bannerPicture}
               alt="Banner for jobopslag"
-              className="max-w-full h-auto max-h-64 rounded-md"
+              className="h-auto max-h-52 w-full rounded-xl object-contain sm:max-h-60"
               loading="lazy"
             />
           </div>
         )}
-        {bannerPicture && <div className="divider my-1" />}
 
-        <div className="border border-base-content/20 p-2 bg-base-200/40 my-2">{descriptionBlock}</div>
+          <div className="rounded-[1.35rem] border border-base-300/80 bg-base-100/80 p-4 shadow-sm">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Beskrivelse</p>
+              {!descriptionSource || descriptionSource.trim() === "" ? null : (
+                <span className="text-xs text-base-content/45">{isOpen ? "Fuld visning" : "Kort overblik"}</span>
+              )}
+            </div>
+            {descriptionBlock}
+          </div>
 
-        {footerPicture && <div className="divider my-3" />}
-        {footerPicture && (
-          <div className="flex justify-center">
+          {footerPicture && (
+            <div className="mx-auto w-full max-w-xl overflow-hidden rounded-[1.5rem] border border-base-300/70 bg-base-100/80 p-3 shadow-sm">
             <img
               src={footerPicture}
               alt="Footer grafik for jobopslag"
-              className="max-w-full h-auto max-h-48 rounded-md"
+              className="h-auto max-h-36 w-full rounded-xl object-contain sm:max-h-44"
               loading="lazy"
             />
           </div>
         )}
 
-        <div className="flex flex-wrap gap-3">
-          {safeJobUrl && (
-            <a href={safeJobUrl} target="_blank" rel="noopener noreferrer" className="text-sm px-3 py-1 rounded border border-primary text-primary hover:bg-primary/10">
-              <span className="inline-flex items-center gap-1">
-                <ArrowTopRightOnSquareIcon className="w-4 h-4" aria-hidden="true" />
-                Gå til opslag
-              </span>
-            </a>
-          )}
-          {canSave && !isSaved && safeJobId != null && (
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={() => handleSaveJob(safeJobId)}
-              className="text-sm px-3 py-1 rounded border border-success text-success hover:bg-success/10 disabled:opacity-50"
-            >
-              <span className="inline-flex items-center gap-1">
-                <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
-                {isSaving ? "Gemmer…" : "Gem job"}
-              </span>
-            </button>
-          )}
-          {canSave && isSaved && safeJobId != null && (
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={() => handleRemoveSavedJob(safeJobId)}
-              className="text-sm px-3 py-1 rounded border border-error text-error hover:bg-error/10 disabled:opacity-50"
-            >
-              <span className="inline-flex items-center gap-1">
-                <BookmarkSlashIcon className="w-4 h-4" aria-hidden="true" />
-                {isSaving ? "Fjerner…" : "Fjern gemt"}
-              </span>
-            </button>
-          )}
-          {!canSave && (
-            <button
-              type="button"
-              disabled
-              className="text-sm px-3 py-1 rounded border border-base-content/30 text-base-content/40 cursor-not-allowed"
-              title="Log ind for at gemme job"
-            >
-              <span className="inline-flex items-center gap-1">
-                <BookmarkIcon className="w-4 h-4" aria-hidden="true" />
-                Gem job
-              </span>
-            </button>
-          )}
-          {descriptionSource && descriptionSource.trim() !== "" && !isOpen && (
-            <button type="button" onClick={() => handleToggleDescription(safeJobId)} className="text-sm px-3 py-1 rounded border border-base-content/40 text-base-content/70 hover:bg-base-content/10">
-              Læs mere
-            </button>
-          )}
+          <JobCardActions
+            safeJobUrl={safeJobUrl}
+            safeCompanyUrl={safeCompanyUrl}
+            canSave={canSave}
+            isSaved={isSaved}
+            isSaving={isSaving}
+            safeJobId={safeJobId}
+            descriptionSource={descriptionSource}
+            isOpen={isOpen}
+            onSaveJob={handleSaveJob}
+            onRemoveSavedJob={handleRemoveSavedJob}
+            onToggleDescription={(jobIdToToggle) => {
+              void handleToggleDescription(jobIdToToggle);
+            }}
+          />
         </div>
-      </div>
+      </article>
     );
   };
 
@@ -422,6 +590,7 @@ const JobList: React.FC<Props> = ({
     return (
       <>
         <div id={listTopId} className="scroll-mt-24" aria-hidden="true" />
+        {renderListHeader()}
         <JobListSkeleton count={pageSize} />
       </>
     );
@@ -431,12 +600,17 @@ const JobList: React.FC<Props> = ({
     return (
       <>
         <div id={listTopId} className="scroll-mt-24" aria-hidden="true" />
-        <div className="text-center py-8">Ingen job fundet.</div>
+        {renderListHeader()}
+        <div className="rounded-[1.75rem] border border-dashed border-base-300/80 bg-base-100/75 px-6 py-10 text-center shadow-sm">
+          <div className={`mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full ${isRecommendedMode ? "bg-secondary/10 text-secondary" : "bg-primary/10 text-primary"}`}>
+            {isRecommendedMode ? <SparklesIcon className="h-7 w-7" aria-hidden="true" /> : <MagnifyingGlassIcon className="h-7 w-7" aria-hidden="true" />}
+          </div>
+          <h3 className="text-xl font-semibold text-base-content">{emptyTitle}</h3>
+          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-base-content/65">{emptyDescription}</p>
+        </div>
       </>
     );
   }
-
-  const totalPages = Math.ceil(totalCount / pageSize);
 
   const items: Array<{ kind: "job"; job: JobIndexPostResponse; idx: number } | { kind: "ad"; key: string }> = [];
   jobs.forEach((job, idx) => {
@@ -449,10 +623,11 @@ const JobList: React.FC<Props> = ({
   return (
     <>
       <div id={listTopId} className="scroll-mt-24" aria-hidden="true" />
+      {renderListHeader()}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={currentPage}
-          className="grid gap-3"
+          className="grid gap-4"
           initial={{ opacity: 0, x: 32 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -32 }}

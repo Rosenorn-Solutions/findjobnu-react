@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { BriefcaseIcon } from "@heroicons/react/24/outline";
+import {
+  BriefcaseIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  EnvelopeIcon,
+  MapPinIcon,
+  SparklesIcon,
+  TagIcon,
+} from "@heroicons/react/24/outline";
 import { JobAgentApi, JobIndexPostsApi, ProfileApi } from "../findjobnu-api";
 import { JobAgentFrequency } from "../findjobnu-api/models/JobAgentFrequency";
 import type { JobAgentDto } from "../findjobnu-api/models/JobAgentDto";
@@ -42,6 +50,26 @@ type CategoryOption = {
   count: number;
 };
 
+const formatCategoryInputValue = (names: string[] | undefined, ids: number[]) => {
+  if (names && names.length > 0) {
+    return names.join(", ");
+  }
+  if (ids.length > 0) {
+    return ids.join(", ");
+  }
+  return "";
+};
+
+const describeAgentStatus = (mode: "setup" | "manage", enabled: boolean) => {
+  if (mode === "setup") {
+    return "ikke oprettet endnu";
+  }
+  if (enabled) {
+    return "klar til udsendelse";
+  }
+  return "gemt som inaktiv";
+};
+
 const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
   const frequencySelectId = "jobagent-frequency";
   const locationsInputId = "jobagent-locations";
@@ -67,12 +95,6 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(-1);
   const [keywordsInput, setKeywordsInput] = useState<string>("");
   const [unsubscribeLink, setUnsubscribeLink] = useState<string | null>(null);
-
-  const statusBadge = useMemo(() => {
-    const base = "badge badge-md whitespace-nowrap px-3 py-2 text-xs font-semibold leading-tight";
-    if (mode === "setup") return `${base} badge-outline`;
-    return enabled ? `${base} badge-success` : `${base} badge-ghost`;
-  }, [enabled, mode]);
 
   const statusLabel = useMemo(() => {
     if (mode === "setup") return "Ikke oprettet";
@@ -181,8 +203,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       const ids = existing?.preferredCategoryIds ?? [];
       const categoryNames = existing?.preferredCategoryNames ?? [];
       setSelectedCategoryIds(ids);
-      // Use category names from API if available, otherwise fall back to IDs
-      setCategoriesInput(categoryNames.length > 0 ? categoryNames.join(", ") : (ids.length ? ids.join(", ") : ""));
+      setCategoriesInput(formatCategoryInputValue(categoryNames, ids));
       setKeywordsInput((existing?.includeKeywords ?? []).join(", "));
       setUnsubscribeLink(link ?? null);
     };
@@ -290,7 +311,6 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       const refreshedIds = refreshed.preferredCategoryIds ?? selectedCategoryIds;
       const refreshedNames = refreshed.preferredCategoryNames ?? [];
       setSelectedCategoryIds(refreshedIds);
-      // Use category names from API if available, otherwise fall back to formatCategoriesInput
       setCategoriesInput(refreshedNames.length > 0 ? refreshedNames.join(", ") : formatCategoriesInput(refreshedIds));
       setKeywordsInput((refreshed.includeKeywords ?? []).join(", "));
       setUnsubscribeLink(link ?? null);
@@ -347,7 +367,6 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       const refreshedIds = refreshed.preferredCategoryIds ?? [];
       const refreshedNames = refreshed.preferredCategoryNames ?? [];
       setSelectedCategoryIds(refreshedIds);
-      // Use category names from API if available, otherwise fall back to formatCategoriesInput
       setCategoriesInput(refreshedNames.length > 0 ? refreshedNames.join(", ") : formatCategoriesInput(refreshedIds));
       setKeywordsInput((refreshed.includeKeywords ?? []).join(", "));
       setUnsubscribeLink(link ?? null);
@@ -429,176 +448,284 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
     return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString();
   };
 
-  return (
-    <div className="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow border border-primary/20 rounded-lg p-6 w-full h-fit transition-all hover:shadow-xl hover:-translate-y-1 prose prose-neutral max-w-none">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h2 className="card-title flex items-center gap-2">
-            <span>{mode === "setup" ? "Opsæt jobagent?" : "Jobagent"}</span>
-            <BriefcaseIcon className="w-6 h-6 text-primary" aria-hidden="true" />
-          </h2>
-          <p className="text-sm text-gray-500">
-            {mode === "setup"
-              ? "Ved oprettelse af JobAgent tilsender vi dig daglig, ugentligt eller månedligt, job anbefalinger der matcher din profil her på siden."
-              : "Få automatiske jobforslag på mail."}
-          </p>
-        </div>
-        <span className={statusBadge}>{statusLabel}</span>
-      </div>
+  const inputClass = "input input-bordered w-full rounded-2xl border-base-300/80 bg-base-100/90 text-base shadow-sm transition-all duration-200 hover:border-base-content/40 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 placeholder:text-base-content/45";
+  const selectClass = "select select-bordered w-full rounded-2xl border-base-300/80 bg-base-100/90 text-base shadow-sm transition-all duration-200 hover:border-base-content/40 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10";
+  const labelTextClass = "label-text text-sm font-semibold uppercase tracking-[0.16em] text-base-content/60";
+  const frequencyLabel = frequencyOptions.find((option) => option.value === frequency)?.label ?? "Ugentligt";
+  const chosenLocations = locationsInput.split(",").map((value) => value.trim()).filter(Boolean);
+  const chosenKeywords = keywordsInput.split(",").map((value) => value.trim()).filter(Boolean);
+  const effectiveCategoryIds = deriveCategoryIds(categoriesInput);
+  const categoryCount = effectiveCategoryIds.length || selectedCategoryIds.length;
 
-      {error && <div className="alert alert-error shadow-sm mb-3 text-sm">{error}</div>}
-      {message && <div className="alert alert-success shadow-sm mb-3 text-sm">{message}</div>}
+  return (
+    <div className="space-y-6">
+      <section className="relative overflow-hidden rounded-[1.85rem] border border-primary/15 bg-gradient-to-br from-base-100 via-primary/6 to-secondary/10 shadow-[0_24px_70px_-36px_rgba(15,23,42,0.45)]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.74),transparent_54%)]" />
+        <div className="pointer-events-none absolute -left-10 bottom-0 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
+
+        <div className="relative grid gap-6 p-5 sm:p-6 xl:grid-cols-[minmax(0,1.1fr)_300px]">
+          <div className="space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-base-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary shadow-sm backdrop-blur">
+              <BriefcaseIcon className="h-4 w-4" aria-hidden="true" />
+              Jobagent
+            </div>
+
+            <div className="space-y-3">
+              <h2 className="text-3xl font-semibold tracking-tight text-base-content sm:text-4xl">
+                {mode === "setup" ? "Opsæt din jobagent med tydeligere kontrol" : "Administrér dine automatiske jobforslag ét sted"}
+              </h2>
+              <p className="max-w-3xl text-base leading-7 text-base-content/72 sm:text-lg">
+                {mode === "setup"
+                  ? "Opret din jobagent og vælg hurtigt, hvor ofte du vil høre fra os, og hvilke steder eller kategorier der skal prioriteres."
+                  : "Justér hyppighed, lokationer, kategorier og søgeord uden at forlade profilen. Det hele er gjort lettere at skimme og finjustere."}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {[
+                "Kombinér lokationer, kategorier og nøgleord for mere præcise forslag.",
+                "Skift mellem aktiv og inaktiv status uden at miste dine valg.",
+                "Få klar status på seneste og næste udsendelse direkte i samme visning.",
+              ].map((point) => (
+                <div key={point} className="flex items-start gap-3 text-sm leading-6 text-base-content/72 sm:text-base">
+                  <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
+                  <span>{point}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[1.5rem] border border-base-300/70 bg-base-100/84 p-5 shadow-lg backdrop-blur-sm sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Status</p>
+            <div className="mt-4 grid gap-3">
+              <div className="rounded-[1.25rem] border border-base-300/70 bg-base-200/35 p-4 shadow-sm">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-base-content/45">Agent</p>
+                <p className="mt-2 text-3xl font-semibold text-base-content">{statusLabel}</p>
+                <p className="text-sm leading-6 text-base-content/65">{describeAgentStatus(mode, enabled)}</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-base-300/70 bg-base-200/35 p-4 shadow-sm">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-base-content/45">Hyppighed</p>
+                <p className="mt-2 text-3xl font-semibold text-base-content">{frequencyLabel}</p>
+                <p className="text-sm leading-6 text-base-content/65">{mode === "setup" ? "vælg efter oprettelse" : "nuværende udsendelsesrytme"}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {error && <div className="alert alert-error rounded-[1.35rem] shadow-sm text-sm">{error}</div>}
+      {message && <div className="alert alert-success rounded-[1.35rem] shadow-sm text-sm">{message}</div>}
 
       {mode === "setup" ? (
-        <div className="flex flex-col gap-3">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleCreateInitial}
-            disabled={loading || saving || !profileId}
-          >
-            {saving ? "Opretter..." : "Opret"}
-          </button>
-          {loading && <div className="text-sm text-gray-500">Henter data...</div>}
+        <div className="rounded-[1.75rem] border border-base-300/70 bg-base-100/84 p-6 shadow-lg backdrop-blur-sm sm:p-7">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+            <div className="space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Start jobagent</p>
+              <h3 className="text-2xl font-semibold tracking-tight text-base-content">Opret den første version af din jobagent</h3>
+              <p className="text-base leading-7 text-base-content/68">
+                Vi opretter agenten med en standardhyppighed, hvorefter du kan finjustere alt fra kategorier til nøgleord direkte i panelet.
+              </p>
+            </div>
+            <div className="rounded-[1.35rem] border border-base-300/70 bg-base-200/35 p-4 shadow-sm">
+              <button
+                type="button"
+                className="btn btn-primary min-h-12 w-full rounded-2xl px-6 shadow-lg shadow-primary/20"
+                onClick={handleCreateInitial}
+                disabled={loading || saving || !profileId}
+              >
+                {saving ? "Opretter..." : "Opret jobagent"}
+              </button>
+              {loading && <div className="mt-3 text-sm text-base-content/55">Henter data...</div>}
+            </div>
+          </div>
         </div>
       ) : (
-        <>
-          <div className="form-control">
-            <label className="label flex-col items-start gap-2">
-              <span className="label-text">Aktiver jobagent</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-primary self-start"
-                checked={enabled}
-                onChange={(e) => setEnabled(e.target.checked)}
-                disabled={loading || saving}
-              />
-            </label>
-          </div>
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(280px,0.95fr)]">
+          <div className="rounded-[1.75rem] border border-base-300/70 bg-base-100/84 p-5 shadow-lg backdrop-blur-sm sm:p-6">
+            <div className="grid gap-5">
+              <div className="rounded-[1.35rem] border border-base-300/70 bg-base-200/35 p-4 shadow-sm">
+                <label className="label flex-col items-start gap-3">
+                  <span className={labelTextClass}>Aktiver jobagent</span>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      className="toggle toggle-primary"
+                      checked={enabled}
+                      onChange={(e) => setEnabled(e.target.checked)}
+                      disabled={loading || saving}
+                    />
+                    <span className="text-sm leading-6 text-base-content/68">Slå automatiske jobforslag til eller fra uden at miste dine filtre.</span>
+                  </div>
+                </label>
+              </div>
 
-          <div className="form-control mt-3">
-            <label className="label flex-col items-start gap-2" htmlFor={frequencySelectId}>
-              <span className="label-text">Hyppighed</span>
-              <select
-                id={frequencySelectId}
-                className="select select-bordered"
-                value={frequency}
-                onChange={(e) => setFrequency(normalizeFrequency(Number(e.target.value)))}
-                disabled={loading || saving}
-              >
-                {frequencyOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </label>
-          </div>
+              <div className="grid gap-4 lg:grid-cols-2">
+                <div className="form-control gap-2">
+                  <label className="label p-0" htmlFor={frequencySelectId}><span className={labelTextClass}>Hyppighed</span></label>
+                  <select
+                    id={frequencySelectId}
+                    className={selectClass}
+                    value={frequency}
+                    onChange={(e) => setFrequency(normalizeFrequency(Number(e.target.value)))}
+                    disabled={loading || saving}
+                  >
+                    {frequencyOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-4">
-            <div className="form-control">
-              <label className="label flex-col items-start gap-2" htmlFor={locationsInputId}>
-                <span className="label-text">Foretrukne lokationer (kommasepareret)</span>
-              </label>
-              <LocationTypeahead
-                value={locationsInput}
-                onChange={setLocationsInput}
-                placeholder="fx København, Aarhus"
-                className="input input-bordered"
-                inputProps={{
-                  id: locationsInputId,
-                  disabled: loading || saving,
-                  "aria-label": "Foretrukne lokationer",
-                }}
-                allowCommaSeparated
-              />
-            </div>
+                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-200/35 p-4 shadow-sm">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-base-content/45">Nuværende valg</p>
+                  <p className="mt-2 text-xl font-semibold text-base-content">{frequencyLabel}</p>
+                  <p className="text-sm leading-6 text-base-content/65">Vi bruger denne rytme til næste udsendelse.</p>
+                </div>
+              </div>
 
-            <div className="form-control">
-              <label className="label flex-col items-start gap-2" htmlFor={categoriesInputId}>
-                <span className="label-text">Kategorier (kommasepareret)</span>
-              </label>
-              <div className="relative">
+              <div className="form-control gap-2">
+                <label className="label p-0" htmlFor={locationsInputId}><span className={labelTextClass}>Foretrukne lokationer</span></label>
+                <LocationTypeahead
+                  value={locationsInput}
+                  onChange={setLocationsInput}
+                  placeholder="fx København, Aarhus"
+                  className={inputClass}
+                  inputProps={{
+                    id: locationsInputId,
+                    disabled: loading || saving,
+                    "aria-label": "Foretrukne lokationer",
+                  }}
+                  allowCommaSeparated
+                />
+                <p className="text-sm leading-6 text-base-content/60">Tilføj flere steder med komma for at gøre søgeresultaterne bredere.</p>
+              </div>
+
+              <div className="form-control gap-2">
+                <label className="label p-0" htmlFor={categoriesInputId}><span className={labelTextClass}>Kategorier</span></label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    className={inputClass}
+                    placeholder="Start skriv for at vælge – understøtter komma"
+                    id={categoriesInputId}
+                    value={categoriesInput}
+                    onChange={(e) => handleCategoriesChange(e.target.value)}
+                    onFocus={handleCategoriesFocus}
+                    onKeyDown={handleCategoriesKeyDown}
+                    onBlur={() => setTimeout(() => setShowCategorySuggestions(false), 100)}
+                    disabled={loading || saving}
+                    aria-label="Kategorier"
+                  />
+                  {showCategorySuggestions && categorySuggestions.length > 0 && (
+                    <ul className="absolute left-0 top-full z-30 mt-2 max-h-48 w-full overflow-y-auto rounded-[1.1rem] border border-base-300/70 bg-base-100 shadow-lg">
+                      {categorySuggestions.map((cat, idx) => (
+                        <li key={cat.id} className="border-b border-base-200 last:border-b-0">
+                          <button
+                            type="button"
+                            className={`w-full border-0 px-3 py-3 text-left ${idx === activeCategoryIndex ? "bg-primary text-primary-content" : "bg-base-100 hover:bg-base-200"}`}
+                            onMouseDown={(e) => { e.preventDefault(); handleCategorySuggestionClick(cat); }}
+                            onClick={() => handleCategorySuggestionClick(cat)}
+                          >
+                            <span className="flex items-center justify-between gap-2">
+                              <span>{cat.name}</span>
+                              <span className="text-xs opacity-70">{cat.count}</span>
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <span className="text-sm leading-6 text-base-content/60">Skriv flere kategorier adskilt med komma. Matcher automatisk navne eller ID'er.</span>
+              </div>
+
+              <div className="form-control gap-2">
+                <label className="label p-0" htmlFor={keywordsInputId}><span className={labelTextClass}>Søgeord der skal med</span></label>
                 <input
                   type="text"
-                  className="input input-bordered w-full"
-                  placeholder="Start skriv for at vælge – understøtter komma"
-                  id={categoriesInputId}
-                  value={categoriesInput}
-                  onChange={(e) => handleCategoriesChange(e.target.value)}
-                  onFocus={handleCategoriesFocus}
-                  onKeyDown={handleCategoriesKeyDown}
-                  onBlur={() => setTimeout(() => setShowCategorySuggestions(false), 100)}
+                  className={inputClass}
+                  placeholder="fx React, .NET, marketing"
+                  id={keywordsInputId}
+                  value={keywordsInput}
+                  onChange={(e) => setKeywordsInput(e.target.value)}
                   disabled={loading || saving}
-                  aria-label="Kategorier"
                 />
-                {showCategorySuggestions && categorySuggestions.length > 0 && (
-                  <ul className="absolute left-0 top-full z-30 w-full max-h-48 overflow-y-auto mt-1 p-0 border border-base-300 bg-base-100 rounded-lg shadow-lg">
-                    {categorySuggestions.map((cat, idx) => (
-                      <li key={cat.id} className="border-b last:border-b-0 border-base-200">
-                        <button
-                          type="button"
-                          className={`w-full text-left px-3 py-2 rounded-none border-0 bg-base-100 ${idx === activeCategoryIndex ? "bg-primary text-primary-content" : "hover:bg-base-200"}`}
-                          onMouseDown={(e) => { e.preventDefault(); handleCategorySuggestionClick(cat); }}
-                          onClick={() => handleCategorySuggestionClick(cat)}
-                        >
-                          <span className="flex items-center justify-between gap-2">
-                            <span>{cat.name}</span>
-                            <span className="text-xs opacity-70">{cat.count}</span>
-                          </span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
-              <span className="text-xs text-gray-500 mt-1">Skriv flere kategorier adskilt med komma. Matcher automatisk navne eller ID'er.</span>
-            </div>
 
-            <div className="form-control">
-              <label className="label flex-col items-start gap-2" htmlFor={keywordsInputId}>
-                <span className="label-text">Søgeord der skal med (kommasepareret)</span>
-              </label>
-              <input
-                type="text"
-                className="input input-bordered"
-                placeholder="fx React, .NET, marketing"
-                id={keywordsInputId}
-                value={keywordsInput}
-                onChange={(e) => setKeywordsInput(e.target.value)}
-                disabled={loading || saving}
-              />
+              <button
+                type="button"
+                className="btn btn-primary min-h-12 rounded-2xl px-6 shadow-lg shadow-primary/20"
+                onClick={handleSave}
+                disabled={loading || saving || !profileId}
+              >
+                {saving ? "Gemmer..." : "Gem jobagent"}
+              </button>
+
+              {loading && <div className="text-sm text-base-content/55">Henter jobagent...</div>}
             </div>
           </div>
 
-          <div className="text-sm text-gray-600 mt-4 space-y-1">
-            <p>Sidst sendt: {formatDateTime(lastSentAt ?? jobAgent?.lastSentAt ?? null)}</p>
-            <p>Næste udsendelse: {formatDateTime(nextSendAt ?? jobAgent?.nextSendAt ?? null)}</p>
-            {enabled && unsubscribeLink && (
-              <div className="pt-2">
-                <a
-                  className="btn btn-outline btn-error btn-sm"
-                  href={unsubscribeLink}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Afmeld jobagent
-                </a>
+          <div className="space-y-4">
+            <div className="rounded-[1.75rem] border border-base-300/70 bg-base-100/84 p-5 shadow-lg backdrop-blur-sm sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Opsummering</p>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-start gap-3 rounded-[1.2rem] border border-base-300/70 bg-base-200/35 px-4 py-3 shadow-sm">
+                  <MapPinIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                  <div>
+                    <p className="text-sm font-semibold text-base-content">Lokationer</p>
+                    <p className="text-sm leading-6 text-base-content/68">{chosenLocations.length ? chosenLocations.join(", ") : "Ingen lokationer valgt endnu"}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-[1.2rem] border border-base-300/70 bg-base-200/35 px-4 py-3 shadow-sm">
+                  <TagIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                  <div>
+                    <p className="text-sm font-semibold text-base-content">Kategorier</p>
+                    <p className="text-sm leading-6 text-base-content/68">{categoryCount ? `${categoryCount} valgt` : "Ingen kategorier valgt endnu"}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-[1.2rem] border border-base-300/70 bg-base-200/35 px-4 py-3 shadow-sm">
+                  <SparklesIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                  <div>
+                    <p className="text-sm font-semibold text-base-content">Søgeord</p>
+                    <p className="text-sm leading-6 text-base-content/68">{chosenKeywords.length ? chosenKeywords.join(", ") : "Ingen søgeord valgt endnu"}</p>
+                  </div>
+                </div>
               </div>
-            )}
+            </div>
+
+            <div className="rounded-[1.75rem] border border-base-300/70 bg-base-100/84 p-5 shadow-lg backdrop-blur-sm sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Udsendelser</p>
+              <div className="mt-4 space-y-3 text-sm text-base-content/68">
+                <div className="flex items-start gap-3 rounded-[1.2rem] border border-base-300/70 bg-base-200/35 px-4 py-3 shadow-sm">
+                  <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                  <div>
+                    <p className="font-semibold text-base-content">Sidst sendt</p>
+                    <p>{formatDateTime(lastSentAt ?? jobAgent?.lastSentAt ?? null)}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-[1.2rem] border border-base-300/70 bg-base-200/35 px-4 py-3 shadow-sm">
+                  <EnvelopeIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                  <div>
+                    <p className="font-semibold text-base-content">Næste udsendelse</p>
+                    <p>{formatDateTime(nextSendAt ?? jobAgent?.nextSendAt ?? null)}</p>
+                  </div>
+                </div>
+              </div>
+
+              {enabled && unsubscribeLink && (
+                <div className="mt-5 border-t border-base-300/70 pt-5">
+                  <a
+                    className="btn btn-ghost min-h-11 rounded-2xl border border-error/20 bg-error/10 px-5 text-error hover:bg-error/15"
+                    href={unsubscribeLink}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Afmeld jobagent
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
-
-          <button
-            type="button"
-            className="btn btn-primary mt-5"
-            onClick={handleSave}
-            disabled={loading || saving || !profileId}
-          >
-            {saving ? "Gemmer..." : "Gem jobagent"}
-          </button>
-
-          {loading && (
-            <div className="mt-3 text-sm text-gray-500">Henter jobagent...</div>
-          )}
-        </>
+        </div>
       )}
     </div>
   );

@@ -55,7 +55,8 @@ const JobSearch: React.FC = () => {
     postedBefore?: string;
   } | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const toggleTooltip = userId ? undefined : "Log ind for at se anbefalede jobs";
+  const hasUser = userId.length > 0;
+  const toggleTooltip = hasUser ? undefined : "Log ind for at se anbefalede jobs";
 
   const setPanelQueryParam = (panel: "search" | "recommended") => {
     const next = new URLSearchParams(searchParams);
@@ -224,10 +225,22 @@ const JobSearch: React.FC = () => {
     const categoryId = parseCategoryFromQuery();
     const lastCategory = lastSearchParams?.categoryId;
     if (categoryId != null && categoryId !== lastCategory) {
-      handleSearch({ ...(lastSearchParams ?? {}), categoryId }, 1);
+      const nextParams = lastSearchParams ? { ...lastSearchParams, categoryId } : { categoryId };
+      handleSearch(nextParams, 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  const searchPanelButtonClass = activePanel === "search"
+    ? "btn-primary shadow-lg shadow-primary/20"
+    : "btn-ghost border border-base-300/80 bg-base-100/70";
+
+  let recommendedPanelButtonClass = "btn-ghost border border-base-300/80 bg-base-100/70";
+  if (hasUser === false) {
+    recommendedPanelButtonClass = "border border-base-200 bg-base-200/70 text-base-content/40";
+  } else if (activePanel === "recommended") {
+    recommendedPanelButtonClass = "btn-primary shadow-lg shadow-primary/20";
+  }
 
   return (
     <div className="container max-w-7xl mx-auto px-4 prose prose-neutral">
@@ -273,8 +286,108 @@ const JobSearch: React.FC = () => {
           }
         ]}
       />
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="order-2 lg:order-1 flex-1 min-w-0">
+      <div className="flex flex-col gap-6">
+        <section className="not-prose relative overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-base-100 via-primary/5 to-secondary/10 shadow-[0_24px_80px_-36px_rgba(15,23,42,0.45)]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.75),transparent_52%)]" />
+          <div className="pointer-events-none absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+          <div className="pointer-events-none absolute -right-8 top-8 h-48 w-48 rounded-full bg-secondary/15 blur-3xl" />
+
+          <div className="relative flex flex-col gap-6 p-5 sm:p-7 lg:p-8">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-3xl space-y-3">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-base-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary shadow-sm backdrop-blur">
+                  <MagnifyingGlassIcon className="h-4 w-4" aria-hidden="true" />
+                  Jobsøgning
+                </div>
+
+                <div className="space-y-2">
+                  <h2 className="text-3xl font-semibold tracking-tight text-base-content sm:text-4xl">
+                    Find dit næste job med et bedre overblik
+                  </h2>
+                  <p className="max-w-2xl text-sm leading-6 text-base-content/70 sm:text-base">
+                    Kombinér titel, kategori, dato og lokation i en samlet søgning. Layoutet er gjort bredere, tydeligere og nemmere at bruge på mobilen.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 text-sm text-base-content/70">
+                  {!loading && totalCount > 0 && (
+                    <span className="inline-flex items-center gap-2 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1.5 shadow-sm">
+                      <span className="text-base font-semibold text-base-content">
+                        <AnimatedCounter value={totalCount} />
+                      </span>
+                      <span>resultater klar</span>
+                    </span>
+                  )}
+                  {loading && (
+                    <span className="inline-flex items-center gap-2 rounded-full border border-base-300/70 bg-base-100/70 px-3 py-1.5 shadow-sm">
+                      Opdaterer resultater...
+                    </span>
+                  )}
+                  <span className="inline-flex items-center gap-2 rounded-full border border-base-300/70 bg-base-100/70 px-3 py-1.5 shadow-sm">
+                    Flere filtre i samme søgning
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-base-300/70 bg-base-100/70 px-3 py-1.5 shadow-sm">
+                    Hurtig på mobil, præcis på desktop
+                  </span>
+                </div>
+              </div>
+
+              <div className="w-full rounded-[1.5rem] border border-base-300/70 bg-base-100/80 p-4 shadow-lg backdrop-blur sm:w-auto sm:min-w-[19rem]">
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-base-content/45">Visning</p>
+                    <p className="mt-1 text-sm text-base-content/70">Skift mellem jobsøgning og anbefalinger uden at miste overblikket.</p>
+                  </div>
+                  <SparklesIcon className="h-5 w-5 text-secondary" aria-hidden="true" />
+                </div>
+
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    className={`btn min-h-11 rounded-2xl px-4 ${searchPanelButtonClass}`}
+                    onClick={switchToSearch}
+                    aria-label="Vis jobresultater"
+                  >
+                    <MagnifyingGlassIcon className="h-4 w-4" aria-hidden="true" />
+                    Jobsøgning
+                  </button>
+
+                  <div className={`${toggleTooltip ? "tooltip tooltip-bottom lg:tooltip-left" : ""} w-full sm:w-auto`} data-tip={toggleTooltip}>
+                    <button
+                      type="button"
+                      className={`btn min-h-11 w-full rounded-2xl px-4 ${recommendedPanelButtonClass}`}
+                      onClick={switchToRecommended}
+                      disabled={hasUser === false}
+                      aria-label="Vis anbefalinger"
+                    >
+                      <SparklesIcon className="h-4 w-4" aria-hidden="true" />
+                      Anbefalede jobs
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[1.75rem] border border-white/60 bg-base-100/80 p-4 shadow-inner shadow-base-content/5 backdrop-blur-xl sm:p-6">
+              <SearchForm
+                key={`search-form-${formKey}-${activePanel}`}
+                onSearch={(params) => {
+                  if (activePanel === "search") {
+                    setCurrentPage(1);
+                    setLastSearchParams(params);
+                    handleSearch(params, 1);
+                  } else {
+                    setRecommendedSearchParams(params);
+                  }
+                }}
+                categories={categories}
+                queryCategory={parseCategoryFromQuery()?.toString() ?? undefined}
+              />
+            </div>
+          </div>
+        </section>
+
+        <div className="min-w-0">
           {activePanel === "search" ? (
             <JobList
               jobs={jobs}
@@ -294,70 +407,6 @@ const JobSearch: React.FC = () => {
               onTotalCountChange={setTotalCount}
             />
           )}
-        </div>
-
-        <div className="order-1 lg:order-2 shrink-0 w-full lg:w-72 max-w-xs lg:sticky lg:top-24 self-start flex flex-col gap-4">
-          <div className="card bg-linear-to-br from-primary/5 to-secondary/5 border border-primary/20 shadow-xl rounded-box transition-all hover:shadow-2xl hover:-translate-y-1 p-3 flex items-center justify-between gap-3">
-            <div className="flex flex-col text-sm text-base-content/80">
-              <span className="font-semibold">Anbefalede jobs</span>
-              <span className="text-xs text-base-content/60">Slå til for at se anbefalinger</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex items-center gap-2 text-xs text-base-content/70">
-                <span className="inline-flex items-center gap-1">
-                  <MagnifyingGlassIcon className="w-4 h-4" aria-hidden="true" />
-                  Søgning
-                </span>
-                <span>•</span>
-                <span className="inline-flex items-center gap-1">
-                  <SparklesIcon className="w-4 h-4" aria-hidden="true" />
-                  Anbefalet
-                </span>
-              </div>
-              <div className={toggleTooltip ? "tooltip tooltip-left" : undefined} data-tip={toggleTooltip}>
-                <label className="label cursor-pointer gap-2" htmlFor="jobsearch-panel-toggle">
-                  <input
-                    id="jobsearch-panel-toggle"
-                    type="checkbox"
-                    className="toggle toggle-primary toggle-sm"
-                    checked={activePanel === "recommended"}
-                    onChange={(e) => (e.target.checked ? switchToRecommended() : switchToSearch())}
-                    disabled={!userId}
-                    aria-label="Skift mellem jobsøgning og anbefalede jobs"
-                  />
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full lg:w-72 max-w-xs">
-            <div className="card bg-linear-to-br from-primary/5 to-secondary/5 border border-primary/20 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 w-full lg:w-72 max-w-xs">
-              <div className="p-4">
-                <SearchForm
-                  key={`search-form-${formKey}-${activePanel}`}
-                  onSearch={(params) => {
-                    if (activePanel === "search") {
-                      setCurrentPage(1);
-                      setLastSearchParams(params);
-                      handleSearch(params, 1);
-                    } else {
-                      setRecommendedSearchParams(params);
-                    }
-                  }}
-                  categories={categories}
-                  queryCategory={parseCategoryFromQuery()?.toString() ?? undefined}
-                />
-              </div>
-            </div>
-            {!loading && totalCount > 0 && (
-              <div className="mt-3 text-center text-base-content/70">
-                <span className="text-lg font-semibold">
-                  <AnimatedCounter value={totalCount} />
-                </span>
-                <span className="ml-1">job{totalCount !== 1 ? 's' : ''} fundet</span>
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>

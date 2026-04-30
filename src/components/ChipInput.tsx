@@ -196,23 +196,17 @@ const ChipInput: React.FC<Props> = ({
     );
   };
 
-  // Click on container focuses input
-  const handleContainerClick = () => {
-    inputRef.current?.focus();
-  };
-
   return (
     <div className={`relative ${className}`} ref={containerRef}>
       <div
         className={`flex flex-wrap items-center gap-1.5 min-h-10 px-3 py-2 border border-base-300 rounded-btn bg-base-100 cursor-text transition-colors hover:border-base-content/40 focus-within:border-base-content focus-within:outline-2 focus-within:outline-offset-2 ${
           disabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
-        onClick={handleContainerClick}
       >
         {chips.map((chip) => (
           <span
             key={chip.id}
-            className="inline-flex items-center gap-1 px-2 py-0.5 text-sm bg-primary/15 text-primary-content border border-primary/30 rounded-full"
+            className="inline-flex items-center gap-1 px-2.5 py-1 text-[0.95rem] bg-primary/15 text-primary-content border border-primary/30 rounded-full"
           >
             <span className="text-base-content">{chip.label}</span>
             {!disabled && (
@@ -234,7 +228,7 @@ const ChipInput: React.FC<Props> = ({
           ref={inputRef}
           id={inputId}
           type="text"
-          className={`flex-1 min-w-30 bg-transparent border-none outline-none text-sm placeholder:text-base-content/50 ${inputClassName}`}
+          className={`flex-1 min-w-30 bg-transparent border-none outline-none text-base placeholder:text-base-content/50 ${inputClassName}`}
           placeholder={chips.length === 0 ? placeholder : ""}
           value={inputValue}
           onChange={handleInputChange}
@@ -254,7 +248,7 @@ const ChipInput: React.FC<Props> = ({
               <button
                 type="button"
                 aria-label={`Vælg kategori ${item.label}`}
-                className={`w-full text-left px-3 py-2 text-sm ${
+                className={`w-full text-left px-3 py-2.5 text-base ${
                   idx === activeIndex
                     ? "bg-primary text-primary-content"
                     : "hover:bg-base-200"

@@ -6,6 +6,8 @@ import {
     ShieldCheckIcon,
     BookOpenIcon,
     QuestionMarkCircleIcon,
+    CheckCircleIcon,
+    ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import illuFileSearch from "../assets/illustrations/undraw_file-search_cbur.svg";
 import illuPersonalInformation from "../assets/illustrations/undraw_personal-information_h7kf.svg";
@@ -85,6 +87,45 @@ const sections: Section[] = [
     },
 ];
 
+const resources = [
+    {
+        source: "UK National Careers Service",
+        title: "How to write a CV",
+        href: "https://nationalcareers.service.gov.uk/careers-advice/cv-sections",
+        domain: "nationalcareers.service.gov.uk",
+    },
+    {
+        source: "Harvard OCS",
+        title: "Resume and Cover Letters",
+        href: "https://ocs.fas.harvard.edu/resumes-cvs",
+        domain: "ocs.fas.harvard.edu",
+    },
+    {
+        source: "EU Europass",
+        title: "Europass CV guidance",
+        href: "https://europa.eu/europass/en/create-europass-cv",
+        domain: "europa.eu",
+    },
+    {
+        source: "LinkedIn",
+        title: "Tips to make your resume stand out",
+        href: "https://www.linkedin.com/advice/0/how-do-you-make-your-resume-stand-out",
+        domain: "linkedin.com",
+    },
+] as const;
+
+const formatReadabilityScorePercent = (score?: number | null) => {
+    if (score == null) {
+        return 0;
+    }
+
+    if (score <= 1) {
+        return Math.round(score * 100);
+    }
+
+    return Math.round(score);
+};
+
 const GoodCv: React.FC = () => {
     const { user } = useUser();
     const token = user?.accessToken ?? null;
@@ -115,6 +156,9 @@ const GoodCv: React.FC = () => {
             setAnalyzing(false);
         }
     };
+
+    const readabilityScorePercent = formatReadabilityScorePercent(result?.readabilityScore);
+    const totalTips = sections.reduce((sum, section) => sum + section.bullets.length, 0);
 
     return (
         <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral">
@@ -228,90 +272,149 @@ const GoodCv: React.FC = () => {
                     }
                 ]}
             />
-            <div className="hero bg-linear-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
-                <div className="hero-content text-center py-12">
-                    <div className="max-w-3xl">
-                        <div className="flex items-center justify-center gap-2 mb-4">
-                            <DocumentCheckIcon className="w-10 h-10 text-primary" aria-hidden="true" />
-                        </div>
-                        <h1 className="text-3xl md:text-4xl font-bold">
-                            Det gode CV
-                        </h1>
-                        <p className="text-base-content/70 mt-3 text-lg">
-                            Kort, målrettet og let at skimme. Brug tipsene her for at blive kaldt hurtigere til samtale – og for at klare dig bedre i ATS'er (Applicant Tracking System).
-                        </p>
-                        <div className="mt-6 flex justify-center gap-2 flex-wrap">
-                            <span className="badge badge-primary">ATS-venligt</span>
-                            <span className="badge badge-secondary badge-outline">Let at læse</span>
-                            <span className="badge badge-accent badge-outline">Resultatfokus</span>
+            <div className="not-prose space-y-10">
+                <section className="relative overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-base-100 via-primary/5 to-secondary/10 shadow-[0_24px_80px_-36px_rgba(15,23,42,0.45)]">
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.75),transparent_52%)]" />
+                    <div className="pointer-events-none absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+                    <div className="pointer-events-none absolute -right-8 top-8 h-48 w-48 rounded-full bg-secondary/15 blur-3xl" />
+
+                    <div className="relative grid gap-6 p-5 sm:p-7 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:p-8">
+                        <div className="space-y-6">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-base-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary shadow-sm backdrop-blur">
+                                <DocumentCheckIcon className="h-4 w-4" aria-hidden="true" />
+                                Gratis CV-tjek
+                            </div>
+
+                            <div className="space-y-3">
+                                <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-base-content sm:text-4xl lg:text-[2.9rem]">
+                                    Gør dit CV lettere at læse, lettere at matche og lettere at huske
+                                </h1>
+                                <p className="max-w-2xl text-base leading-7 text-base-content/72 sm:text-lg">
+                                    Brug guiden her til at skrive et skarpere CV, og test derefter din PDF direkte på siden. Målet er et CV, der både fungerer for rekrutterere og ATS-systemer.
+                                </p>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 text-sm text-base-content/72">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-base-100/80 px-3 py-1.5 shadow-sm">ATS-venligt</span>
+                                <span className="inline-flex items-center gap-2 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1.5 shadow-sm">Let at skimme</span>
+                                <span className="inline-flex items-center gap-2 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1.5 shadow-sm">Resultatfokus</span>
+                            </div>
+
+                            <div className="grid gap-3 sm:grid-cols-3">
+                                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Guideområder</p>
+                                    <p className="mt-2 text-2xl font-semibold text-base-content">{sections.length}</p>
+                                    <p className="text-sm text-base-content/65">centrale trin</p>
+                                </div>
+                                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Råd</p>
+                                    <p className="mt-2 text-2xl font-semibold text-base-content">{totalTips}+</p>
+                                    <p className="text-sm text-base-content/65">konkrete forbedringer</p>
+                                </div>
+                                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Analyse</p>
+                                    <p className="mt-2 text-2xl font-semibold text-base-content">Gratis</p>
+                                    <p className="text-sm text-base-content/65">PDF-upload og score</p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-3 sm:flex-row">
+                                <a href="#cv-analyzer" className="btn btn-primary min-h-12 rounded-2xl px-6 shadow-lg shadow-primary/20">
+                                    Analysér dit CV
+                                    <ArrowRightIcon className="h-5 w-5" aria-hidden="true" />
+                                </a>
+                                <a href="#cv-guide" className="btn btn-ghost min-h-12 rounded-2xl border border-base-300/80 bg-base-100/75 px-6 shadow-sm">
+                                    Se guidens 3 trin
+                                </a>
+                            </div>
                         </div>
 
-                        <div className="mt-6 text-center">
-                            <div className="rounded-box p-4">
-                                <h2 className="text-lg font-semibold flex items-center justify-center gap-1">
-                                    <span>Tjek læsbarheden af dit CV (PDF)</span>
+                        <div id="cv-analyzer" className="rounded-[1.75rem] border border-base-300/70 bg-base-100/82 p-4 shadow-lg backdrop-blur-xl sm:p-5">
+                            <div className="space-y-2">
+                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Gratis PDF-analyse</p>
+                                <h2 className="text-2xl font-semibold tracking-tight text-base-content">
+                                    Tjek læsbarheden af dit CV (PDF)
+                                </h2>
+                                <p className="text-sm leading-6 text-base-content/68">
+                                    Upload din PDF og få en hurtig score, nøglemålinger og et overblik over, hvor godt dokumentet står til både ATS og menneskelig skimning.
+                                </p>
+                            </div>
+
+                            <div className="mt-5 rounded-[1.5rem] border border-base-300/70 bg-gradient-to-br from-base-100 to-primary/5 p-4 shadow-inner shadow-base-content/5">
+                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                    <div>
+                                        <label htmlFor="goodCvFileInput" className="text-sm font-semibold text-base-content">Upload CV som PDF</label>
+                                        <p className="mt-1 text-sm leading-6 text-base-content/65">Vi analyserer format, struktur og læsbarhed uden at gemme dokumentet bagefter.</p>
+                                    </div>
                                     <button
                                         type="button"
                                         className="tooltip tooltip-left"
                                         data-tip="Vi gemmer ikke pdf-dokument og/eller dine oplysninger. Score og data-udtræk slettes automatisk efter analyse."
-                                        aria-label="Hjælp til Min Profil"
+                                        aria-label="Hjælp til CV-analyse"
                                     >
                                         <QuestionMarkCircleIcon
-                                            className="w-5 h-5 text-base-content/60 hover:text-base-content"
+                                            className="h-5 w-5 text-base-content/60 hover:text-base-content"
                                             aria-label="Hjælp"
                                         />
                                     </button>
-                                </h2>
-                                <div className="mt-3 flex flex-col md:flex-row md:items-center md:justify-center gap-3">
-                                    <div className="form-control w-full md:w-auto">
-                                        <span className="text-sm font-medium mb-1 block text-center">Upload CV som PDF</span>
-                                        <div className="flex flex-col md:flex-row gap-3 items-center justify-center">
-                                            <input
-                                                id="goodCvFileInput"
-                                                type="file"
-                                                accept="application/pdf"
-                                                className="file-input file-input-bordered w-full md:w-auto"
-                                                onChange={onFileChange}
-                                                aria-label="Upload CV som PDF"
-                                            />
-                                            <button
-                                                className="btn btn-primary"
-                                                onClick={onAnalyze}
-                                                disabled={!file || analyzing}
-                                            >
-                                                {analyzing ? "Analyserer…" : "Analyser CV"}
-                                            </button>
-                                        </div>
-                                    </div>
+                                </div>
+
+                                <div className="mt-4 flex flex-col gap-3">
+                                    <input
+                                        id="goodCvFileInput"
+                                        type="file"
+                                        accept="application/pdf"
+                                        className="file-input file-input-bordered w-full rounded-2xl"
+                                        onChange={onFileChange}
+                                        aria-label="Upload CV som PDF"
+                                    />
+                                    {file && (
+                                        <p className="text-sm text-base-content/65">Valgt fil: {file.name}</p>
+                                    )}
+                                    <button
+                                        className="btn btn-primary min-h-12 rounded-2xl px-6 shadow-lg shadow-primary/20"
+                                        onClick={onAnalyze}
+                                        disabled={!file || analyzing}
+                                    >
+                                        {analyzing ? "Analyserer…" : "Analyser CV"}
+                                    </button>
                                 </div>
 
                                 {error && (
-                                    <div className="alert alert-error mt-3">
+                                    <div className="alert alert-error mt-4 rounded-2xl">
                                         <span>{error}</span>
                                     </div>
                                 )}
 
-                                {result && (
-                                    <div className="mt-4 grid gap-3">
-                                        <div className="flex items-center text-center gap-3">
-                                            <span className="font-medium">Læsbarhedsscore:</span>
-                                            <div className="flex items-center gap-2">
-                                                <progress
-                                                    className="progress progress-primary w-48"
-                                                    value={(result.readabilityScore ?? 0) <= 1 ? Math.round(((result.readabilityScore ?? 0) * 100)) : Math.round(result.readabilityScore ?? 0)}
-                                                    max={100}
-                                                />
-                                                <span className="text-sm text-base-content/70">
-                                                    {((result.readabilityScore ?? 0) <= 1
-                                                        ? Math.round(((result.readabilityScore ?? 0) * 100))
-                                                        : Math.round(result.readabilityScore ?? 0))}%
-                                                </span>
+                                {result ? (
+                                    <div className="mt-6 space-y-5">
+                                        <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/85 p-4 shadow-sm">
+                                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                                <span className="text-base font-semibold text-base-content">Læsbarhedsscore:</span>
+                                                <div className="flex flex-col gap-2 sm:min-w-[14rem]">
+                                                    <progress
+                                                        className="progress progress-primary h-3 w-full"
+                                                        value={readabilityScorePercent}
+                                                        max={100}
+                                                    />
+                                                    <div className="flex items-center justify-between gap-3 text-sm text-base-content/68">
+                                                        <span>ATS og menneskelig skimning</span>
+                                                        <span className="font-semibold text-base-content">{readabilityScorePercent}%</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+
                                         {result.summary && (
-                                            <div>
-                                                <div className="font-medium">Opsummering</div>
-                                                <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                            <div className="space-y-3">
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <div>
+                                                        <div className="text-base font-semibold text-base-content">Opsummering</div>
+                                                        <p className="text-sm text-base-content/65">Et hurtigt overblik over de vigtigste signaler i din PDF.</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                                                     {typeof result.summary.totalWords === 'number' && (
                                                         <MetricCard
                                                             label="Ord i alt"
@@ -369,131 +472,163 @@ const GoodCv: React.FC = () => {
                                                         />
                                                     )}
                                                 </div>
+
                                                 {result.summary.note && (
-                                                    <p className="mt-3 text-sm text-base-content/70">
+                                                    <p className="rounded-[1.25rem] border border-base-300/70 bg-base-100/78 px-4 py-3 text-sm leading-6 text-base-content/70">
                                                         {result.summary.note}
                                                     </p>
                                                 )}
                                             </div>
                                         )}
+
                                         {result.extractedText && (
-                                            <details className="collapse collapse-arrow bg-base-200 rounded-box">
-                                                <summary className="collapse-title font-medium">Vis udtrukket tekst</summary>
+                                            <details className="collapse collapse-arrow rounded-[1.35rem] border border-base-300/70 bg-base-100/82 shadow-sm">
+                                                <summary className="collapse-title text-base font-semibold">Vis udtrukket tekst</summary>
                                                 <div className="collapse-content">
-                                                    <pre className="whitespace-pre-wrap text-sm text-base-content/80">{result.extractedText}</pre>
+                                                    <pre className="whitespace-pre-wrap text-sm leading-6 text-base-content/80">{result.extractedText}</pre>
                                                 </div>
                                             </details>
                                         )}
+                                    </div>
+                                ) : (
+                                    <div className="mt-6 rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                        <p className="text-sm font-semibold text-base-content">Hvad du får med analysen</p>
+                                        <ul className="mt-3 space-y-3">
+                                            <li className="flex items-start gap-3 text-sm leading-6 text-base-content/70">
+                                                <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
+                                                <span>En læsbarhedsscore, der hurtigt viser hvor stærkt dit CV står.</span>
+                                            </li>
+                                            <li className="flex items-start gap-3 text-sm leading-6 text-base-content/70">
+                                                <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
+                                                <span>Målinger på ord, linjer, punkter og genkendelige sektioner.</span>
+                                            </li>
+                                            <li className="flex items-start gap-3 text-sm leading-6 text-base-content/70">
+                                                <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
+                                                <span>Et klart udgangspunkt for at justere CV'et, før du sender det afsted.</span>
+                                            </li>
+                                        </ul>
                                     </div>
                                 )}
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <div className="card bg-linear-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
-                <div className="card-body p-6 md:p-8 gap-10">
-                    {sections.map((s, i) => (
-                        <React.Fragment key={s.title}>
-                            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                                {i % 2 === 0 ? (
-                                    <>
-                                        <div className="rounded-box p-6 self-center">
-                                            <h2 className="text-2xl font-semibold flex items-center justify-between gap-3">
-                                                <span>{s.title}</span>
-                                                <s.icon className="w-7 h-7 text-primary" aria-hidden="true" />
-                                            </h2>
-                                            <p className="text-base-content/70 mt-2">{s.text}</p>
-                                            <ul className="list-disc ml-5 mt-2 space-y-1 text-base-content/80">
-                                                {s.bullets.map((b) => (
-                                                    <li key={`${s.title}-${b}`}>{b}</li>
-                                                ))}
-                                            </ul>
-                                            <div className="pt-4 flex flex-wrap gap-2">
-                                                {s.badges.map((badge) => (
-                                                    <span key={`${s.title}-${badge}`} className="badge badge-outline">{badge}</span>
-                                                ))}
+                <section id="cv-guide" className="space-y-5">
+                    <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Guide</p>
+                        <h2 className="text-2xl font-semibold tracking-tight text-base-content sm:text-[2rem]">Tre praktiske trin til et stærkere CV</h2>
+                        <p className="max-w-2xl text-base leading-7 text-base-content/70">
+                            De samme principper går igen i de bedste CV'er: klar struktur, stærk topsektion og konsekvent præsentation. Her er dem brudt ned i en form, der er lettere at arbejde med.
+                        </p>
+                    </div>
+
+                    <div className="space-y-5">
+                        {sections.map((s, i) => (
+                            <article
+                                key={s.title}
+                                className="overflow-hidden rounded-[1.9rem] border border-primary/15 bg-gradient-to-br from-base-100 via-primary/5 to-secondary/10 shadow-[0_22px_60px_-42px_rgba(15,23,42,0.52)]"
+                            >
+                                <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.72fr)] lg:items-center">
+                                    <div className={`${i % 2 === 1 ? "lg:order-2" : ""} space-y-5`}>
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                                                Trin {String(i + 1).padStart(2, "0")}
+                                            </span>
+                                            {s.badges.map((badge) => (
+                                                <span key={`${s.title}-${badge}`} className="rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1 text-xs font-medium text-base-content/65">
+                                                    {badge}
+                                                </span>
+                                            ))}
+                                        </div>
+
+                                        <div className="flex items-start justify-between gap-3">
+                                            <h2 className="text-2xl font-semibold leading-tight text-base-content sm:text-[2rem]">{s.title}</h2>
+                                            <div className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-primary/10 text-primary">
+                                                <s.icon className="h-6 w-6" aria-hidden="true" />
                                             </div>
                                         </div>
-                                        <figure className="p-6 flex items-center justify-center md:justify-end self-center">
+
+                                        <p className="text-base leading-7 text-base-content/72">{s.text}</p>
+
+                                        <ul className="space-y-3">
+                                            {s.bullets.map((b) => (
+                                                <li key={`${s.title}-${b}`} className="flex items-start gap-3 text-sm leading-7 text-base-content/78 sm:text-base">
+                                                    <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
+                                                    <span>{b}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className={`${i % 2 === 1 ? "lg:order-1" : ""}`}>
+                                        <figure className="rounded-[1.6rem] border border-base-300/70 bg-base-100/82 p-5 text-center shadow-lg">
+                                            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-base-content/45">Visuelt fokus</p>
                                             <img
                                                 src={s.image}
                                                 alt={s.imageAlt}
-                                                className="w-full max-h-72 md:max-h-80 object-contain"
+                                                className="mx-auto w-full max-h-64 object-contain sm:max-h-72"
                                                 loading="lazy"
                                             />
-                                        </figure>
-                                    </>
-                                ) : (
-                                    <>
-                                        <figure className="p-6 flex items-center justify-center md:justify-start self-center">
-                                            <img
-                                                src={s.image}
-                                                alt={s.imageAlt}
-                                                className="w-full max-h-72 md:max-h-80 object-contain"
-                                                loading="lazy"
-                                            />
-                                        </figure>
-                                        <div className="rounded-box p-6 self-center">
-                                            <h2 className="text-2xl font-semibold flex items-center justify-between gap-3">
-                                                <span>{s.title}</span>
-                                                <s.icon className="w-7 h-7 text-primary" aria-hidden="true" />
-                                            </h2>
-                                            <p className="text-base-content/70 mt-2">{s.text}</p>
-                                            <ul className="list-disc ml-5 mt-2 space-y-1 text-base-content/80">
-                                                {s.bullets.map((b) => (
-                                                    <li key={`${s.title}-${b}`}>{b}</li>
-                                                ))}
-                                            </ul>
-                                            <div className="pt-4 flex flex-wrap gap-2">
+                                            <div className="mt-4 flex flex-wrap justify-center gap-2">
                                                 {s.badges.map((badge) => (
-                                                    <span key={`${s.title}-${badge}`} className="badge badge-outline">{badge}</span>
+                                                    <span key={`${s.imageAlt}-${badge}`} className="rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1 text-xs font-medium text-base-content/65">
+                                                        {badge}
+                                                    </span>
                                                 ))}
                                             </div>
-                                        </div>
-                                    </>
-                                )}
-                            </section>
-                            {i < sections.length - 1 && <div className="divider" />}
-                        </React.Fragment>
-                    ))}
-                </div>
-            </div>
+                                        </figure>
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </section>
 
-            <div className="divider my-10" />
+                <section className="rounded-[1.9rem] border border-primary/15 bg-gradient-to-br from-base-100 via-primary/5 to-secondary/10 p-5 shadow-[0_24px_80px_-42px_rgba(15,23,42,0.5)] sm:p-6 lg:p-8">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                        <div className="space-y-2">
+                            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Kilder</p>
+                            <h3 className="text-2xl font-semibold tracking-tight text-base-content sm:text-[2rem]">Yderligere læsning og kilder</h3>
+                            <p className="max-w-2xl text-base leading-7 text-base-content/70">
+                                Hvis du vil gå dybere, er her nogle af de mest brugbare kilder om CV-struktur, ATS-kompatibilitet og professionel præsentation.
+                            </p>
+                        </div>
 
-            <div>
-                <h3 className="text-xl font-semibold mb-2 flex items-center justify-between gap-2">
-                    <span>Yderligere læsning og kilder</span>
-                    <BookOpenIcon className="w-6 h-6 text-primary" aria-hidden="true" />
-                </h3>
-                <ul className="list-disc ml-6 space-y-1">
-                    <li>
-                        UK National Careers Service — How to write a CV: {" "}
-                        <a href="https://nationalcareers.service.gov.uk/careers-advice/cv-sections" target="_blank" rel="noopener noreferrer">
-                            nationalcareers.service.gov.uk
+                        <a href="#cv-analyzer" className="btn btn-ghost min-h-12 rounded-2xl border border-base-300/80 bg-base-100/75 px-6 shadow-sm">
+                            Test dit CV nu
+                            <ArrowRightIcon className="h-5 w-5" aria-hidden="true" />
                         </a>
-                    </li>
-                    <li>
-                        Harvard OCS — Resume and Cover Letters: {" "}
-                        <a href="https://ocs.fas.harvard.edu/resumes-cvs" target="_blank" rel="noopener noreferrer">
-                            ocs.fas.harvard.edu
-                        </a>
-                    </li>
-                    <li>
-                        EU — Europass CV guidance: {" "}
-                        <a href="https://europa.eu/europass/en/create-europass-cv" target="_blank" rel="noopener noreferrer">
-                            europa.eu
-                        </a>
-                    </li>
-                    <li>
-                        LinkedIn — Tips to make your resume stand out: {" "}
-                        <a href="https://www.linkedin.com/advice/0/how-do-you-make-your-resume-stand-out" target="_blank" rel="noopener noreferrer">
-                            linkedin.com
-                        </a>
-                    </li>
-                </ul>
+                    </div>
+
+                    <div className="mt-6 grid gap-4 md:grid-cols-2">
+                        {resources.map((resource) => (
+                            <a
+                                key={resource.href}
+                                href={resource.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group rounded-[1.5rem] border border-base-300/70 bg-base-100/82 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                            >
+                                <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/45">{resource.source}</p>
+                                        <h4 className="mt-2 text-xl font-semibold text-base-content">{resource.title}</h4>
+                                    </div>
+                                    <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-primary/10 text-primary">
+                                        <BookOpenIcon className="h-5 w-5" aria-hidden="true" />
+                                    </div>
+                                </div>
+
+                                <p className="mt-3 text-sm leading-6 text-base-content/65">{resource.domain}</p>
+                                <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary">
+                                    Åbn kilde
+                                    <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
+                                </span>
+                            </a>
+                        ))}
+                    </div>
+                </section>
             </div>
         </div>
     );

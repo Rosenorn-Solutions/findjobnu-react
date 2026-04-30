@@ -21,6 +21,15 @@ const emptyEducation: Education = {
   description: "",
 };
 
+const formatEducationRange = (fromDate?: string | null, toDate?: string | null) => {
+  const from = formatDateForDisplay(fromDate ?? undefined);
+  const to = formatDateForDisplay(toDate ?? undefined);
+
+  if (!from && !to) return "Dato ikke angivet";
+  if (!to) return `${from} - Nu`;
+  return `${from} - ${to}`;
+};
+
 const EducationList: React.FC<Props> = ({ educations, onAdd, onUpdate, onDelete, readOnly = false }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<Education>(emptyEducation);
@@ -29,6 +38,9 @@ const EducationList: React.FC<Props> = ({ educations, onAdd, onUpdate, onDelete,
   const toDateInputRef = useRef<HTMLInputElement | null>(null);
   const pikadayFromRef = useRef<Pikaday | null>(null);
   const pikadayToRef = useRef<Pikaday | null>(null);
+  const labelClass = "text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-base-content/45";
+  const inputClass = "input input-bordered validator w-full rounded-2xl border-base-300 bg-base-100/90";
+  const textareaClass = "textarea textarea-bordered validator w-full rounded-[1.2rem] border-base-300 bg-base-100/90";
 
   const handleEdit = (edu: Education) => {
     if (readOnly) return;
@@ -137,73 +149,89 @@ const EducationList: React.FC<Props> = ({ educations, onAdd, onUpdate, onDelete,
 
   return (
     <div ref={containerRef} className="space-y-4">
-      <ul className="list-disc ml-6">
-        {educations.map((edu) => (
-          <li key={edu.id} className="mb-2 flex items-center gap-2">
-            <span>{edu.degree} - {edu.institution}</span>
-            {!readOnly && (
-              <>
-                <button className="btn btn-xs btn-outline btn-warning gap-1" onClick={() => handleEdit(edu)}>
-                  Rediger
-                  <PencilSquareIcon className="w-4 h-4" aria-hidden="true" />
-                </button>
-                <button className="btn btn-xs btn-outline btn-error gap-1" onClick={() => onDelete(edu.id!)}>
-                  Slet
-                  <TrashIcon className="w-4 h-4" aria-hidden="true" />
-                </button>
-              </>
-            )}
-          </li>
+      <div className="space-y-3">
+        {educations.map((edu, index) => (
+          <article key={edu.id ?? `${edu.degree}-${edu.institution}-${index}`} className="rounded-[1.35rem] border border-base-300/70 bg-base-100/82 p-4 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="space-y-2">
+                <div>
+                  <p className="text-lg font-semibold text-base-content">{edu.degree || "Uddannelse"}</p>
+                  <p className="text-sm leading-6 text-base-content/65">{edu.institution || "Tilføj institution"}</p>
+                </div>
+                <span className="inline-flex items-center rounded-full border border-base-300/70 bg-base-200/35 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-base-content/55 shadow-sm">
+                  {formatEducationRange(edu.fromDate ?? null, edu.toDate ?? null)}
+                </span>
+                {edu.description ? (
+                  <p className="text-sm leading-6 text-base-content/72">{edu.description}</p>
+                ) : null}
+              </div>
+
+              {!readOnly && (
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" className="btn btn-ghost btn-sm min-h-10 rounded-2xl border border-base-300/70 bg-base-100/85 px-4" onClick={() => handleEdit(edu)}>
+                    <PencilSquareIcon className="w-4 h-4" aria-hidden="true" />
+                    Rediger
+                  </button>
+                  <button type="button" className="btn btn-ghost btn-sm min-h-10 rounded-2xl border border-error/20 bg-error/10 px-4 text-error hover:bg-error/15" onClick={() => onDelete(edu.id!)}>
+                    <TrashIcon className="w-4 h-4" aria-hidden="true" />
+                    Slet
+                  </button>
+                </div>
+              )}
+            </div>
+          </article>
         ))}
-      </ul>
+      </div>
 
       {!readOnly && editingId === null && (
-        <button className="btn btn-primary gap-2" onClick={() => { setEditingId(0); setForm(emptyEducation); }}>
+        <button type="button" className="btn btn-primary min-h-11 rounded-2xl px-5 shadow-lg shadow-primary/20" onClick={() => { setEditingId(0); setForm(emptyEducation); }}>
           Tilføj uddannelse
           <PlusCircleIcon className="w-5 h-5" aria-hidden="true" />
         </button>
       )}
 
       {!readOnly && editingId !== null && (
-        <div className="space-y-2">
-          <div className="form-control gap-2">
-            <label className="label p-0">
-              <span className="label-text">Uddannelse</span>
+        <div className="rounded-[1.35rem] border border-base-300/70 bg-base-200/35 p-4 shadow-sm sm:p-5">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="form-control gap-2">
+            <label className="label p-0" htmlFor="degree-new">
+              <span className={labelClass}>Uddannelse</span>
             </label>
-            <input className="input input-bordered validator w-full" name="degree" value={form.degree || ""} onChange={handleChange} placeholder="Uddannelse" title="Uddannelse" required minLength={2} pattern="^[A-Za-zÀ-ÿ0-9' .,-]{2,}$" />
+            <input id="degree-new" className={inputClass} name="degree" value={form.degree || ""} onChange={handleChange} placeholder="Uddannelse" title="Uddannelse" required minLength={2} pattern="^[A-Za-zÀ-ÿ0-9' .,-]{2,}$" />
+            <p className="validator-hint">Mindst 2 tegn</p>
           </div>
-          <p className="validator-hint">Mindst 2 tegn</p>
           <div className="form-control gap-2">
-            <label className="label p-0">
-              <span className="label-text">Institution</span>
+            <label className="label p-0" htmlFor="institution-new">
+              <span className={labelClass}>Institution</span>
             </label>
-            <input className="input input-bordered validator w-full" name="institution" value={form.institution || ""} onChange={handleChange} placeholder="Institution" title="Institution" required minLength={2} pattern="^[A-Za-zÀ-ÿ0-9' .,-]{2,}$" />
+            <input id="institution-new" className={inputClass} name="institution" value={form.institution || ""} onChange={handleChange} placeholder="Institution" title="Institution" required minLength={2} pattern="^[A-Za-zÀ-ÿ0-9' .,-]{2,}$" />
+            <p className="validator-hint">Mindst 2 tegn</p>
           </div>
-          <p className="validator-hint">Mindst 2 tegn</p>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="fromDate-new">
-              <span className="label-text">Fra (dd/mm/yyyy)</span>
+              <span className={labelClass}>Fra (dd/mm/yyyy)</span>
             </label>
-            <input id="fromDate-new" className="input input-bordered validator w-full" name="fromDate" value={form.fromDate || ""} onChange={handleChange} placeholder="dd/mm/yyyy" title="Fra" required pattern={DANISH_DATE_PATTERN.source} ref={fromDateInputRef} autoComplete="off" />
+            <input id="fromDate-new" className={inputClass} name="fromDate" value={form.fromDate || ""} onChange={handleChange} placeholder="dd/mm/yyyy" title="Fra" required pattern={DANISH_DATE_PATTERN.source} ref={fromDateInputRef} autoComplete="off" />
+            <div className="validator-hint">Format: dd/mm/yyyy</div>
           </div>
-          <div className="validator-hint">Format: dd/mm/yyyy</div>
           <div className="form-control gap-2">
             <label className="label p-0" htmlFor="toDate-new">
-              <span className="label-text">Til (dd/mm/yyyy)</span>
+              <span className={labelClass}>Til (dd/mm/yyyy)</span>
             </label>
-            <input id="toDate-new" className="input input-bordered validator w-full" name="toDate" value={form.toDate || ""} onChange={handleChange} placeholder="dd/mm/yyyy" title="Til" required pattern={DANISH_DATE_PATTERN.source} ref={toDateInputRef} autoComplete="off" />
+            <input id="toDate-new" className={inputClass} name="toDate" value={form.toDate || ""} onChange={handleChange} placeholder="dd/mm/yyyy" title="Til" required pattern={DANISH_DATE_PATTERN.source} ref={toDateInputRef} autoComplete="off" />
+            <div className="validator-hint">Format: dd/mm/yyyy</div>
           </div>
-          <div className="validator-hint">Format: dd/mm/yyyy</div>
-          <div className="form-control gap-2">
+          <div className="form-control gap-2 md:col-span-2">
             <label className="label p-0" htmlFor="description-new">
-              <span className="label-text">Beskrivelse</span>
+              <span className={labelClass}>Beskrivelse</span>
             </label>
-            <textarea id="description-new" className="textarea textarea-bordered validator w-full" name="description" value={form.description || ""} onChange={handleChange} placeholder="Beskrivelse" title="Beskrivelse" maxLength={1000} />
+            <textarea id="description-new" className={textareaClass} name="description" value={form.description || ""} onChange={handleChange} placeholder="Beskrivelse" title="Beskrivelse" maxLength={1000} rows={4} />
+            <div className="validator-hint">Maks 1000 tegn</div>
           </div>
-          <div className="validator-hint">Maks 1000 tegn</div>
-          <div className="flex gap-2 mt-2">
-            <button className="btn btn-sm btn-success" onClick={handleSave}>Gem</button>
-            <button className="btn btn-sm btn-outline btn-error" onClick={handleCancel}>Annuller</button>
+          </div>
+          <div className="mt-4 flex flex-col gap-3 border-t border-base-300/70 pt-4 sm:flex-row">
+            <button type="button" className="btn btn-success min-h-11 rounded-2xl px-5 shadow-lg shadow-success/20" onClick={handleSave}>Gem</button>
+            <button type="button" className="btn btn-ghost min-h-11 rounded-2xl border border-base-300/70 bg-base-100/78 px-5" onClick={handleCancel}>Annuller</button>
           </div>
         </div>
       )}
