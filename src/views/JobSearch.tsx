@@ -346,6 +346,7 @@ const JobSearch: React.FC = () => {
                     type="button"
                     className={`btn min-h-11 rounded-2xl px-4 ${searchPanelButtonClass}`}
                     onClick={switchToSearch}
+                    aria-label="Vis jobresultater"
                   >
                     <MagnifyingGlassIcon className="h-4 w-4" aria-hidden="true" />
                     Jobsøgning
@@ -357,6 +358,7 @@ const JobSearch: React.FC = () => {
                       className={`btn min-h-11 w-full rounded-2xl px-4 ${recommendedPanelButtonClass}`}
                       onClick={switchToRecommended}
                       disabled={hasUser === false}
+                      aria-label="Vis anbefalinger"
                     >
                       <SparklesIcon className="h-4 w-4" aria-hidden="true" />
                       Anbefalede jobs
