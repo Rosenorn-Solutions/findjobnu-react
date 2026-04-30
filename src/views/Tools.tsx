@@ -163,6 +163,19 @@ const Tools: React.FC = () => {
         fetchSetupStatus();
     }, [userId, token]);
 
+    const featuredToolCount = tools.filter((tool) => tool.highlight).length;
+    const totalFeatureCount = tools.reduce((sum, tool) => sum + tool.features.length, 0);
+    const setupProgressCount = [
+        setupState.profileFound && (setupState.hasExperience || setupState.hasEducation || setupState.hasSkills),
+        setupState.hasSkills && setupState.hasTopKeywords,
+        setupState.hasJobAgent,
+        setupState.hasConnections,
+    ].filter(Boolean).length;
+
+    const secondaryHeroCta = userId
+        ? { href: "/jobsearch?panel=recommended", label: "Se anbefalede jobs" }
+        : { href: "/register", label: "Opret gratis konto" };
+
     return (
         <div className="container max-w-7xl mx-auto px-4 py-8 prose prose-neutral">
             <Seo
@@ -240,156 +253,286 @@ const Tools: React.FC = () => {
                     }
                 ]}
             />
+            <div className="not-prose space-y-10">
+                <section className="relative overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-base-100 via-primary/5 to-secondary/10 shadow-[0_24px_80px_-36px_rgba(15,23,42,0.45)]">
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.75),transparent_52%)]" />
+                    <div className="pointer-events-none absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+                    <div className="pointer-events-none absolute -right-8 top-8 h-48 w-48 rounded-full bg-secondary/15 blur-3xl" />
 
-            <div className="hero bg-linear-to-br from-primary/10 via-base-100 to-secondary/10 rounded-box shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1 mb-10">
-                <div className="hero-content text-center py-12">
-                    <div className="max-w-6xl w-full">
-                        <div className="flex items-center justify-center gap-2 mb-4">
-                            <WrenchScrewdriverIcon className="w-10 h-10 text-primary" aria-hidden="true" />
-                        </div>
-                        <h1 className="text-3xl md:text-4xl font-bold">
-                            Gratis værktøjer til din jobsøgning
-                        </h1>
-                        <p className="text-base-content/70 mt-3 text-lg">
-                            Alt hvad du behøver for at finde dit næste job – helt gratis. CV-analyse, personlige anbefalinger, jobagenter og meget mere.
-                        </p>
-                        <div className="mt-6 flex justify-center gap-2 flex-wrap">
-                            <span className="badge badge-primary">100% Gratis</span>
-                            <span className="badge badge-secondary badge-outline">Ingen skjulte omkostninger</span>
-                            <span className="badge badge-accent badge-outline">Ingen reklamer</span>
-                        </div>
-
-                        <div className="mt-10">
-                            <ProfileSetupStatus userId={userId} setupState={setupState} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {tools.map((tool) => (
-                    <Link
-                        key={tool.slug}
-                        to={tool.href}
-                        className="card bg-linear-to-br from-primary/5 to-secondary/5 shadow-lg border border-primary/20 transition-all hover:shadow-xl hover:-translate-y-1"
-                    >
-                        <div className="card-body">
-                            <div className="flex items-start justify-between">
-                                <div className={`p-3 rounded-lg ${tool.highlight ? "bg-primary/10 text-primary" : "bg-base-200 text-base-content/80"}`}>
-                                    {tool.icon}
-                                </div>
-                                {tool.badge && (
-                                    <span className={`badge ${tool.highlight ? "badge-primary" : "badge-outline"}`}>
-                                        {tool.badge}
-                                    </span>
-                                )}
+                    <div className="relative grid gap-6 p-5 sm:p-7 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] lg:items-stretch lg:p-8">
+                        <div className="space-y-6">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-base-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary shadow-sm backdrop-blur">
+                                <WrenchScrewdriverIcon className="h-4 w-4" aria-hidden="true" />
+                                Værktøjer til jobsøgning
                             </div>
-                            <h2 className="card-title mt-4">{tool.title}</h2>
-                            <p className="text-base-content/70">{tool.description}</p>
-                            <ul className="mt-4 space-y-2">
-                                {tool.features.map((feature) => (
-                                    <li key={feature} className="flex items-center gap-2 text-sm text-base-content/80">
-                                        <CheckCircleIcon className="w-4 h-4 text-success shrink-0" aria-hidden="true" />
-                                        {feature}
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="card-actions mt-4">
-                                <span className="link link-primary font-medium flex items-center gap-1">
-                                    Prøv nu
-                                    <ArrowRightIcon className="w-4 h-4" aria-hidden="true" />
+
+                            <div className="space-y-3">
+                                <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-base-content sm:text-4xl lg:text-[2.9rem]">
+                                    Gratis værktøjer, der gør din jobsøgning skarpere
+                                </h1>
+                                <p className="max-w-2xl text-base leading-7 text-base-content/72 sm:text-lg">
+                                    CV-analyse, personlige anbefalinger, jobagent og profilværktøjer samlet i et mere overskueligt flow. Alt er gratis, og alt er bygget til danske jobsøgende.
+                                </p>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 text-sm text-base-content/72">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-base-100/80 px-3 py-1.5 shadow-sm">
+                                    100% gratis
+                                </span>
+                                <span className="inline-flex items-center gap-2 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1.5 shadow-sm">
+                                    Ingen skjulte omkostninger
+                                </span>
+                                <span className="inline-flex items-center gap-2 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1.5 shadow-sm">
+                                    Ingen reklamer eller spam
                                 </span>
                             </div>
-                        </div>
-                    </Link>
-                ))}
-            </div>
 
-            <div className="mt-12 card bg-linear-to-br from-primary/5 to-secondary/5 shadow-xl border border-primary/20 transition-all hover:shadow-2xl hover:-translate-y-1">
-                <div className="card-body">
-                    <div className="grid gap-8 lg:grid-cols-2 items-center">
-                        <div>
-                            <h2 className="text-2xl font-bold">Hvorfor bruge FindJob.nu?</h2>
-                            <p className="text-base-content/70 mt-2">
-                                Vi har bygget værktøjerne, fordi vi selv savnede dem da vi søgte job. Ingen betalingsmure, ingen spam, ingen salg af dine data.
+                            <div className="grid gap-3 sm:grid-cols-3">
+                                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Værktøjer</p>
+                                    <p className="mt-2 text-2xl font-semibold text-base-content">{tools.length}</p>
+                                    <p className="text-sm text-base-content/65">samlet i ét sted</p>
+                                </div>
+                                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Udvalgte</p>
+                                    <p className="mt-2 text-2xl font-semibold text-base-content">{featuredToolCount}</p>
+                                    <p className="text-sm text-base-content/65">personlige genveje</p>
+                                </div>
+                                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Hjælpetrin</p>
+                                    <p className="mt-2 text-2xl font-semibold text-base-content">{totalFeatureCount}+</p>
+                                    <p className="text-sm text-base-content/65">
+                                        {userId ? `${setupProgressCount}/4 statuspunkter opfyldt` : "klar uden betalingsmur"}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-3 sm:flex-row">
+                                <Link to="/cv" className="btn btn-primary min-h-12 rounded-2xl px-6 shadow-lg shadow-primary/20">
+                                    Start med CV-tjek
+                                    <ArrowRightIcon className="h-5 w-5" aria-hidden="true" />
+                                </Link>
+                                <Link to={secondaryHeroCta.href} className="btn btn-ghost min-h-12 rounded-2xl border border-base-300/80 bg-base-100/75 px-6 shadow-sm">
+                                    {secondaryHeroCta.label}
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="rounded-[1.75rem] border border-base-300/70 bg-base-100/80 p-4 shadow-lg backdrop-blur-xl sm:p-5">
+                            <div className="mb-4 space-y-2">
+                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Din status</p>
+                                <h2 className="text-2xl font-semibold tracking-tight text-base-content">
+                                    {userId ? "Så tæt er du på bedre anbefalinger" : "Log ind og lås op for personlige værktøjer"}
+                                </h2>
+                                <p className="text-sm leading-6 text-base-content/68">
+                                    {userId
+                                        ? "Brug statuskortet til at se, hvor du kan forbedre din profil og få skarpere jobmatch hurtigere."
+                                        : "Du kan bruge flere af værktøjerne uden konto, men login giver adgang til gemte job, anbefalinger og jobagent."}
+                                </p>
+                            </div>
+
+                            <div className="rounded-[1.5rem] border border-base-300/70 bg-gradient-to-br from-base-100 to-primary/5 shadow-inner shadow-base-content/5">
+                                <ProfileSetupStatus userId={userId} setupState={setupState} />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="space-y-5">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                        <div className="space-y-2">
+                            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Værktøjer</p>
+                            <h2 className="text-2xl font-semibold tracking-tight text-base-content sm:text-[2rem]">Vælg det værktøj, der hjælper dig videre lige nu</h2>
+                            <p className="max-w-2xl text-base leading-7 text-base-content/70">
+                                Hvert kort er gjort tydeligere og lettere at skimme, så du hurtigere kan vælge mellem CV-tjek, jobanbefalinger, jobagent og profilværktøjer.
                             </p>
-                            <ul className="mt-4 space-y-3">
-                                <li className="flex items-start gap-3">
-                                    <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 shrink-0" aria-hidden="true" />
+                        </div>
+
+                        <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 px-4 py-3 shadow-sm">
+                            <p className="text-sm text-base-content/65">Start med det vigtigste først: CV, profil og derefter anbefalinger.</p>
+                        </div>
+                    </div>
+
+                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                        {tools.map((tool, index) => (
+                            <Link
+                                key={tool.slug}
+                                to={tool.href}
+                                className={`group relative overflow-hidden rounded-[1.75rem] border p-0 shadow-[0_22px_60px_-42px_rgba(15,23,42,0.58)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_72px_-42px_rgba(15,23,42,0.64)] ${tool.highlight
+                                    ? "border-primary/20 bg-gradient-to-br from-base-100 via-primary/6 to-secondary/10"
+                                    : "border-base-300/70 bg-gradient-to-br from-base-100 via-base-100 to-base-200/45"}`}
+                            >
+                                <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.72),transparent_58%)]" />
+
+                                <div className="relative flex h-full flex-col p-5 sm:p-6">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl border ${tool.highlight
+                                            ? "border-primary/15 bg-primary/10 text-primary"
+                                            : "border-base-300/70 bg-base-100/80 text-base-content/80"}`}>
+                                            {tool.icon}
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <span className="rounded-full border border-base-300/70 bg-base-100/80 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-base-content/45">
+                                                {String(index + 1).padStart(2, "0")}
+                                            </span>
+                                            {tool.badge && (
+                                                <span className={`badge h-auto px-3 py-2 text-xs font-semibold ${tool.highlight ? "badge-primary" : "badge-outline"}`}>
+                                                    {tool.badge}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-5 space-y-3">
+                                        <h3 className="text-xl font-semibold leading-tight text-base-content sm:text-2xl">{tool.title}</h3>
+                                        <p className="text-base leading-7 text-base-content/72">{tool.description}</p>
+                                    </div>
+
+                                    <ul className="mt-5 space-y-3">
+                                        {tool.features.map((feature) => (
+                                            <li key={feature} className="flex items-start gap-3 text-sm leading-6 text-base-content/78 sm:text-base">
+                                                <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
+                                                <span>{feature}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className="mt-auto flex items-center justify-between gap-3 border-t border-base-300/70 pt-5">
+                                        <span className="text-sm text-base-content/58">{tool.features.length} konkrete fordele</span>
+                                        <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-base-100/80 px-4 py-2 text-sm font-medium text-primary transition group-hover:bg-primary/10">
+                                            Prøv nu
+                                            <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="rounded-[1.9rem] border border-primary/15 bg-gradient-to-br from-base-100 via-primary/5 to-secondary/10 p-5 shadow-[0_24px_80px_-42px_rgba(15,23,42,0.5)] sm:p-6 lg:p-8">
+                    <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] lg:items-center">
+                        <div className="space-y-5">
+                            <div className="space-y-2">
+                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Hvorfor FindJob.nu</p>
+                                <h2 className="text-2xl font-semibold tracking-tight text-base-content sm:text-[2rem]">Bygget til jobsøgende, ikke til betalingsmure</h2>
+                                <p className="max-w-2xl text-base leading-7 text-base-content/72">
+                                    Vi byggede værktøjerne, fordi vi selv manglede dem i en rigtig jobsøgning. Derfor er oplevelsen gjort enklere, mere gennemsigtig og mere brugbar fra første klik.
+                                </p>
+                            </div>
+
+                            <div className="grid gap-4 sm:grid-cols-3">
+                                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Pris</p>
+                                    <p className="mt-2 text-xl font-semibold text-base-content">0 kr.</p>
+                                    <p className="text-sm text-base-content/65">ingen premium-lås</p>
+                                </div>
+                                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Privatliv</p>
+                                    <p className="mt-2 text-xl font-semibold text-base-content">Respekt først</p>
+                                    <p className="text-sm text-base-content/65">ingen salg af data</p>
+                                </div>
+                                <div className="rounded-[1.35rem] border border-base-300/70 bg-base-100/80 p-4 shadow-sm">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-base-content/45">Fokus</p>
+                                    <p className="mt-2 text-xl font-semibold text-base-content">Danmark</p>
+                                    <p className="text-sm text-base-content/65">bygget til danske job</p>
+                                </div>
+                            </div>
+
+                            <ul className="space-y-4">
+                                <li className="flex items-start gap-3 rounded-[1.25rem] border border-base-300/70 bg-base-100/70 p-4 shadow-sm">
+                                    <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
                                     <div>
-                                        <span className="font-medium">100% gratis</span>
-                                        <p className="text-sm text-base-content/70">Alle funktioner er gratis – nu og altid.</p>
+                                        <span className="font-medium text-base-content">100% gratis</span>
+                                        <p className="mt-1 text-sm leading-6 text-base-content/68">Alle funktioner er gratis nu og fremover, så du ikke skal vælge mellem hjælp og budget.</p>
                                     </div>
                                 </li>
-                                <li className="flex items-start gap-3">
-                                    <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 shrink-0" aria-hidden="true" />
+                                <li className="flex items-start gap-3 rounded-[1.25rem] border border-base-300/70 bg-base-100/70 p-4 shadow-sm">
+                                    <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
                                     <div>
-                                        <span className="font-medium">Respekt for dit privatliv</span>
-                                        <p className="text-sm text-base-content/70">Vi gemmer ikke dit CV og sælger ikke dine data.</p>
+                                        <span className="font-medium text-base-content">Respekt for dit privatliv</span>
+                                        <p className="mt-1 text-sm leading-6 text-base-content/68">Vi gemmer ikke dit CV unødigt og bygger ikke forretningen på at videresælge dine oplysninger.</p>
                                     </div>
                                 </li>
-                                <li className="flex items-start gap-3">
-                                    <CheckCircleIcon className="w-5 h-5 text-success mt-0.5 shrink-0" aria-hidden="true" />
+                                <li className="flex items-start gap-3 rounded-[1.25rem] border border-base-300/70 bg-base-100/70 p-4 shadow-sm">
+                                    <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
                                     <div>
-                                        <span className="font-medium">Bygget til danske jobsøgende</span>
-                                        <p className="text-sm text-base-content/70">Fokuseret på det danske jobmarked og danske virksomheder.</p>
+                                        <span className="font-medium text-base-content">Bygget til danske jobsøgende</span>
+                                        <p className="mt-1 text-sm leading-6 text-base-content/68">Sprog, flows og jobmatch er tilpasset det danske jobmarked og de virksomheder, du faktisk søger hos.</p>
                                     </div>
                                 </li>
                             </ul>
                         </div>
-                        <div className="flex flex-col gap-4">
-                            <Link to="/cv" className="btn btn-primary btn-lg">
-                                Start med CV-tjek
-                                <ArrowRightIcon className="w-5 h-5" aria-hidden="true" />
-                            </Link>
-                            <Link to="/register" className="btn btn-outline btn-lg">
-                                Opret gratis konto
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div className="mt-12">
-                <h2 className="text-2xl font-bold mb-6">Ofte stillede spørgsmål</h2>
-                <div className="grid gap-4 md:grid-cols-2">
-                    <div className="collapse collapse-arrow bg-base-100 border rounded-box transition-all hover:shadow-xl hover:-translate-y-1">
-                        <input type="radio" name="faq-accordion" aria-label="Er værktøjerne virkelig gratis?" defaultChecked />
-                        <div className="collapse-title font-medium">
-                            Er værktøjerne virkelig gratis?
-                        </div>
-                        <div className="collapse-content text-base-content/70">
-                            <p>Ja, alle værktøjer er 100% gratis. Der er ingen betalingsmur, ingen premium-version, og ingen skjulte omkostninger.</p>
-                        </div>
-                    </div>
-                    <div className="collapse collapse-arrow bg-base-100 border rounded-box transition-all hover:shadow-xl hover:-translate-y-1">
-                        <input type="radio" name="faq-accordion" aria-label="Hvad sker der med mit CV når jeg uploader det?" />
-                        <div className="collapse-title font-medium">
-                            Hvad sker der med mit CV når jeg uploader det?
-                        </div>
-                        <div className="collapse-content text-base-content/70">
-                            <p>Dit CV analyseres i realtid og slettes automatisk bagefter. Vi gemmer hverken dokumentet eller dine personlige oplysninger.</p>
+                        <div className="rounded-[1.75rem] border border-base-300/70 bg-base-100/82 p-5 shadow-lg backdrop-blur-xl">
+                            <div className="space-y-3">
+                                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Kom i gang</p>
+                                <h3 className="text-2xl font-semibold tracking-tight text-base-content">Vælg din næste handling</h3>
+                                <p className="text-base leading-7 text-base-content/70">Hvis du vil have mest ud af platformen, så begynd med CV og profil, og brug derefter jobanbefalinger og jobagent til at holde momentum.</p>
+                            </div>
+
+                            <div className="mt-6 flex flex-col gap-3">
+                                <Link to="/cv" className="btn btn-primary min-h-12 rounded-2xl px-6 shadow-lg shadow-primary/20">
+                                    Start med CV-tjek
+                                    <ArrowRightIcon className="h-5 w-5" aria-hidden="true" />
+                                </Link>
+                                <Link to="/register" className="btn btn-ghost min-h-12 rounded-2xl border border-base-300/80 bg-base-100/75 px-6 shadow-sm">
+                                    Opret gratis konto
+                                </Link>
+                            </div>
                         </div>
                     </div>
-                    <div className="collapse collapse-arrow bg-base-100 border rounded-box transition-all hover:shadow-xl hover:-translate-y-1">
-                        <input type="radio" name="faq-accordion" aria-label="Hvordan virker jobanbefalingerne?" />
-                        <div className="collapse-title font-medium">
-                            Hvordan virker jobanbefalingerne?
+                </section>
+
+                <section className="space-y-5">
+                    <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">FAQ</p>
+                        <h2 className="text-2xl font-semibold tracking-tight text-base-content sm:text-[2rem]">Ofte stillede spørgsmål</h2>
+                        <p className="max-w-2xl text-base leading-7 text-base-content/70">
+                            Her er de korte svar på de spørgsmål, der oftest kommer, når man vil i gang med værktøjerne.
+                        </p>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <div className="collapse collapse-arrow rounded-[1.5rem] border border-base-300/70 bg-base-100/85 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+                            <input type="radio" name="faq-accordion" aria-label="Er værktøjerne virkelig gratis?" defaultChecked />
+                            <div className="collapse-title text-lg font-semibold">
+                                Er værktøjerne virkelig gratis?
+                            </div>
+                            <div className="collapse-content text-base leading-7 text-base-content/70">
+                                <p>Ja, alle værktøjer er 100% gratis. Der er ingen betalingsmur, ingen premium-version, og ingen skjulte omkostninger.</p>
+                            </div>
                         </div>
-                        <div className="collapse-content text-base-content/70">
-                            <p>Vi matcher dine færdigheder og erfaringer med jobopslag. Jo mere du udfylder din profil, desto bedre bliver anbefalingerne.</p>
+                        <div className="collapse collapse-arrow rounded-[1.5rem] border border-base-300/70 bg-base-100/85 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+                            <input type="radio" name="faq-accordion" aria-label="Hvad sker der med mit CV når jeg uploader det?" />
+                            <div className="collapse-title text-lg font-semibold">
+                                Hvad sker der med mit CV når jeg uploader det?
+                            </div>
+                            <div className="collapse-content text-base leading-7 text-base-content/70">
+                                <p>Dit CV analyseres i realtid og slettes automatisk bagefter. Vi gemmer hverken dokumentet eller dine personlige oplysninger.</p>
+                            </div>
+                        </div>
+                        <div className="collapse collapse-arrow rounded-[1.5rem] border border-base-300/70 bg-base-100/85 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+                            <input type="radio" name="faq-accordion" aria-label="Hvordan virker jobanbefalingerne?" />
+                            <div className="collapse-title text-lg font-semibold">
+                                Hvordan virker jobanbefalingerne?
+                            </div>
+                            <div className="collapse-content text-base leading-7 text-base-content/70">
+                                <p>Vi matcher dine færdigheder og erfaringer med jobopslag. Jo mere du udfylder din profil, desto bedre bliver anbefalingerne.</p>
+                            </div>
+                        </div>
+                        <div className="collapse collapse-arrow rounded-[1.5rem] border border-base-300/70 bg-base-100/85 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+                            <input type="radio" name="faq-accordion" aria-label="Kan jeg afmelde jobagenten?" />
+                            <div className="collapse-title text-lg font-semibold">
+                                Kan jeg afmelde jobagenten?
+                            </div>
+                            <div className="collapse-content text-base leading-7 text-base-content/70">
+                                <p>Ja, du kan til enhver tid slå jobagenten fra i din profil. Du kan også justere hvor ofte du vil have notifikationer.</p>
+                            </div>
                         </div>
                     </div>
-                    <div className="collapse collapse-arrow bg-base-100 border rounded-box transition-all hover:shadow-xl hover:-translate-y-1">
-                        <input type="radio" name="faq-accordion" aria-label="Kan jeg afmelde jobagenten?" />
-                        <div className="collapse-title font-medium">
-                            Kan jeg afmelde jobagenten?
-                        </div>
-                        <div className="collapse-content text-base-content/70">
-                            <p>Ja, du kan til enhver tid slå jobagenten fra i din profil. Du kan også justere hvor ofte du vil have notifikationer.</p>
-                        </div>
-                    </div>
-                </div>
+                </section>
             </div>
         </div>
     );

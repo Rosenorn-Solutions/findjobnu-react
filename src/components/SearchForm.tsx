@@ -237,23 +237,35 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
     condition && submitted ? `${base} input-success` : base;
 
   const dateInputClass =
-    "input input-bordered shadow transition-colors hover:border-base-content/40 focus:border-base-content focus:outline-2 focus:outline-offset-2";
+    "input input-bordered w-full rounded-2xl border-base-300/80 bg-base-100/90 text-base shadow-sm transition-all duration-200 hover:border-base-content/40 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 placeholder:text-base-content/45";
 
   // Handle category chip changes
   const handleCategoryChipsChange = useCallback((chips: ChipItem[]) => {
     setCategoryChips(chips);
   }, []);
 
-  const inputWidthClass = "w-full lg:w-64";
+  const fieldCardClass =
+    "flex h-full flex-col gap-3 rounded-[1.25rem] border border-base-300/70 bg-base-100/85 p-3 shadow-sm";
+
+  const labelTextClass =
+    "label-text text-sm font-semibold uppercase tracking-[0.16em] text-base-content/60";
 
   return (
-    <form className="flex flex-col" onSubmit={handleSubmit}>
-      <fieldset className="fieldset gap-3">
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+      <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+        <div className="space-y-1">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Præciser din søgning</p>
+          <p className="text-base leading-6 text-base-content/72">Kombinér jobtitler, lokationer og kategorier i samme søgning.</p>
+        </div>
+        <p className="text-sm leading-6 text-base-content/60">Tip: Tryk Enter eller skriv komma for at tilføje flere søgeord og byer.</p>
+      </div>
+
+      <fieldset className="grid gap-3 xl:grid-cols-12">
         <legend className="sr-only">Søgefiltre</legend>
-        <div className={`relative ${inputWidthClass}`}>
-          <div className="form-control gap-2">
+        <div className="xl:col-span-4">
+          <div className={fieldCardClass}>
             <label className="label p-0" htmlFor="searchTerm">
-              <span className="label-text inline-flex items-center gap-2">
+              <span className={`inline-flex items-center gap-2 ${labelTextClass}`}>
                 <MagnifyingGlassIcon className="w-4 h-4" aria-hidden="true" />
                 Søgeord
               </span>
@@ -269,12 +281,13 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
               onInputChange={setSearchTermInputValue}
               inputValue={searchTermInputValue}
             />
+            <p className="text-sm leading-6 text-base-content/60">Søg på jobtitler, teknologier eller konkrete kompetencer.</p>
           </div>
         </div>
-        <div className={`relative ${inputWidthClass}`}>
-          <div className="form-control gap-2">
+        <div className="xl:col-span-3">
+          <div className={fieldCardClass}>
             <label className="label p-0" htmlFor="locationInput">
-              <span className="label-text inline-flex items-center gap-2">
+              <span className={`inline-flex items-center gap-2 ${labelTextClass}`}>
                 <MapPinIcon className="w-4 h-4" aria-hidden="true" />
                 Lokation
               </span>
@@ -289,12 +302,13 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
               onInputChange={setLocationInputValue}
               inputValue={locationInputValue}
             />
+            <p className="text-sm leading-6 text-base-content/60">Tilføj byer eller områder for at ramme de rette opslag hurtigere.</p>
           </div>
         </div>
-        <div className={`relative ${inputWidthClass}`}>
-          <div className="form-control gap-2">
+        <div className="xl:col-span-3">
+          <div className={fieldCardClass}>
             <label className="label p-0" htmlFor="categoryInput">
-              <span className="label-text inline-flex items-center gap-2">
+              <span className={`inline-flex items-center gap-2 ${labelTextClass}`}>
                 <TagIcon className="w-4 h-4" aria-hidden="true" />
                 Kategori
               </span>
@@ -312,65 +326,76 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
               ariaLabel="Kategori"
               className="shadow"
             />
+            <p className="text-sm leading-6 text-base-content/60">Vælg en eller flere fagområder for at gøre brede søgninger mere præcise.</p>
           </div>
         </div>
-        <div className={`flex flex-col gap-2 ${inputWidthClass}`}>
-          <div className="form-control gap-2">
+        <div className="xl:col-span-2">
+          <div className={fieldCardClass}>
             <label className="label p-0" htmlFor="postedAfter">
-              <span className="label-text inline-flex items-center gap-2">
+              <span className={`inline-flex items-center gap-2 ${labelTextClass}`}>
                 <CalendarDaysIcon className="w-4 h-4" aria-hidden="true" />
-                Opslag efter
+                Dato
               </span>
             </label>
-            <input
-              id="postedAfter"
-              type="text"
-              inputMode="numeric"
-              className={successClass(dateInputClass, postedAfterValid && !!postedAfter)}
-              value={postedAfter}
-              onChange={e => setPostedAfter(e.target.value)}
-              placeholder="dd/mm/yyyy"
-              pattern={DANISH_DATE_PATTERN.source}
-              aria-label="Opslag efter dato"
-              aria-invalid={Boolean(postedAfter) && !postedAfterValid}
-              ref={postedAfterInputRef}
-            />
-          </div>
-          <div className="form-control gap-2">
-            <label className="label p-0" htmlFor="postedBefore">
-              <span className="label-text inline-flex items-center gap-2">
-                <CalendarDaysIcon className="w-4 h-4" aria-hidden="true" />
-                Opslag før
-              </span>
-            </label>
-            <input
-              id="postedBefore"
-              type="text"
-              inputMode="numeric"
-              className={successClass(dateInputClass, postedBeforeValid && !!postedBefore)}
-              value={postedBefore}
-              onChange={e => setPostedBefore(e.target.value)}
-              placeholder="dd/mm/yyyy"
-              pattern={DANISH_DATE_PATTERN.source}
-              aria-label="Opslag før dato"
-              aria-invalid={Boolean(postedBefore) && !postedBeforeValid}
-              ref={postedBeforeInputRef}
-            />
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+              <div className="form-control gap-2">
+                <label className="label p-0" htmlFor="postedAfter">
+                  <span className="label-text text-sm font-medium text-base-content/65">Opslag efter</span>
+                </label>
+                <input
+                  id="postedAfter"
+                  type="text"
+                  inputMode="numeric"
+                  className={successClass(dateInputClass, postedAfterValid && !!postedAfter)}
+                  value={postedAfter}
+                  onChange={e => setPostedAfter(e.target.value)}
+                  placeholder="dd/mm/yyyy"
+                  pattern={DANISH_DATE_PATTERN.source}
+                  aria-label="Opslag efter dato"
+                  aria-invalid={Boolean(postedAfter) && !postedAfterValid}
+                  ref={postedAfterInputRef}
+                />
+              </div>
+              <div className="form-control gap-2">
+                <label className="label p-0" htmlFor="postedBefore">
+                  <span className="label-text text-sm font-medium text-base-content/65">Opslag før</span>
+                </label>
+                <input
+                  id="postedBefore"
+                  type="text"
+                  inputMode="numeric"
+                  className={successClass(dateInputClass, postedBeforeValid && !!postedBefore)}
+                  value={postedBefore}
+                  onChange={e => setPostedBefore(e.target.value)}
+                  placeholder="dd/mm/yyyy"
+                  pattern={DANISH_DATE_PATTERN.source}
+                  aria-label="Opslag før dato"
+                  aria-invalid={Boolean(postedBefore) && !postedBeforeValid}
+                  ref={postedBeforeInputRef}
+                />
+              </div>
+            </div>
+            <p className="text-sm leading-6 text-base-content/60">Begræns perioden, hvis du vil prioritere nyere jobopslag.</p>
           </div>
         </div>
-        <div className={`flex gap-2 ${inputWidthClass}`}>
+        <div className="xl:col-span-12">
+          <div className="flex flex-col gap-3 rounded-[1.25rem] border border-primary/10 bg-gradient-to-r from-base-100 via-base-100 to-primary/5 p-3 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-base leading-6 text-base-content/72">Start bredt og tilføj flere chips, hvis du vil gøre resultatet mere præcist.</p>
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center">
           <button
-            className="btn btn-secondary-ghost shadow min-h-11 min-w-11"
-            type="button"
-            onClick={handleReset}
-          >
-            <ArrowPathIcon className="w-4 h-4" aria-hidden="true" />
-            Nulstil
-          </button>
-          <button className="btn btn-primary shadow flex-1 min-h-11" type="submit">
-            <MagnifyingGlassIcon className="w-5 h-5" aria-hidden="true" />
-            Søg
-          </button>
+                className="btn btn-ghost min-h-12 rounded-2xl border border-base-300/80 bg-base-100/70 px-4 shadow-sm"
+                type="button"
+                onClick={handleReset}
+              >
+                <ArrowPathIcon className="w-4 h-4" aria-hidden="true" />
+                Nulstil
+              </button>
+              <button className="btn btn-primary min-h-12 rounded-2xl px-6 shadow-lg shadow-primary/20" type="submit">
+                <MagnifyingGlassIcon className="w-5 h-5" aria-hidden="true" />
+                Søg
+              </button>
+            </div>
+          </div>
         </div>
       </fieldset>
     </form>
