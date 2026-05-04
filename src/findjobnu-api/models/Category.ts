@@ -24,6 +24,42 @@ export interface Category {
      * @type {number}
      * @memberof Category
      */
+    categoryId?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Category
+     */
+    categoryKey?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Category
+     */
+    categoryName?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Category
+     */
+    listingUrl?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Category
+     */
+    isActive?: boolean;
+    /**
+     * 
+     * @type {Date}
+     * @memberof Category
+     */
+    createdAt?: Date;
+    /**
+     * 
+     * @type {number}
+     * @memberof Category
+     */
     categoryID?: number;
     /**
      * 
@@ -50,6 +86,12 @@ export function CategoryFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
+        'categoryId': json['categoryId'] == null ? undefined : json['categoryId'],
+        'categoryKey': json['categoryKey'] == null ? undefined : json['categoryKey'],
+        'categoryName': json['categoryName'] == null ? undefined : json['categoryName'],
+        'listingUrl': json['listingUrl'] == null ? undefined : json['listingUrl'],
+        'isActive': json['isActive'] == null ? undefined : json['isActive'],
+        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
         'categoryID': json['categoryID'] == null ? undefined : json['categoryID'],
         'name': json['name'] == null ? undefined : json['name'],
     };
@@ -66,6 +108,12 @@ export function CategoryToJSONTyped(value?: Category | null, ignoreDiscriminator
 
     return {
         
+        'categoryId': value['categoryId'],
+        'categoryKey': value['categoryKey'],
+        'categoryName': value['categoryName'],
+        'listingUrl': value['listingUrl'],
+        'isActive': value['isActive'],
+        'createdAt': value['createdAt'] == null ? undefined : ((value['createdAt']).toISOString()),
         'categoryID': value['categoryID'],
         'name': value['name'],
     };

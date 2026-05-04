@@ -325,7 +325,7 @@ const FeatureCard: React.FC<{ card: FeatureCardData }> = ({ card }) => {
 };
 
 const CategoryLinkCard: React.FC<{ category: CategoryJobCountResponse }> = ({ category }) => {
-	const icon = getCategoryIcon(category.name);
+	const icon = getCategoryIcon(category.categoryName);
 	const content = (
 		<div className="flex h-full items-center justify-between gap-2.5 rounded-[1.05rem] border border-base-300/70 bg-base-100/82 px-3.5 py-2.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
 			<div className="flex min-w-0 items-center gap-2.5">
@@ -333,7 +333,7 @@ const CategoryLinkCard: React.FC<{ category: CategoryJobCountResponse }> = ({ ca
 					{icon}
 				</div>
 				<div className="min-w-0 flex-1">
-					<span className="block truncate text-sm font-semibold leading-5 text-base-content" title={category.name ?? undefined}>{formatCategoryName(category.name)}</span>
+					<span className="block truncate text-sm font-semibold leading-5 text-base-content" title={category.categoryName ?? undefined}>{formatCategoryName(category.categoryName)}</span>
 					<span className="text-xs leading-5 text-base-content/65">{formatNumber(category.numberOfJobs)} opslag</span>
 				</div>
 			</div>
@@ -347,7 +347,7 @@ const CategoryLinkCard: React.FC<{ category: CategoryJobCountResponse }> = ({ ca
 
 	return (
 		<Link
-			to={`/jobsearch?category=${category.id}`}
+			to={`/jobsearch?category=${category.categoryKey ?? category.id}`}
 			className="block h-full hover:no-underline focus-visible:outline-none"
 		>
 			{content}
@@ -390,7 +390,7 @@ const Home: React.FC = () => {
 
 	const featuredFeatureCards = featureCards.filter((card) => card.highlight);
 	const standardFeatureCards = featureCards.filter((card) => !card.highlight);
-	const topCategories = (stats?.topCategories ?? []).slice(0, 4).filter((category): category is CategoryJobCountResponse => Boolean(category?.name));
+	const topCategories = (stats?.topCategories ?? []).slice(0, 4).filter((category): category is CategoryJobCountResponse => Boolean(category?.categoryName));
 	const marketStats = [
 		{
 			label: "Aktive jobopslag",
@@ -544,7 +544,7 @@ const Home: React.FC = () => {
 										<span className="text-sm text-base-content/60">Ingen data tilgængelig endnu.</span>
 									) : null}
 									{topCategories.map((category) => (
-										<CategoryLinkCard key={`${category.id ?? category.name}-${category.name}`} category={category} />
+										<CategoryLinkCard key={`${category.id ?? category.categoryKey}-${category.categoryName}`} category={category} />
 									))}
 								</div>
 							</div>

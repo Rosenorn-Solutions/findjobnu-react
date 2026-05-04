@@ -16,11 +16,11 @@ interface Props {
   searchParams?: {
     searchTerms?: string[];
     locations?: string[];
-    categoryIds?: number[];
+    categoryKeys?: string[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;
-    categoryId?: number;
+    categoryKey?: string;
     postedAfter?: string;
     postedBefore?: string;
   } | null;
@@ -41,11 +41,11 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
   const [lastSearchParams, setLastSearchParams] = useState<{
     searchTerms?: string[];
     locations?: string[];
-    categoryIds?: number[];
+    categoryKeys?: string[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;
-    categoryId?: number;
+    categoryKey?: string;
     postedAfter?: string;
     postedBefore?: string;
   } | null>(searchParams ?? null);
@@ -77,11 +77,12 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
         const list = (Array.isArray(rawList) ? rawList : [])
           .map((c: RawCategory) => {
             const id = typeof c.id === "number" ? c.id : undefined;
-            const name = c.name ?? c.category ?? c.categoryName ?? "";
+            const key = (c as unknown as { categoryKey?: string }).categoryKey ?? undefined;
+            const name = (c as unknown as { categoryName?: string }).categoryName ?? c.name ?? c.category ?? "";
             const countValue = c.numberOfJobs ?? c.jobCount ?? c.count;
             const count = typeof countValue === "number" ? countValue : 0;
-            if (!id || !name) return null;
-            return { id, name, label: `${name} (${count})`, count } satisfies CategoryOption;
+            if (!name) return null;
+            return { id, key, name, label: `${name} (${count})`, count } satisfies CategoryOption;
           }) as Array<CategoryOption | null>;
 
         const filtered = list.filter((v): v is CategoryOption => v !== null);
@@ -110,15 +111,14 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
         const postedAfter = lastSearchParams?.postedAfter ? toDateFromInput(lastSearchParams.postedAfter) ?? undefined : undefined;
         const postedBefore = lastSearchParams?.postedBefore ? toDateFromInput(lastSearchParams.postedBefore) ?? undefined : undefined;
 
-        // Use new array-based parameters, falling back to single values for compatibility
         const searchTerms = lastSearchParams?.searchTerms ?? (lastSearchParams?.searchTerm ? [lastSearchParams.searchTerm.trim()].filter(Boolean) : undefined);
         const locations = lastSearchParams?.locations ?? (lastSearchParams?.location ? [lastSearchParams.location.trim()].filter(Boolean) : undefined);
-        const categoryIds = lastSearchParams?.categoryIds ?? (lastSearchParams?.categoryId ? [lastSearchParams.categoryId] : undefined);
+        const categoryKeys = lastSearchParams?.categoryKeys ?? (lastSearchParams?.categoryKey ? [lastSearchParams.categoryKey] : undefined);
 
         const response = await jobApi.getRecommendedJobsForUser({
           searchTerms,
           locations,
-          categoryIds,
+          categoryKeys,
           postedAfter,
           postedBefore,
           page: currentPage,
@@ -141,11 +141,11 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
   const handleSearch = (params: {
     searchTerms?: string[];
     locations?: string[];
-    categoryIds?: number[];
+    categoryKeys?: string[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;
-    categoryId?: number;
+    categoryKey?: string;
     postedAfter?: string;
     postedBefore?: string;
   }) => {
@@ -155,9 +155,9 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
 
   const searchTerms = lastSearchParams?.searchTerms ?? (lastSearchParams?.searchTerm ? [lastSearchParams.searchTerm.trim()].filter(Boolean) : []);
   const locations = lastSearchParams?.locations ?? (lastSearchParams?.location ? [lastSearchParams.location.trim()].filter(Boolean) : []);
-  const categoryIds = lastSearchParams?.categoryIds ?? (lastSearchParams?.categoryId ? [lastSearchParams.categoryId] : []);
-  const categoryLabels = categoryIds
-    .map((categoryId) => categories.find((category) => category.id === categoryId)?.name)
+  const categoryKeys = lastSearchParams?.categoryKeys ?? (lastSearchParams?.categoryKey ? [lastSearchParams.categoryKey] : []);
+  const categoryLabels = categoryKeys
+    .map((key) => categories.find((category) => category.key === key)?.name)
     .filter((value): value is string => Boolean(value));
   const filterTokens = [
     ...searchTerms.map((value) => `Søgeord: ${value}`),
@@ -168,7 +168,7 @@ const RecommendedJobs: React.FC<Props> = ({ userId, renderSearchForm = true, sea
   ];
   const previewFilters = filterTokens.slice(0, 4);
   const hiddenFilterCount = Math.max(0, filterTokens.length - previewFilters.length);
-  const activeSignalCount = searchTerms.length + locations.length + categoryIds.length + (lastSearchParams?.postedAfter ? 1 : 0) + (lastSearchParams?.postedBefore ? 1 : 0);
+  const activeSignalCount = searchTerms.length + locations.length + categoryKeys.length + (lastSearchParams?.postedAfter ? 1 : 0) + (lastSearchParams?.postedBefore ? 1 : 0);
 
   return (
     <div className={`${flushTop ? "" : "mt-8"} space-y-6`}>

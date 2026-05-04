@@ -41,7 +41,6 @@ describe("JobList interactions", () => {
     company: "Example Co",
     location: "Aarhus",
     postedDate: new Date("2024-02-02"),
-    category: "Engineering",
     jobUrl: "https://example.com/job",
   };
 

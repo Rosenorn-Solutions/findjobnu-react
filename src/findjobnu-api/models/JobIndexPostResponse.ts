@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { JobPostCategoryResponse } from './JobPostCategoryResponse';
+import {
+    JobPostCategoryResponseFromJSON,
+    JobPostCategoryResponseFromJSONTyped,
+    JobPostCategoryResponseToJSON,
+    JobPostCategoryResponseToJSONTyped,
+} from './JobPostCategoryResponse';
+
 /**
  * 
  * @export
@@ -54,13 +62,13 @@ export interface JobIndexPostResponse {
      * @type {Date}
      * @memberof JobIndexPostResponse
      */
-    postedDate?: Date;
+    postedDate?: Date | null;
     /**
      * 
-     * @type {string}
+     * @type {Array<JobPostCategoryResponse>}
      * @memberof JobIndexPostResponse
      */
-    category?: string | null;
+    categories?: Array<JobPostCategoryResponse> | null;
     /**
      * 
      * @type {string}
@@ -78,37 +86,13 @@ export interface JobIndexPostResponse {
      * @type {string}
      * @memberof JobIndexPostResponse
      */
-    bannerPicture?: string | null;
+    bannerImageUrl?: string | null;
     /**
      * 
      * @type {string}
      * @memberof JobIndexPostResponse
      */
-    footerPicture?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof JobIndexPostResponse
-     */
-    bannerFormat?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof JobIndexPostResponse
-     */
-    footerFormat?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof JobIndexPostResponse
-     */
-    bannerMimeType?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof JobIndexPostResponse
-     */
-    footerMimeType?: string | null;
+    footerImageUrl?: string | null;
 }
 
 /**
@@ -134,15 +118,11 @@ export function JobIndexPostResponseFromJSONTyped(json: any, ignoreDiscriminator
         'location': json['location'] == null ? undefined : json['location'],
         'jobUrl': json['jobUrl'] == null ? undefined : json['jobUrl'],
         'postedDate': json['postedDate'] == null ? undefined : (new Date(json['postedDate'])),
-        'category': json['category'] == null ? undefined : json['category'],
+        'categories': json['categories'] == null ? undefined : ((json['categories'] as Array<any>).map(JobPostCategoryResponseFromJSON)),
         'description': json['description'] == null ? undefined : json['description'],
         'companyUrl': json['companyUrl'] == null ? undefined : json['companyUrl'],
-        'bannerPicture': json['bannerPicture'] == null ? undefined : json['bannerPicture'],
-        'footerPicture': json['footerPicture'] == null ? undefined : json['footerPicture'],
-        'bannerFormat': json['bannerFormat'] == null ? undefined : json['bannerFormat'],
-        'footerFormat': json['footerFormat'] == null ? undefined : json['footerFormat'],
-        'bannerMimeType': json['bannerMimeType'] == null ? undefined : json['bannerMimeType'],
-        'footerMimeType': json['footerMimeType'] == null ? undefined : json['footerMimeType'],
+        'bannerImageUrl': json['bannerImageUrl'] == null ? undefined : json['bannerImageUrl'],
+        'footerImageUrl': json['footerImageUrl'] == null ? undefined : json['footerImageUrl'],
     };
 }
 
@@ -162,16 +142,12 @@ export function JobIndexPostResponseToJSONTyped(value?: JobIndexPostResponse | n
         'company': value['company'],
         'location': value['location'],
         'jobUrl': value['jobUrl'],
-        'postedDate': value['postedDate'] == null ? undefined : ((value['postedDate']).toISOString()),
-        'category': value['category'],
+        'postedDate': value['postedDate'] == null ? undefined : ((value['postedDate'] as any).toISOString()),
+        'categories': value['categories'] == null ? undefined : ((value['categories'] as Array<any>).map(JobPostCategoryResponseToJSON)),
         'description': value['description'],
         'companyUrl': value['companyUrl'],
-        'bannerPicture': value['bannerPicture'],
-        'footerPicture': value['footerPicture'],
-        'bannerFormat': value['bannerFormat'],
-        'footerFormat': value['footerFormat'],
-        'bannerMimeType': value['bannerMimeType'],
-        'footerMimeType': value['footerMimeType'],
+        'bannerImageUrl': value['bannerImageUrl'],
+        'footerImageUrl': value['footerImageUrl'],
     };
 }
 

@@ -30,10 +30,11 @@ const PopularCategories: React.FC<Props> = ({ limit = 10, className = "" }) => {
         const list: CategoryOption[] = raw
           .map(c => {
             const id = c.id;
-            const name = c.name ?? "";
+            const key = c.categoryKey ?? undefined;
+            const name = c.categoryName ?? "";
             const count = c.numberOfJobs ?? 0;
-            if (!id || !name) return null;
-            return { id, name, label: `${name} (${count})`, count } as CategoryOption;
+            if (!name) return null;
+            return { id, key, name, label: `${name} (${count})`, count } as CategoryOption;
           })
           .filter((v): v is CategoryOption => v !== null)
           .sort((a, b) => (b.count ?? 0) - (a.count ?? 0))
@@ -52,7 +53,7 @@ const PopularCategories: React.FC<Props> = ({ limit = 10, className = "" }) => {
   }, [limit]);
 
   const handleClick = (category: CategoryOption) => {
-    navigate(`/jobsearch?category=${encodeURIComponent(String(category.id))}`);
+    navigate(`/jobsearch?category=${encodeURIComponent(String(category.key ?? category.id))}`);
   };
 
   return (

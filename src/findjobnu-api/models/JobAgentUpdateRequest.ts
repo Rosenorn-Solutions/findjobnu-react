@@ -47,10 +47,10 @@ export interface JobAgentUpdateRequest {
     preferredLocations?: Array<string> | null;
     /**
      * 
-     * @type {Array<number>}
+     * @type {Array<string>}
      * @memberof JobAgentUpdateRequest
      */
-    preferredCategoryIds?: Array<number> | null;
+    preferredCategoryKeys?: Array<string> | null;
     /**
      * 
      * @type {Array<string>}
@@ -82,7 +82,7 @@ export function JobAgentUpdateRequestFromJSONTyped(json: any, ignoreDiscriminato
         'enabled': json['enabled'],
         'frequency': json['frequency'] == null ? undefined : JobAgentFrequencyFromJSON(json['frequency']),
         'preferredLocations': json['preferredLocations'] == null ? undefined : json['preferredLocations'],
-        'preferredCategoryIds': json['preferredCategoryIds'] == null ? undefined : json['preferredCategoryIds'],
+        'preferredCategoryKeys': json['preferredCategoryKeys'] == null ? undefined : json['preferredCategoryKeys'],
         'includeKeywords': json['includeKeywords'] == null ? undefined : json['includeKeywords'],
     };
 }
@@ -101,7 +101,7 @@ export function JobAgentUpdateRequestToJSONTyped(value?: JobAgentUpdateRequest |
         'enabled': value['enabled'],
         'frequency': JobAgentFrequencyToJSON(value['frequency']),
         'preferredLocations': value['preferredLocations'],
-        'preferredCategoryIds': value['preferredCategoryIds'],
+        'preferredCategoryKeys': value['preferredCategoryKeys'],
         'includeKeywords': value['includeKeywords'],
     };
 }

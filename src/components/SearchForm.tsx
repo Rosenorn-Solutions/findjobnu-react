@@ -15,7 +15,7 @@ import { DANISH_DATE_PATTERN, isValidDanishDateString, toApiDateString, toDateFr
 type SearchParams = {
   searchTerms?: string[];
   locations?: string[];
-  categoryIds?: number[];
+  categoryKeys?: string[];
   postedAfter?: string;
   postedBefore?: string;
   // Legacy single-value fields for backward compatibility
@@ -23,10 +23,12 @@ type SearchParams = {
   location?: string;
   locationSlug?: string;
   categoryId?: number;
+  categoryKey?: string;
 };
 
 export type CategoryOption = {
   id?: number;
+  key?: string;
   name: string;
   label?: string;
   count?: number;
@@ -63,26 +65,21 @@ const collectChipValues = <T extends ValueChip>(chips: T[], pendingInput: string
   return [...values, trimmedPendingInput];
 };
 
-const collectCategoryIds = (chips: ChipItem[], categories: CategoryOption[]) => {
-  const ids: number[] = [];
+const collectCategoryKeys = (chips: ChipItem[], categories: CategoryOption[]) => {
+  const keys: string[] = [];
 
   chips.forEach((chip) => {
     const directId = typeof chip.id === "number" ? chip.id : undefined;
-    if (directId != null) {
-      if (!ids.includes(directId)) {
-        ids.push(directId);
-      }
-      return;
-    }
-
-    const match = categories.find((category) => category.name === chip.value || category.label === chip.label);
-    const matchId = match?.id;
-    if (matchId != null && !ids.includes(matchId)) {
-      ids.push(matchId);
+    const match = directId != null
+      ? categories.find((category) => category.id === directId)
+      : categories.find((category) => category.name === chip.value || category.label === chip.label);
+    const key = match?.key ?? match?.name;
+    if (key && !keys.includes(key)) {
+      keys.push(key);
     }
   });
 
-  return ids;
+  return keys;
 };
 
 const buildSearchParams = (
@@ -99,15 +96,15 @@ const buildSearchParams = (
   const postedBeforeApi = postedBefore ? toApiDateString(postedBefore) ?? undefined : undefined;
   const searchTermsArray = collectChipValues(searchTermChips, searchTermInputValue).filter((value) => value.length > 0);
   const locationsArray = collectChipValues(locationChips, locationInputValue).filter((value) => value.length > 0);
-  const categoryIdsArray = collectCategoryIds(categoryChips, normalizedCategories);
+  const categoryKeysArray = collectCategoryKeys(categoryChips, normalizedCategories);
 
   return {
     searchTerms: searchTermsArray.length > 0 ? searchTermsArray : undefined,
     locations: locationsArray.length > 0 ? locationsArray : undefined,
-    categoryIds: categoryIdsArray.length > 0 ? categoryIdsArray : undefined,
+    categoryKeys: categoryKeysArray.length > 0 ? categoryKeysArray : undefined,
     searchTerm: searchTermsArray[0],
     location: locationsArray[0],
-    categoryId: categoryIdsArray[0],
+    categoryKey: categoryKeysArray[0],
     postedAfter: postedAfterApi,
     postedBefore: postedBeforeApi,
   };
@@ -181,7 +178,7 @@ const SearchForm: React.FC<Props> = ({ onSearch, categories, queryCategory }) =>
     const numeric = Number(queryCategory);
     const match = Number.isFinite(numeric)
       ? normalizedCategories.find(c => c.id === numeric)
-      : normalizedCategories.find(c => c.name === queryCategory || c.label === queryCategory);
+      : normalizedCategories.find(c => c.key === queryCategory || c.name === queryCategory || c.label === queryCategory);
     if (match) {
       setCategoryChips([{
         id: match.id ?? `cat-${match.name}`,

@@ -36,6 +36,11 @@ export interface GetAllJobPostsRequest {
     pageSize?: number;
 }
 
+export interface GetJobPostImageRequest {
+    id: number;
+    imageRole: string;
+}
+
 export interface GetJobPostsByIdRequest {
     id: number;
 }
@@ -43,7 +48,7 @@ export interface GetJobPostsByIdRequest {
 export interface GetJobPostsBySearchRequest {
     searchTerms?: Array<string>;
     locations?: Array<string>;
-    categoryIds?: Array<number>;
+    categoryKeys?: Array<string>;
     postedAfter?: Date;
     postedBefore?: Date;
     page?: number;
@@ -53,7 +58,7 @@ export interface GetJobPostsBySearchRequest {
 export interface GetRecommendedJobsForUserRequest {
     searchTerms?: Array<string>;
     locations?: Array<string>;
-    categoryIds?: Array<number>;
+    categoryKeys?: Array<string>;
     postedAfter?: Date;
     postedBefore?: Date;
     page?: number;
@@ -141,6 +146,43 @@ export class JobIndexPostsApi extends runtime.BaseAPI {
 
     /**
      */
+    async getJobPostImageRaw(requestParameters: GetJobPostImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling getJobPostImage().'
+            );
+        }
+
+        if (requestParameters['imageRole'] == null) {
+            throw new runtime.RequiredError(
+                'imageRole',
+                'Required parameter "imageRole" was null or undefined when calling getJobPostImage().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/jobindexposts/{id}/images/{imageRole}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))).replace(`{${"imageRole"}}`, encodeURIComponent(String(requestParameters['imageRole']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async getJobPostImage(requestParameters: GetJobPostImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.getJobPostImageRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
     async getJobPostsByIdRaw(requestParameters: GetJobPostsByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<JobIndexPostResponse>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
@@ -190,8 +232,8 @@ export class JobIndexPostsApi extends runtime.BaseAPI {
             queryParameters['Locations'] = requestParameters['locations'];
         }
 
-        if (requestParameters['categoryIds'] != null) {
-            queryParameters['CategoryIds'] = requestParameters['categoryIds'];
+        if (requestParameters['categoryKeys'] != null) {
+            queryParameters['CategoryKeys'] = requestParameters['categoryKeys'];
         }
 
         if (requestParameters['postedAfter'] != null) {
@@ -280,8 +322,8 @@ export class JobIndexPostsApi extends runtime.BaseAPI {
             queryParameters['Locations'] = requestParameters['locations'];
         }
 
-        if (requestParameters['categoryIds'] != null) {
-            queryParameters['CategoryIds'] = requestParameters['categoryIds'];
+        if (requestParameters['categoryKeys'] != null) {
+            queryParameters['CategoryKeys'] = requestParameters['categoryKeys'];
         }
 
         if (requestParameters['postedAfter'] != null) {

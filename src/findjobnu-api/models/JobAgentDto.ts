@@ -83,10 +83,10 @@ export interface JobAgentDto {
     preferredLocations?: Array<string> | null;
     /**
      * 
-     * @type {Array<number>}
+     * @type {Array<string>}
      * @memberof JobAgentDto
      */
-    preferredCategoryIds?: Array<number> | null;
+    preferredCategoryKeys?: Array<string> | null;
     /**
      * 
      * @type {Array<string>}
@@ -129,7 +129,7 @@ export function JobAgentDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
         'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
         'preferredLocations': json['preferredLocations'] == null ? undefined : json['preferredLocations'],
-        'preferredCategoryIds': json['preferredCategoryIds'] == null ? undefined : json['preferredCategoryIds'],
+        'preferredCategoryKeys': json['preferredCategoryKeys'] == null ? undefined : json['preferredCategoryKeys'],
         'preferredCategoryNames': json['preferredCategoryNames'] == null ? undefined : json['preferredCategoryNames'],
         'includeKeywords': json['includeKeywords'] == null ? undefined : json['includeKeywords'],
     };
@@ -155,7 +155,7 @@ export function JobAgentDtoToJSONTyped(value?: JobAgentDto | null, ignoreDiscrim
         'createdAt': value['createdAt'] == null ? undefined : ((value['createdAt']).toISOString()),
         'updatedAt': value['updatedAt'] == null ? undefined : ((value['updatedAt'] as any).toISOString()),
         'preferredLocations': value['preferredLocations'],
-        'preferredCategoryIds': value['preferredCategoryIds'],
+        'preferredCategoryKeys': value['preferredCategoryKeys'],
         'preferredCategoryNames': value['preferredCategoryNames'],
         'includeKeywords': value['includeKeywords'],
     };

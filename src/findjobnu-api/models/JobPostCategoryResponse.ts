@@ -16,59 +16,53 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface CategoryJobCountResponse
+ * @interface JobPostCategoryResponse
  */
-export interface CategoryJobCountResponse {
+export interface JobPostCategoryResponse {
     /**
      * 
      * @type {number}
-     * @memberof CategoryJobCountResponse
+     * @memberof JobPostCategoryResponse
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof CategoryJobCountResponse
+     * @memberof JobPostCategoryResponse
      */
     categoryKey?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof CategoryJobCountResponse
+     * @memberof JobPostCategoryResponse
      */
     categoryName?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof CategoryJobCountResponse
+     * @memberof JobPostCategoryResponse
      */
     listingUrl?: string | null;
     /**
      * 
      * @type {boolean}
-     * @memberof CategoryJobCountResponse
+     * @memberof JobPostCategoryResponse
      */
     isActive?: boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof CategoryJobCountResponse
-     */
-    numberOfJobs?: number;
 }
 
 /**
- * Check if a given object implements the CategoryJobCountResponse interface.
+ * Check if a given object implements the JobPostCategoryResponse interface.
  */
-export function instanceOfCategoryJobCountResponse(value: object): value is CategoryJobCountResponse {
+export function instanceOfJobPostCategoryResponse(value: object): value is JobPostCategoryResponse {
     return true;
 }
 
-export function CategoryJobCountResponseFromJSON(json: any): CategoryJobCountResponse {
-    return CategoryJobCountResponseFromJSONTyped(json, false);
+export function JobPostCategoryResponseFromJSON(json: any): JobPostCategoryResponse {
+    return JobPostCategoryResponseFromJSONTyped(json, false);
 }
 
-export function CategoryJobCountResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CategoryJobCountResponse {
+export function JobPostCategoryResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): JobPostCategoryResponse {
     if (json == null) {
         return json;
     }
@@ -79,15 +73,14 @@ export function CategoryJobCountResponseFromJSONTyped(json: any, ignoreDiscrimin
         'categoryName': json['categoryName'] == null ? undefined : json['categoryName'],
         'listingUrl': json['listingUrl'] == null ? undefined : json['listingUrl'],
         'isActive': json['isActive'] == null ? undefined : json['isActive'],
-        'numberOfJobs': json['numberOfJobs'] == null ? undefined : json['numberOfJobs'],
     };
 }
 
-export function CategoryJobCountResponseToJSON(json: any): CategoryJobCountResponse {
-    return CategoryJobCountResponseToJSONTyped(json, false);
+export function JobPostCategoryResponseToJSON(json: any): JobPostCategoryResponse {
+    return JobPostCategoryResponseToJSONTyped(json, false);
 }
 
-export function CategoryJobCountResponseToJSONTyped(value?: CategoryJobCountResponse | null, ignoreDiscriminator: boolean = false): any {
+export function JobPostCategoryResponseToJSONTyped(value?: JobPostCategoryResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -99,7 +92,6 @@ export function CategoryJobCountResponseToJSONTyped(value?: CategoryJobCountResp
         'categoryName': value['categoryName'],
         'listingUrl': value['listingUrl'],
         'isActive': value['isActive'],
-        'numberOfJobs': value['numberOfJobs'],
     };
 }
 

@@ -44,18 +44,19 @@ const frequencyOptions = [
 ];
 
 type CategoryOption = {
-  id: number;
+  id?: number;
+  key?: string;
   name: string;
   label: string;
   count: number;
 };
 
-const formatCategoryInputValue = (names: string[] | undefined, ids: number[]) => {
+const formatCategoryInputValue = (names: string[] | undefined, keys: string[]) => {
   if (names && names.length > 0) {
     return names.join(", ");
   }
-  if (ids.length > 0) {
-    return ids.join(", ");
+  if (keys.length > 0) {
+    return keys.join(", ");
   }
   return "";
 };
@@ -88,7 +89,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
   const [mode, setMode] = useState<"setup" | "manage">("setup");
   const [locationsInput, setLocationsInput] = useState<string>("");
   const [categoriesInput, setCategoriesInput] = useState<string>("");
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
+  const [selectedCategoryKeys, setSelectedCategoryKeys] = useState<string[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<CategoryOption[]>([]);
   const [categorySuggestions, setCategorySuggestions] = useState<CategoryOption[]>([]);
   const [showCategorySuggestions, setShowCategorySuggestions] = useState(false);
@@ -110,21 +111,19 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
     return categoryOptions.find((c) => c.name.toLowerCase() === lower || c.label.toLowerCase() === lower);
   };
 
-  const deriveCategoryIds = (input: string) => {
+  const deriveCategoryKeys = (input: string) => {
     return splitTokens(input)
       .map((token) => {
         const match = matchCategory(token);
-        if (match?.id) return match.id;
-        const numeric = Number(token);
-        return Number.isFinite(numeric) ? numeric : null;
+        return match?.key ?? match?.name ?? token;
       })
-      .filter((id): id is number => id != null);
+      .filter((k): k is string => k.length > 0);
   };
 
-  const formatCategoriesInput = (ids: number[]) => {
-    if (!ids.length) return "";
-    return ids
-      .map((id) => categoryOptions.find((c) => c.id === id)?.name ?? id.toString())
+  const formatCategoriesInput = (keys: string[]) => {
+    if (!keys.length) return "";
+    return keys
+      .map((key) => categoryOptions.find((c) => c.key === key)?.name ?? key)
       .join(`${categoryDelimiter} `);
   };
 
@@ -152,19 +151,20 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
         const list = (Array.isArray(rawList) ? rawList : [])
           .map((c: RawCategory) => {
             const id = typeof c.id === "number" ? c.id : undefined;
-            const name = c.name ?? c.category ?? c.categoryName ?? "";
+            const key = (c as unknown as { categoryKey?: string }).categoryKey ?? undefined;
+            const name = (c as unknown as { categoryName?: string }).categoryName ?? c.name ?? c.category ?? "";
             const countValue = c.numberOfJobs ?? c.jobCount ?? c.count;
             const count = typeof countValue === "number" ? countValue : 0;
-            if (!id || !name) return null;
-            return { id, name, label: `${name} (${count})`, count } satisfies CategoryOption;
+            if (!name) return null;
+            return { id, key, name, label: `${name} (${count})`, count } satisfies CategoryOption;
           })
-          .filter((v): v is CategoryOption => v !== null);
+          .filter((v): v is NonNullable<typeof v> => v !== null) as CategoryOption[];
 
         if (!cancelled) {
           setCategoryOptions(list);
           setCategorySuggestions(list.slice(0, 8));
-          if (selectedCategoryIds.length) {
-            setCategoriesInput(formatCategoriesInput(selectedCategoryIds));
+          if (selectedCategoryKeys.length) {
+            setCategoriesInput(formatCategoriesInput(selectedCategoryKeys));
           }
         }
       } catch {
@@ -200,9 +200,9 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       setLastSentAt(existing?.lastSentAt ? new Date(existing.lastSentAt) : null);
       setNextSendAt(existing?.nextSendAt ? new Date(existing.nextSendAt) : null);
       setLocationsInput((existing?.preferredLocations ?? []).join(", "));
-      const ids = existing?.preferredCategoryIds ?? [];
+      const ids = existing?.preferredCategoryKeys ?? [];
       const categoryNames = existing?.preferredCategoryNames ?? [];
-      setSelectedCategoryIds(ids);
+      setSelectedCategoryKeys(ids);
       setCategoriesInput(formatCategoryInputValue(categoryNames, ids));
       setKeywordsInput((existing?.includeKeywords ?? []).join(", "));
       setUnsubscribeLink(link ?? null);
@@ -236,7 +236,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
               setLastSentAt(null);
               setNextSendAt(null);
               setLocationsInput("");
-              setSelectedCategoryIds([]);
+              setSelectedCategoryKeys([]);
               setCategoriesInput("");
               setKeywordsInput("");
               setUnsubscribeLink(null);
@@ -271,8 +271,8 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
     try {
       const api = createApiClient(JobAgentApi, accessToken);
       const parsedLocations = locationsInput.split(",").map((l) => l.trim()).filter(Boolean);
-      const parsedCategoryIds = deriveCategoryIds(categoriesInput);
-      const categoryIds = parsedCategoryIds.length ? parsedCategoryIds : selectedCategoryIds;
+      const parsedCategoryKeys = deriveCategoryKeys(categoriesInput);
+      const categoryKeys = parsedCategoryKeys.length ? parsedCategoryKeys : selectedCategoryKeys;
       const parsedKeywords = keywordsInput.split(",").map((k) => k.trim()).filter(Boolean);
 
       try {
@@ -282,7 +282,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
             enabled,
             frequency,
             preferredLocations: parsedLocations,
-            preferredCategoryIds: categoryIds,
+            preferredCategoryKeys: categoryKeys,
             includeKeywords: parsedKeywords,
           },
         });
@@ -308,9 +308,9 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       setLastSentAt(refreshed.lastSentAt ? new Date(refreshed.lastSentAt) : null);
       setNextSendAt(refreshed.nextSendAt ? new Date(refreshed.nextSendAt) : null);
       setLocationsInput((refreshed.preferredLocations ?? []).join(", "));
-      const refreshedIds = refreshed.preferredCategoryIds ?? selectedCategoryIds;
+      const refreshedIds = refreshed.preferredCategoryKeys ?? selectedCategoryKeys;
       const refreshedNames = refreshed.preferredCategoryNames ?? [];
-      setSelectedCategoryIds(refreshedIds);
+      setSelectedCategoryKeys(refreshedIds);
       setCategoriesInput(refreshedNames.length > 0 ? refreshedNames.join(", ") : formatCategoriesInput(refreshedIds));
       setKeywordsInput((refreshed.includeKeywords ?? []).join(", "));
       setUnsubscribeLink(link ?? null);
@@ -338,7 +338,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
             enabled: true,
             frequency: frequencyValues.weekly,
             preferredLocations: [],
-            preferredCategoryIds: [],
+            preferredCategoryKeys: [],
             includeKeywords: [],
           },
         });
@@ -364,9 +364,9 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
       setLastSentAt(refreshed.lastSentAt ?? null);
       setNextSendAt(refreshed.nextSendAt ?? null);
       setLocationsInput((refreshed.preferredLocations ?? []).join(", "));
-      const refreshedIds = refreshed.preferredCategoryIds ?? [];
+      const refreshedIds = refreshed.preferredCategoryKeys ?? [];
       const refreshedNames = refreshed.preferredCategoryNames ?? [];
-      setSelectedCategoryIds(refreshedIds);
+      setSelectedCategoryKeys(refreshedIds);
       setCategoriesInput(refreshedNames.length > 0 ? refreshedNames.join(", ") : formatCategoriesInput(refreshedIds));
       setKeywordsInput((refreshed.includeKeywords ?? []).join(", "));
       setUnsubscribeLink(link ?? null);
@@ -406,7 +406,7 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
 
   const handleCategoriesChange = (val: string) => {
     setCategoriesInput(val);
-    setSelectedCategoryIds(deriveCategoryIds(val));
+    setSelectedCategoryKeys(deriveCategoryKeys(val));
     setActiveCategoryIndex(-1);
     updateCategorySuggestions(getLastCategoryToken(val));
   };
@@ -418,8 +418,8 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
     const normalized = rawParts.map((p) => p.trim()).filter((p) => p.length > 0);
     const nextInput = normalized.join(`${categoryDelimiter} `);
     setCategoriesInput(nextInput);
-    const ids = deriveCategoryIds(nextInput);
-    setSelectedCategoryIds(ids.length ? ids : [option.id]);
+    const keys = deriveCategoryKeys(nextInput);
+    setSelectedCategoryKeys(keys.length ? keys : (option.key ? [option.key] : [option.name]));
     setShowCategorySuggestions(false);
     setActiveCategoryIndex(-1);
   };
@@ -454,8 +454,8 @@ const JobAgentCard: React.FC<Props> = ({ userId, accessToken }) => {
   const frequencyLabel = frequencyOptions.find((option) => option.value === frequency)?.label ?? "Ugentligt";
   const chosenLocations = locationsInput.split(",").map((value) => value.trim()).filter(Boolean);
   const chosenKeywords = keywordsInput.split(",").map((value) => value.trim()).filter(Boolean);
-  const effectiveCategoryIds = deriveCategoryIds(categoriesInput);
-  const categoryCount = effectiveCategoryIds.length || selectedCategoryIds.length;
+  const effectiveCategoryKeys = deriveCategoryKeys(categoriesInput);
+  const categoryCount = effectiveCategoryKeys.length || selectedCategoryKeys.length;
 
   return (
     <div className="space-y-6">

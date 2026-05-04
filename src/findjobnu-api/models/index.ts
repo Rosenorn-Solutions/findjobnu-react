@@ -25,6 +25,7 @@ export * from './JobIndexPostResponse';
 export * from './JobIndexPostResponsePagedResponse';
 export * from './JobIndexPosts';
 export * from './JobIndexPostsPagedList';
+export * from './JobPostCategoryResponse';
 export * from './JobStatisticsResponse';
 export * from './NewsletterSubscribeRequest';
 export * from './NewsletterSubscribeResponse';

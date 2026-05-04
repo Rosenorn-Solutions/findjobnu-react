@@ -2,21 +2,19 @@ import { describe, it, expect } from "vitest";
 import JobList from "../../components/JobList";
 import { renderWithProviders, screen } from "../../test/testUtils";
 
-const base64Image =
-  "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////2wBDAf//////////////////////////////////////////////////////////////////////////////////////wAARCAAKAAoDAREAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAUGB//EABgQAQADAQAAAAAAAAAAAAAAAAABAgME/8QAFQEBAQAAAAAAAAAAAAAAAAAABgf/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwB4o+KP/9k=";
-
 describe("JobList", () => {
-  it("renders base64 images as data URIs", () => {
+  it("renders image URLs in banner and footer", () => {
+    const bannerUrl = "https://cdn.example.com/banner.jpg";
+    const footerUrl = "https://cdn.example.com/footer.png";
     const job = {
       id: 1,
       title: "Frontend Developer",
-      bannerPicture: base64Image,
-      footerPicture: base64Image,
+      bannerImageUrl: bannerUrl,
+      footerImageUrl: footerUrl,
       description: "Kort beskrivelse",
       company: "ACME",
       location: "København",
       postedDate: new Date("2024-01-01"),
-      category: "Engineering",
       jobUrl: "https://example.com",
     };
 
@@ -39,23 +37,19 @@ describe("JobList", () => {
     const banner = screen.getByAltText("Banner for jobopslag");
     const footer = screen.getByAltText("Footer grafik for jobopslag");
 
-    expect(banner).toHaveAttribute("src", expect.stringMatching(/^data:image\/(jpeg|png);base64,/));
-    expect(footer).toHaveAttribute("src", expect.stringMatching(/^data:image\/(jpeg|png);base64,/));
+    expect(banner).toHaveAttribute("src", bannerUrl);
+    expect(footer).toHaveAttribute("src", footerUrl);
   });
 
-  it("uses provided mime types for base64 images", () => {
+  it("renders category name from categories array", () => {
     const job = {
       id: 2,
       title: "Fullstack Developer",
-      bannerPicture: base64Image,
-      bannerMimeType: "image/webp",
-      footerPicture: base64Image,
-      footerMimeType: "image/webp",
       description: "Beskrivelse",
       company: "Tech Corp",
       location: "Aarhus",
       postedDate: new Date("2024-02-01"),
-      category: "Engineering",
+      categories: [{ id: 1, categoryName: "Engineering" }],
     };
 
     renderWithProviders(
@@ -74,10 +68,6 @@ describe("JobList", () => {
       }
     );
 
-    const banner = screen.getByAltText("Banner for jobopslag");
-    const footer = screen.getByAltText("Footer grafik for jobopslag");
-
-    expect(banner).toHaveAttribute("src", expect.stringMatching(/^data:image\/webp;base64,/));
-    expect(footer).toHaveAttribute("src", expect.stringMatching(/^data:image\/webp;base64,/));
+    expect(screen.getByText("Engineering")).toBeInTheDocument();
   });
 });

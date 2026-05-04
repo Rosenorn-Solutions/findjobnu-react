@@ -86,13 +86,19 @@ export interface JobIndexPosts {
      * @type {string}
      * @memberof JobIndexPosts
      */
-    bannerPicture?: string | null;
+    bannerImageUrl?: string | null;
     /**
      * 
      * @type {string}
      * @memberof JobIndexPosts
      */
-    footerPicture?: string | null;
+    footerImageUrl?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof JobIndexPosts
+     */
+    sourceHost?: string | null;
 }
 
 /**
@@ -121,8 +127,9 @@ export function JobIndexPostsFromJSONTyped(json: any, ignoreDiscriminator: boole
         'jobUrl': json['jobUrl'] == null ? undefined : json['jobUrl'],
         'published': json['published'] == null ? undefined : (new Date(json['published'])),
         'categories': json['categories'] == null ? undefined : ((json['categories'] as Array<any>).map(CategoryFromJSON)),
-        'bannerPicture': json['bannerPicture'] == null ? undefined : json['bannerPicture'],
-        'footerPicture': json['footerPicture'] == null ? undefined : json['footerPicture'],
+        'bannerImageUrl': json['bannerImageUrl'] == null ? undefined : json['bannerImageUrl'],
+        'footerImageUrl': json['footerImageUrl'] == null ? undefined : json['footerImageUrl'],
+        'sourceHost': json['sourceHost'] == null ? undefined : json['sourceHost'],
     };
 }
 
@@ -146,8 +153,9 @@ export function JobIndexPostsToJSONTyped(value?: JobIndexPosts | null, ignoreDis
         'jobUrl': value['jobUrl'],
         'published': value['published'] == null ? undefined : ((value['published'] as any).toISOString()),
         'categories': value['categories'] == null ? undefined : ((value['categories'] as Array<any>).map(CategoryToJSON)),
-        'bannerPicture': value['bannerPicture'],
-        'footerPicture': value['footerPicture'],
+        'bannerImageUrl': value['bannerImageUrl'],
+        'footerImageUrl': value['footerImageUrl'],
+        'sourceHost': value['sourceHost'],
     };
 }
 

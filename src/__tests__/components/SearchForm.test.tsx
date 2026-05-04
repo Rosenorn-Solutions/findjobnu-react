@@ -25,7 +25,7 @@ describe("SearchForm", () => {
       expect.objectContaining({
         searchTerms: ["Frontend"],
         locations: undefined,
-        categoryIds: undefined,
+        categoryKeys: undefined,
         postedAfter: undefined,
         postedBefore: undefined,
       })

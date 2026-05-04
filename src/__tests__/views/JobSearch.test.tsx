@@ -25,7 +25,6 @@ const jobsResponse = {
       company: "ACME",
       location: "Aalborg",
       postedDate: new Date("2024-01-01"),
-      category: "Eng",
       jobUrl: "https://example.com",
     },
   ],
@@ -38,8 +37,8 @@ describe("JobSearch view", () => {
     apiMock.getAllJobPosts.mockResolvedValue(jobsResponse);
     apiMock.getJobCategories.mockResolvedValue({
       categories: [
-        { id: 10, name: "Engineering", numberOfJobs: 3 },
-        { id: 20, name: "Marketing", numberOfJobs: 1 },
+        { id: 5, categoryKey: "engineering", categoryName: "Engineering", numberOfJobs: 3 },
+        { id: 20, categoryKey: "marketing", categoryName: "Marketing", numberOfJobs: 1 },
       ],
     });
     apiMock.getJobPostsBySearch.mockResolvedValue(jobsResponse);
@@ -68,7 +67,7 @@ describe("JobSearch view", () => {
 
     expect(apiMock.getJobPostsBySearch).toHaveBeenCalledWith(
       expect.objectContaining({
-        categoryIds: [5],
+        categoryKeys: ["engineering"],
         page: 1,
         pageSize: 10,
       })

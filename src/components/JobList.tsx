@@ -312,73 +312,13 @@ const JobList: React.FC<Props> = ({
     }
   }, []);
 
-  const normalizeFormat = (fmt?: string | null): string | undefined => {
-    if (!fmt) return undefined;
-    const cleaned = fmt.trim().replace(/^\./, "").toLowerCase();
-    return cleaned.length > 0 ? cleaned : undefined;
-  };
-
-  const mimeFromFormat = (fmt?: string | null): string | undefined => {
-    switch (normalizeFormat(fmt)) {
-      case "jpg":
-      case "jpeg":
-        return "image/jpeg";
-      case "png":
-        return "image/png";
-      case "gif":
-        return "image/gif";
-      case "bmp":
-        return "image/bmp";
-      case "webp":
-        return "image/webp";
-      case "svg":
-      case "svg+xml":
-        return "image/svg+xml";
-      default:
-        return undefined;
-    }
-  };
-
-  const inferMimeFromContent = (compact: string): string => {
-    if (compact.startsWith("iVBOR")) return "image/png";
-    if (compact.startsWith("R0lGOD")) return "image/gif";
-    if (compact.startsWith("Qk")) return "image/bmp";
-    if (compact.startsWith("UklGR")) return "image/webp";
-    return "image/jpeg";
-  };
-
-  const composeDataUri = (compact: string, mimeType?: string | null, format?: string | null): string => {
-    const declared = mimeType?.trim();
-    if (declared) {
-      return `data:${declared};base64,${compact}`;
-    }
-
-    const formatMime = mimeFromFormat(format);
-    if (formatMime) {
-      return `data:${formatMime};base64,${compact}`;
-    }
-
-    return `data:${inferMimeFromContent(compact)};base64,${compact}`;
-  };
-
-  const resolvePictureSource = (
-    raw?: string | null,
-    mimeType?: string | null,
-    format?: string | null
-  ): string | null => {
-    if (!raw) return null;
-    const trimmed = raw.trim();
+  const resolveImageUrl = (url?: string | null): string | null => {
+    if (!url) return null;
+    const trimmed = url.trim();
     if (trimmed.length === 0) return null;
     if (/^(https?:)?\/\//i.test(trimmed) || trimmed.startsWith("data:") || trimmed.startsWith("blob:")) {
       return trimmed;
     }
-
-    const compact = trimmed.split(/\s+/).join("");
-    const looksBase64 = compact.length > 48 && compact.length % 4 === 0 && /^[A-Za-z0-9+/=]+$/.test(compact);
-    if (looksBase64) {
-      return composeDataUri(compact, mimeType, format);
-    }
-
     if (trimmed.startsWith("/")) {
       try {
         return new URL(trimmed, getApiBaseUrl()).toString();
@@ -386,7 +326,6 @@ const JobList: React.FC<Props> = ({
         return trimmed;
       }
     }
-
     return trimmed;
   };
 
@@ -459,16 +398,8 @@ const JobList: React.FC<Props> = ({
     const isSaving = safeJobId != null && savingJobIds.has(safeJobId);
     const isSaved = safeJobId != null && savedJobIds.has(safeJobId);
     const freshDetails = getJobDetails(detailsMap, safeJobId);
-    const bannerPicture = resolvePictureSource(
-      freshDetails?.bannerPicture ?? job.bannerPicture ?? null,
-      freshDetails?.bannerMimeType ?? job.bannerMimeType ?? null,
-      freshDetails?.bannerFormat ?? job.bannerFormat ?? null
-    );
-    const footerPicture = resolvePictureSource(
-      freshDetails?.footerPicture ?? job.footerPicture ?? null,
-      freshDetails?.footerMimeType ?? job.footerMimeType ?? null,
-      freshDetails?.footerFormat ?? job.footerFormat ?? null
-    );
+    const bannerPicture = resolveImageUrl(freshDetails?.bannerImageUrl ?? job.bannerImageUrl);
+    const footerPicture = resolveImageUrl(freshDetails?.footerImageUrl ?? job.footerImageUrl);
     const descriptionSource = freshDetails?.description ?? job.description ?? null;
     const canSave = Boolean(user?.userId && user?.accessToken && safeJobId != null);
     const resultNumber = (currentPage - 1) * pageSize + idx + 1;
@@ -495,12 +426,12 @@ const JobList: React.FC<Props> = ({
                 {isRecommendedMode ? "Anbefalet match" : `Resultat ${resultNumber}`}
               </span>
 
-              {job.category && (
-                <span className="inline-flex items-center gap-1 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1 text-xs font-medium text-base-content/75">
+              {(job.categories ?? []).slice(0, 2).map((cat) => cat.categoryName && (
+                <span key={cat.id ?? cat.categoryKey} className="inline-flex items-center gap-1 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1 text-xs font-medium text-base-content/75">
                   <TagIcon className="h-4 w-4" aria-hidden="true" />
-                  {job.category}
+                  {cat.categoryName}
                 </span>
-              )}
+              ))}
 
               {postedDateLabel && (
                 <span className="inline-flex items-center gap-1 rounded-full border border-base-300/80 bg-base-100/80 px-3 py-1 text-xs font-medium text-base-content/70">

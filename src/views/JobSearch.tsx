@@ -27,6 +27,7 @@ const JobSearch: React.FC = () => {
   const [jobs, setJobs] = useState<JobIndexPostResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
@@ -35,22 +36,22 @@ const JobSearch: React.FC = () => {
   const [recommendedSearchParams, setRecommendedSearchParams] = useState<{
     searchTerms?: string[];
     locations?: string[];
-    categoryIds?: number[];
+    categoryKeys?: string[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;
-    categoryId?: number;
+    categoryKey?: string;
     postedAfter?: string;
     postedBefore?: string;
   } | null>(null);
   const [lastSearchParams, setLastSearchParams] = useState<{
     searchTerms?: string[];
     locations?: string[];
-    categoryIds?: number[];
+    categoryKeys?: string[];
     searchTerm?: string;
     location?: string;
     locationSlug?: string;
-    categoryId?: number;
+    categoryKey?: string;
     postedAfter?: string;
     postedBefore?: string;
   } | null>(null);
@@ -88,10 +89,21 @@ const JobSearch: React.FC = () => {
   };
 
   const parseCategoryFromQuery = () => {
-    const raw = searchParams.get("category") ?? searchParams.get("categoryId");
-    if (!raw) return undefined;
-    const asNumber = Number(raw);
-    return Number.isFinite(asNumber) ? asNumber : undefined;
+    return searchParams.get("category") ?? searchParams.get("categoryKey") ?? undefined;
+  };
+
+  const resolveCategoryQueryValue = (rawValue?: string | null) => {
+    if (!rawValue) return undefined;
+    const trimmed = rawValue.trim();
+    if (!trimmed) return undefined;
+
+    const numericId = Number(trimmed);
+    if (!Number.isFinite(numericId)) {
+      return trimmed;
+    }
+
+    const match = categories.find((category) => category.id === numericId);
+    return match?.key ?? match?.name ?? trimmed;
   };
 
   const parsePanelFromQuery = () => {
@@ -131,6 +143,7 @@ const JobSearch: React.FC = () => {
         ?? [];
       type RawCategory = {
         id?: unknown;
+        categoryKey?: string;
         name?: string;
         category?: string;
         categoryName?: string;
@@ -142,12 +155,14 @@ const JobSearch: React.FC = () => {
       const list = (Array.isArray(rawList) ? rawList : [])
         .map((c: RawCategory) => {
           const id = typeof c.id === "number" ? c.id : undefined;
-          const name = c.name ?? c.category ?? c.categoryName ?? "";
+          const key = c.categoryKey ?? undefined;
+          const name = c.categoryName ?? c.name ?? c.category ?? "";
           const countValue = c.numberOfJobs ?? c.jobCount ?? c.count;
           const count = typeof countValue === "number" ? countValue : 0;
-          if (!id || !name) return null;
+          if (!name) return null;
           return {
             id,
+            key,
             name,
             label: `${name} (${count})`,
             count,
@@ -158,6 +173,8 @@ const JobSearch: React.FC = () => {
       setCategories(filtered);
     } catch {
       setCategories([]);
+    } finally {
+      setCategoriesLoaded(true);
     }
   };
 
@@ -165,11 +182,11 @@ const JobSearch: React.FC = () => {
     params: { 
       searchTerms?: string[];
       locations?: string[];
-      categoryIds?: number[];
+      categoryKeys?: string[];
       searchTerm?: string; 
       location?: string; 
       locationSlug?: string; 
-      categoryId?: number; 
+      categoryKey?: string; 
       postedAfter?: string; 
       postedBefore?: string 
     },
@@ -180,15 +197,14 @@ const JobSearch: React.FC = () => {
       const postedAfter = params.postedAfter ? toDateFromInput(params.postedAfter) ?? undefined : undefined;
       const postedBefore = params.postedBefore ? toDateFromInput(params.postedBefore) ?? undefined : undefined;
       
-      // Use new array-based parameters, falling back to single values for compatibility
       const searchTerms = params.searchTerms ?? (params.searchTerm ? [params.searchTerm] : undefined);
       const locations = params.locations ?? (params.location ? [normalizeLocation(params.location)].filter(Boolean) as string[] : undefined);
-      const categoryIds = params.categoryIds ?? (params.categoryId ? [params.categoryId] : undefined);
+      const categoryKeys = params.categoryKeys ?? (params.categoryKey ? [params.categoryKey] : undefined);
 
       const data = await api.getJobPostsBySearch({
         searchTerms,
         locations,
-        categoryIds,
+        categoryKeys,
         page,
         pageSize,
         postedAfter,
@@ -213,23 +229,28 @@ const JobSearch: React.FC = () => {
   };
 
   useEffect(() => {
-    const categoryId = parseCategoryFromQuery();
+    const categoryKey = parseCategoryFromQuery();
     fetchCategories();
-    if (categoryId == null) {
+    if (categoryKey == null) {
       fetchAllJobs();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const categoryId = parseCategoryFromQuery();
-    const lastCategory = lastSearchParams?.categoryId;
-    if (categoryId != null && categoryId !== lastCategory) {
-      const nextParams = lastSearchParams ? { ...lastSearchParams, categoryId } : { categoryId };
+    const rawCategory = parseCategoryFromQuery();
+    if (rawCategory == null || categoriesLoaded === false) {
+      return;
+    }
+
+    const categoryKey = resolveCategoryQueryValue(rawCategory);
+    const lastCategory = lastSearchParams?.categoryKey;
+    if (categoryKey != null && categoryKey !== lastCategory) {
+      const nextParams = lastSearchParams ? { ...lastSearchParams, categoryKey } : { categoryKey };
       handleSearch(nextParams, 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [categories, categoriesLoaded, searchParams]);
 
   const searchPanelButtonClass = activePanel === "search"
     ? "btn-primary shadow-lg shadow-primary/20"
